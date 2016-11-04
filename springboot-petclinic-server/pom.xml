@@ -233,6 +233,10 @@
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>
         </dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+		</dependency>
     </dependencies>
 
     <build>
@@ -272,6 +276,19 @@
                 <configuration>
                     <encoding>UTF-8</encoding>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <update>true</update>
+                    <username>tomcat</username>
+                    <password>s3cret</password>
+                    <url>http://localhost:8080/manager/text</url>
+                    <path>/springboot-petclinic-server</path>
+                </configuration>
+                <!-- tomcat7:deploy tomcat7:redeploy -->
             </plugin>
         </plugins>
     </build>

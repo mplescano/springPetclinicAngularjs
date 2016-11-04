@@ -25,7 +25,7 @@ public class SharedJpaConfig {
 	
     @Bean
     public EntityManagerFactory entityManagerFactory() {
-        LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+    	LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
         // gDickens: BOTH Persistence Unit and Packages to Scan are NOT compatible, persistenceUnit will win
         em.setPersistenceUnitName("petclinic");

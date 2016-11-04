@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.config.servlet;
 
+import java.nio.charset.Charset;
 import java.util.List;
 
 import org.springframework.context.annotation.Bean;
@@ -8,6 +9,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Description;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.FormHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
@@ -34,26 +39,26 @@ import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 @ComponentScan(basePackages = { "org.springframework.samples.petclinic.web" })
 public class WebConfig extends WebMvcConfigurerAdapter {
 
-	@Override
+	/*@Override
 	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
 		configurer.ignoreAcceptHeader(true);
 		configurer.defaultContentType(MediaType.TEXT_HTML);
 		configurer.mediaType("html", MediaType.TEXT_HTML);
 		configurer.mediaType("xml", MediaType.APPLICATION_XML);
-	}
+		configurer.mediaType("woff", MediaType.parseMediaType("font/x-woff"));
+		configurer.mediaType("woff2", MediaType.parseMediaType("font/x-woff"));
+	}*/
 
-	@Override
-	public void configureDefaultServletHandling(
-			DefaultServletHandlerConfigurer configurer) {
+    @Override
+    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
 		// Serve static resources (*.html, ...) from src/main/webapp/
-		configurer.enable();
-	}
-
+        configurer.enable();
+    }
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/**").addResourceLocations(
-				"/public/");
+				"/", "classpath:/public/");
 	}
 	
     @Override
@@ -78,7 +83,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 	 * View name resolved using bean of type InternalResourceViewResolver
 	 * (declared in {@link MvcViewConfig}).
 	 */
-	@Override
+	/*@Override
 	public void configureHandlerExceptionResolvers(
 			List<HandlerExceptionResolver> exceptionResolvers) {
 		SimpleMappingExceptionResolver exceptionResolver = new SimpleMappingExceptionResolver();
@@ -87,6 +92,13 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		// needed otherwise exceptions won't be logged anywhere
 		exceptionResolver.setWarnLogCategory("warn");
 		exceptionResolvers.add(exceptionResolver);
-	}
+	}*/
 
+	@Override
+	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+		/*converters.add(new StringHttpMessageConverter(Charset.forName("UTF-8")));
+		converters.add(new FormHttpMessageConverter());*/
+		converters.add(new MappingJackson2HttpMessageConverter());
+	}
+	
 }
