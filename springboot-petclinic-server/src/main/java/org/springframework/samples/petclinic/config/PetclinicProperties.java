@@ -15,7 +15,8 @@
  */
 package org.springframework.samples.petclinic.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 
 /**
  * Typesafe custom configuration.
@@ -24,12 +25,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author Antoine Rey
  */
-@ConfigurationProperties(prefix = "petclinic")
+@PropertySource("classpath:application.properties")
 public class PetclinicProperties {
 
     /**
      * Relational database supported by SpringBoot Petclinic: hsqldb, mysql or postgresql
      */
+	@Value("${petclinic.database}")
     private String database;
 
     public String getDatabase() {

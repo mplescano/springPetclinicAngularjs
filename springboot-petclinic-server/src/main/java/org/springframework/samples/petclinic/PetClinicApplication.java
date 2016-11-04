@@ -1,22 +1,34 @@
 package org.springframework.samples.petclinic;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.samples.petclinic.config.PetclinicProperties;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.context.request.WebRequestInterceptor;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import javax.servlet.Filter;
 
-@SpringBootApplication
-@EnableConfigurationProperties(PetclinicProperties.class)
-public class PetClinicApplication {
+import org.springframework.samples.petclinic.config.root.RootApplicationContextConfig;
+import org.springframework.samples.petclinic.config.servlet.MvcViewConfig;
+import org.springframework.samples.petclinic.config.servlet.WebConfig;
+import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-    public static void main(String[] args) {
-        SpringApplication.run(PetClinicApplication.class, args);
+public class PetClinicApplication extends AbstractAnnotationConfigDispatcherServletInitializer {
+
+	@Override
+	protected Class<?>[] getRootConfigClasses() {
+		return new Class[]{RootApplicationContextConfig.class};
+	}
+
+	@Override
+	protected Class<?>[] getServletConfigClasses() {
+		return new Class[]{WebConfig.class, MvcViewConfig.class};
+	}
+
+    @Override
+    protected String[] getServletMappings() {
+        return new String[]{"/"};
+    }
+
+    @Override
+    protected Filter[] getServletFilters() {
+        // Used to provide the ability to enter Chinese characters inside the Owner Form
+        CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter("UTF-8", true);
+        return new Filter[]{characterEncodingFilter};
     }
 }
-
