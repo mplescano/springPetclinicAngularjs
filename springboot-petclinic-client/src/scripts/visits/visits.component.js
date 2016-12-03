@@ -9,7 +9,7 @@ angular.module("visits").component("visits", {
     controller: ["$http", '$routeParams', '$location', '$filter', function ($http, $routeParams, $location, $filter) {
         var self = this;
         var petId = $routeParams.petId || 0;
-        var url = "owners/" + ($routeParams.ownerId || 0) + "/pets/" + petId + "/visits";
+        var url = "rest/owners/" + ($routeParams.ownerId || 0) + "/pets/" + petId + "/visits";
         self.date = new Date();
         self.desc = "";
 
@@ -25,7 +25,7 @@ angular.module("visits").component("visits", {
             };
             console.log(data);
             $http.post(url, data).then(function() {
-                $location.url("owners/" + $routeParams.ownerId);
+                $location.url("rest/owners/" + $routeParams.ownerId);
             }, function (response) {
                 var error = response.data;
                 alert(error.error + "\r\n" + error.errors.map(function (e) {

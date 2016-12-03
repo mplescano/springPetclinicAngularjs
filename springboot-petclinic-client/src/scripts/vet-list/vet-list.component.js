@@ -9,7 +9,7 @@ angular.module("vetList").component("vetList", {
     controller: ["$http", '$routeParams', function($http) {
         var self = this;
 
-        $http.get('vets').then(function(resp) {
+        $http.get('rest/vets').then(function(resp) {
             self.vetList = resp.data;
         });
     }]

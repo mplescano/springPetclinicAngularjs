@@ -10,20 +10,20 @@ angular.module("petForm").component("petForm", {
         var self = this;
         var ownerId = $routeParams.ownerId || 0;
 
-        $http.get('petTypes').then(function(resp) {
+        $http.get('rest/petTypes').then(function(resp) {
             self.types = resp.data;
         }).then(function () {
 
             var petId = $routeParams.petId || 0;
 
             if (petId) { // edit
-                $http.get("owner/" + ownerId + "/pet/" + petId).then(function(resp) {
+                $http.get("rest/owner/" + ownerId + "/pet/" + petId).then(function(resp) {
                     self.pet = resp.data;
                     self.pet.birthDate = new Date(self.pet.birthDate);
                     self.petTypeId = "" + self.pet.type.id;
                 });
             } else {
-                $http.get('owner/' + ownerId).then(function(resp) {
+                $http.get('rest/owner/' + ownerId).then(function(resp) {
                     self.pet = {
                         owner: resp.data.firstName + " " + resp.data.lastName
                     };
@@ -47,9 +47,9 @@ angular.module("petForm").component("petForm", {
 
             var req;
             if (id) {
-                req = $http.put("owners/" + ownerId + "/pets/" + id, data);
+                req = $http.put("rest/owners/" + ownerId + "/pets/" + id, data);
             } else {
-                req = $http.post("owners/" + ownerId + "/pets", data);
+                req = $http.post("rest/owners/" + ownerId + "/pets", data);
             }
 
             req.then(function () {

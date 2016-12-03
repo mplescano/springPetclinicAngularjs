@@ -9,7 +9,7 @@ angular.module("ownerDetails").component("ownerDetails", {
     controller: ["$http", '$routeParams', function($http, $routeParams) {
         var self = this;
 
-        $http.get('owner/' + $routeParams.ownerId).then(function(resp) {
+        $http.get('rest/owner/' + $routeParams.ownerId).then(function(resp) {
             self.owner = resp.data;
         });
     }]

@@ -14,7 +14,7 @@ angular.module("ownerForm").component("ownerForm", {
         if (!ownerId) {
             self.owner = {};
         } else {
-            $http.get("owner/" + ownerId).then(function(resp) {
+            $http.get("rest/owner/" + ownerId).then(function(resp) {
                 self.owner = resp.data;
             });
         }
@@ -23,9 +23,9 @@ angular.module("ownerForm").component("ownerForm", {
             var id = self.owner.id;
             var req;
             if (id) {
-                req = $http.put("owner/" + id, self.owner);
+                req = $http.put("rest/owner/" + id, self.owner);
             } else {
-                req = $http.post("owner", self.owner);
+                req = $http.post("rest/owner", self.owner);
             }
 
             req.then(function () {
