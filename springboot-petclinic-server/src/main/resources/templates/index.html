@@ -20,6 +20,7 @@
 
     <script th:src="@{/angular/angular.min.js}"></script>
     <script th:src="@{/angular-route/angular-route.min.js}"></script>
+	<script th:src="@{/angular-route-segment/build/angular-route-segment.js}"></script>
 
     <script th:src="@{/scripts/app.js}"></script>
     <script th:src="@{/scripts/owner-list/owner-list.component.js}"></script>
@@ -32,13 +33,8 @@
 </head>
 
 <body class="container">
-<layout-nav></layout-nav>
-<div class="container-fluid">
-    <div class="container xd-container">
-        <div ng-view=""></div>
-    </div>
-</div>
-<layout-footer></layout-footer>
+	<div app-view-segment="0"></div>
+	<layout-footer></layout-footer>
 </body>
 
 </html>
