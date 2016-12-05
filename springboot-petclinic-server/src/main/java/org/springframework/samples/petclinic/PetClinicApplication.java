@@ -1,7 +1,6 @@
 package org.springframework.samples.petclinic;
 
 import javax.servlet.Filter;
-
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.samples.petclinic.config.root.RootApplicationContextConfig;
 import org.springframework.samples.petclinic.config.servlet.MvcViewConfig;

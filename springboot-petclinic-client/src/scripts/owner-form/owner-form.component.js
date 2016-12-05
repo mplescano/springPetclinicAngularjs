@@ -5,7 +5,7 @@ angular.module('ownerForm', [
 ]);
 
 angular.module("ownerForm").component("ownerForm", {
-    templateUrl: "scripts/owner-form/owner-form.template.html",
+    templateUrl: "views/owner-form/owner-form.template.html",
     controller: ["$http", '$routeParams', '$location', function ($http, $routeParams, $location) {
         var self = this;
 

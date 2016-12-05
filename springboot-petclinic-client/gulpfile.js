@@ -7,7 +7,7 @@ var paths = {
     "css"    : "src/css/*",
     "fonts"  : "src/fonts/*",
     "images" : "src/images/*",
-    "html"   : "src/scripts/**/*.html",
+    "html"   : "src/views/**/*.html",
     "js"     : "src/scripts/**/*.js",
     "less"   : "src/less/*",
     "dist"   : "target/dist/"
@@ -38,7 +38,7 @@ gulp.task('copy-fonts', function() {
 
 gulp.task('copy-html', function() {
     return gulp.src(paths.html)
-        .pipe(gulp.dest(paths.dist + 'scripts/'))
+        .pipe(gulp.dest(paths.dist + 'views/'))
 });
 
 gulp.task('copy-images', function() {

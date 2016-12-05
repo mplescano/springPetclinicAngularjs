@@ -1,7 +1,7 @@
 'use strict';
 /* App Module */
 var petClinicApp = angular.module('petClinicApp', [
-    'ngRoute', 'route-segment', 'view-segment', 'layoutNav', 'layoutFooter', 'layoutWelcome',
+    'ngRoute', 'route-segment', 'view-segment', 'layoutNav', 'layoutFooter',
     'ownerList', 'ownerDetails', 'ownerForm', 'petForm', 'visits', 'vetList']);
 
 petClinicApp.config(['$locationProvider', '$routeProvider', '$httpProvider', '$routeSegmentProvider', function(
@@ -90,8 +90,8 @@ petClinicApp.config(['$locationProvider', '$routeProvider', '$httpProvider', '$r
             .segment('vetsList', {
             	template: '<vet-list></vet-list>'
             })
-        .up()
-        /*.segment('login', {
+        /*.up()
+        .segment('login', {
         	template : '<login></login>',
         })
         .segment('register', {

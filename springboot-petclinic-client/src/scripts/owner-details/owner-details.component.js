@@ -5,7 +5,7 @@ angular.module('ownerDetails', [
 ]);
 
 angular.module("ownerDetails").component("ownerDetails", {
-    templateUrl: "scripts/owner-details/owner-details.template.html",
+    templateUrl: "views/owner-details/owner-details.template.html",
     controller: ["$http", '$routeParams', function($http, $routeParams) {
         var self = this;
 

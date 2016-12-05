@@ -5,7 +5,7 @@ angular.module('vetList', [
 ]);
 
 angular.module("vetList").component("vetList", {
-    templateUrl: "scripts/vet-list/vet-list.template.html",
+    templateUrl: "views/vet-list/vet-list.template.html",
     controller: ["$http", '$routeParams', function($http) {
         var self = this;
 

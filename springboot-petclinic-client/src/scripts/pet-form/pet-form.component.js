@@ -5,7 +5,7 @@ angular.module('petForm', [
 ]);
 
 angular.module("petForm").component("petForm", {
-    templateUrl: "scripts/pet-form/pet-form.template.html",
+    templateUrl: "views/pet-form/pet-form.template.html",
     controller: ["$http", '$routeParams', '$location', function ($http, $routeParams, $location) {
         var self = this;
         var ownerId = $routeParams.ownerId || 0;
