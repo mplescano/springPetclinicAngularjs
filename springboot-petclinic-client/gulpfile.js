@@ -1,4 +1,5 @@
 var gulp = require('gulp');
+var serve = require('gulp-serve');
 var cleanCSS = require('gulp-clean-css');
 var uglify = require('gulp-uglify');
 var less = require('gulp-less');
@@ -25,6 +26,11 @@ gulp.task('minify-js', function() {
         .pipe(gulp.dest(paths.dist + 'scripts/'));
 });
 
+gulp.task('copy-js', function() {
+    return gulp.src(paths.js)
+        .pipe(gulp.dest(paths.dist + 'scripts/'));
+});
+
 gulp.task('less', function () {
     return gulp.src(paths.less)
         .pipe(less())
@@ -46,5 +52,7 @@ gulp.task('copy-images', function() {
         .pipe(gulp.dest(paths.dist + 'images/'))
 });
 
-gulp.task('default', ['minify-css', 'minify-js', 'less',
+gulp.task('serve-build', serve(['src', 'bower_components']));
+
+gulp.task('default', ['minify-css', 'copy-js', 'less',
           'copy-fonts', 'copy-html', 'copy-images'], function() {});

@@ -1,0 +1,8 @@
+<div class="container-fluid">
+    <div class="container xd-container">
+		<div
+			ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }"
+			ng-if="flash" ng-bind="flash.message"></div>
+        <div app-view-segment="1"></div>
+    </div>
+</div>

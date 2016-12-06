@@ -60,6 +60,16 @@
 							<goal>gulp</goal>
 						</goals>
 					</execution>
+					<execution>
+						<id>gulp-serve</id>
+						<goals>
+							<goal>gulp</goal>
+						</goals>
+						<phase>integration-test</phase>
+						<configuration>
+							<arguments>serve-build</arguments>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>

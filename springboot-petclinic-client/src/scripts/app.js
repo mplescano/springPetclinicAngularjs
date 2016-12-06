@@ -1,11 +1,13 @@
 'use strict';
 /* App Module */
 var petClinicApp = angular.module('petClinicApp', [
-    'ngRoute', 'route-segment', 'view-segment', 'layoutNav', 'layoutFooter',
-    'ownerList', 'ownerDetails', 'ownerForm', 'petForm', 'visits', 'vetList']);
+    'ngRoute', 'ngCookies', 'route-segment', 'view-segment', 'layoutNav', 'layoutFooter',
+    'ownerList', 'ownerDetails', 'ownerForm', 'petForm', 'visits', 'vetList', 'login', 'register']);
 
-petClinicApp.config(['$locationProvider', '$routeProvider', '$httpProvider', '$routeSegmentProvider', function(
-    $locationProvider, $routeProvider, $httpProvider, $routeSegmentProvider) {
+petClinicApp.config(config).run(run);
+
+config.$inject = ['$locationProvider', '$routeProvider', '$httpProvider', '$routeSegmentProvider'];
+function config($locationProvider, $routeProvider, $httpProvider, $routeSegmentProvider) {
 
     // safari turns to be lazy sending the Cache-Control header
     $httpProvider.defaults.headers.common["Cache-Control"] = 'no-cache';
@@ -55,8 +57,8 @@ petClinicApp.config(['$locationProvider', '$routeProvider', '$httpProvider', '$r
     	.when('/owners/:ownerId/pets/:petId',  			'session.petsEdit')
     	.when('/owners/:ownerId/pets/:petId/visits',  	'session.visitsList')
     	.when('/vets',   								'session.vetsList')
-    	//.when('/login',          						'login')
-    	//.when('/register',       						'register')
+    	.when('/login',          						'nosession')
+    	.when('/register',       						'nosession.register')
     	
         .segment('session', {
         	templateUrl: 'views/fragments/session.html'
@@ -90,25 +92,40 @@ petClinicApp.config(['$locationProvider', '$routeProvider', '$httpProvider', '$r
             .segment('vetsList', {
             	template: '<vet-list></vet-list>'
             })
-        /*.up()
-        .segment('login', {
-        	template : '<login></login>',
+            .up()
+        .segment('nosession', {
+        	templateUrl: 'views/fragments/nosession.html'
         })
-        .segment('register', {
-        	template : '<register></register>',
-        })*/;
+        .within()
+            .segment('login', {
+                'default': true,
+                template: '<login></login>'
+            })
+            .segment('register', {
+            	template : '<register></register>',
+            })
+        ;
     
-    $routeProvider.otherwise({redirectTo: '/welcome'});
-}]);
+    $routeProvider.otherwise({redirectTo: '/login'});
+};
 
-/*
-['welcome', 'nav', 'footer'].forEach(function(c) {
-    var mod = 'layout' + c.toUpperCase().substring(0, 1) + c.substring(1);
-    angular.module(mod, []);
-    angular.module(mod).component(mod, {
-        templateUrl: "views/fragments/" + c + ".html"
+run.$inject = ['$rootScope', '$location', '$cookieStore', '$http'];
+function run($rootScope, $location, $cookieStore, $http) {
+    // keep user logged in after page refresh
+    $rootScope.globals = $cookieStore.get('globals') || {};
+    if ($rootScope.globals.currentUser) {
+        $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
+    }
+
+    $rootScope.$on('$locationChangeStart', function (event, next, current) {
+        // redirect to login page if not logged in and trying to access a restricted page
+    	var restrictedPage = ['/login', '/register'].indexOf($location.path()) === -1;
+        var loggedIn = $rootScope.globals.currentUser;
+        if (restrictedPage && !loggedIn) {
+            $location.path('/login');
+        }
     });
-});*/
+}
 
 ['nav', 'footer'].forEach(function(c) {
     var mod = 'layout' + c.toUpperCase().substring(0, 1) + c.substring(1);
