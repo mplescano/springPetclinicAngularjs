@@ -11,6 +11,12 @@ function config($locationProvider, $routeProvider, $httpProvider, $routeSegmentP
 
     // safari turns to be lazy sending the Cache-Control header
     $httpProvider.defaults.headers.common["Cache-Control"] = 'no-cache';
+    
+    //Cookie-based Authentication
+    //@see http://blog.ionic.io/angularjs-authentication/
+    //@see http://stackoverflow.com/questions/32990836/get-jsessionid-value-and-create-cookie-in-angularjs
+    //@see http://stackoverflow.com/questions/15026016/set-cookie-in-http-header-is-ignored-with-angularjs 
+    $httpProvider.defaults.withCredentials = true;
 
     $locationProvider.hashPrefix('!');
 

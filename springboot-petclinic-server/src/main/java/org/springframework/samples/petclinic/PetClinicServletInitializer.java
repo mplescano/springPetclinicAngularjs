@@ -3,16 +3,17 @@ package org.springframework.samples.petclinic;
 import javax.servlet.Filter;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.samples.petclinic.config.root.RootApplicationContextConfig;
+import org.springframework.samples.petclinic.config.security.SecurityConfig;
 import org.springframework.samples.petclinic.config.servlet.MvcViewConfig;
 import org.springframework.samples.petclinic.config.servlet.WebConfig;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-public class PetClinicApplication extends AbstractAnnotationConfigDispatcherServletInitializer {
+public class PetClinicServletInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
-		return new Class[]{RootApplicationContextConfig.class};
+		return new Class[]{SecurityConfig.class, RootApplicationContextConfig.class};
 	}
 
 	@Override

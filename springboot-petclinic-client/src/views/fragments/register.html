@@ -1,6 +1,7 @@
 <div class="col-md-6 col-md-offset-3">
     <h2>Register</h2>
     <form name="form" ng-submit="vm.register()" role="form">
+		<input type="hidden" name="id" id="id" ng-model="vm.user.id"/>
         <div class="form-group" ng-class="{ 'has-error': form.firstName.$dirty && form.firstName.$error.required }">
             <label for="username">First name</label>
             <input type="text" name="firstName" id="firstName" class="form-control" ng-model="vm.user.firstName" required />
@@ -12,15 +13,15 @@
             <span ng-show="form.lastName.$dirty && form.lastName.$error.required" class="help-block">Last name is required</span>
         </div>
         
-        <div class="form-group" ng-class="{ 'has-error': form.rolename.$dirty && form.rolename.$error.required }">
-            <label for="rolename">Role</label>
-		    <select name="rolename" id="rolename" class="form-control" ng-model="vm.user.rolename" required>
+        <div class="form-group" ng-class="{ 'has-error': form.roles.$dirty && form.roles.$error.required }">
+            <label for="roles">Role</label>
+		    <select name="roles" id="roles" class="form-control" ng-model="vm.user.roles" required>
 		      <option value="">[Select]</option>
 		      <option value="ROLE_ADMIN">Admin</option>
 			  <option value="ROLE_ASSISTANT">Assistant</option>
-			  <option value="ROLE_VIEWER">Viewer</option>	      
+			  <option value="ROLE_VIEWER">Viewer</option>
 		    </select>
-            <span ng-show="form.rolename.$dirty && form.rolename.$error.required" class="help-block">Rolename is required</span>
+            <span ng-show="form.roles.$dirty && form.roles.$error.required" class="help-block">Role is required</span>
         </div>
         
         <div class="form-group" ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
