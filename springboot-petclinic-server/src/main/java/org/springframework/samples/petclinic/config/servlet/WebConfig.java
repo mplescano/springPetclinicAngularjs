@@ -15,6 +15,9 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * <p>
  * The ContentNegotiatingViewResolver delegates to the
@@ -76,11 +79,18 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		exceptionResolvers.add(exceptionResolver);
 	}*/
 
+	@Bean
+	public ObjectMapper jacksonObjectMapper() {
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.setSerializationInclusion(Include.NON_NULL);
+		return objectMapper;
+	}
+	
 	@Override
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 		//converters.add(new StringHttpMessageConverter(Charset.forName("UTF-8")));
 		//converters.add(new FormHttpMessageConverter());
-		converters.add(new MappingJackson2HttpMessageConverter());
+		converters.add(new MappingJackson2HttpMessageConverter(jacksonObjectMapper()));
 	}
 	
 }

@@ -28,7 +28,7 @@ angular.module("visits").component("visits", {
                 $location.url("rest/owners/" + $routeParams.ownerId);
             }, function (response) {
                 var error = response.data;
-                alert(error.error + "\r\n" + error.errors.map(function (e) {
+                alert(error.message + "\r\n" + error.data.map(function (e) {
                         return e.field + ": " + e.defaultMessage;
                     }).join("\r\n"));
             });

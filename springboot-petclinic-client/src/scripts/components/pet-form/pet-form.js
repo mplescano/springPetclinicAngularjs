@@ -56,8 +56,8 @@ angular.module("petForm").component("petForm", {
                 $location.url("owners/" + ownerId);
             }, function (response) {
                 var error = response.data;
-                error.errors = error.errors || [];
-                alert(error.error + "\r\n" + error.errors.map(function (e) {
+                error.data = error.data || [];
+                alert(error.message + "\r\n" + error.data.map(function (e) {
                         return e.field + ": " + e.defaultMessage;
                     }).join("\r\n"));
             });

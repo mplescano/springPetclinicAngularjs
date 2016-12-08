@@ -13,7 +13,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -29,6 +32,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     @Qualifier("userService")
     private UserDetailsManager userService;
+    
+    @Autowired
+    private AccessDeniedHandler accessDeniedHandler;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -40,12 +46,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
      
+    /**
+     * accessDeniedHandler is only applied when an authenticated user tries to access a resource 
+     * that he has not privileges
+     * otherwise when the user is anonymous it's executed the authenticationEntryPoint.commence method.
+     * 
+     * @see org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter#configure(org.springframework.security.config.annotation.web.builders.HttpSecurity)
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http	
         .csrf().disable()
         .exceptionHandling()
         .authenticationEntryPoint(restAuthenticationEntryPoint)
+        	.accessDeniedHandler(accessDeniedHandler)
         .and()
         .authorizeRequests()
         	.antMatchers(HttpMethod.POST, "/rest/users").permitAll()
@@ -56,11 +70,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         	.successHandler(restAuthenticationSuccessHandler)
         	.failureHandler(failureHandler())
         .and()
-        .logout();
+        .logout().logoutSuccessHandler(logoutSuccessHandler());
     }
  
     @Bean
     public SimpleUrlAuthenticationFailureHandler failureHandler(){
         return new SimpleUrlAuthenticationFailureHandler();
     }
+    
+    @Bean
+    public LogoutSuccessHandler logoutSuccessHandler() {
+    	return new HttpStatusReturningLogoutSuccessHandler();
+    }
+    
+    
 }

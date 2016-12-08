@@ -263,9 +263,10 @@
                     <compilerArguments>
                         <Xlint/>
                     </compilerArguments>
-                    <verbose>true</verbose>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <debug>true</debug>
+                    <debuglevel>lines,vars,source</debuglevel>
                     <showWarnings>true</showWarnings>
                 </configuration>
             </plugin>

@@ -34,10 +34,36 @@
 
             /* Use this for real authentication
              ----------------------------------------------*/
-            $http.post('login', { username: username, password: password })
-                .success(function (response) {
-                    callback(response);
-                });
+//            $http.post('login', { username: username, password: password })
+//                .success(function (response) {
+//                    callback(response);
+//                });
+            $http({
+            	method: 'POST',
+            	url: 'login', 
+            	data: { username: username, password: password },
+            	headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                transformRequest: function(obj) {
+                    var str = [];
+                    for(var p in obj)
+                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                    return str.join("&");
+                }
+            })
+            .then(function (response) {
+            	/**
+            	 * data – {string|Object} – The response body transformed with the transform functions.
+            	 * status – {number} – HTTP status code of the response.
+            	 * headers – {function([headerName])} – Header getter function.
+            	 * config – {Object} – The configuration object that was used to generate the request.
+            	 * statusText – {string} – HTTP status text of the response.
+            	 * */
+            	var responseCallback = {success: true, message: response.statusText, data: response.data};
+                callback(responseCallback);
+            }, function (response) {
+            	var responseCallback = {success: false, message: response.statusText};
+                callback(responseCallback);
+            });
         }
 
         function SetCredentials(username, password) {
@@ -51,14 +77,19 @@
             };
 
             //$http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line
-            $cookieStore.put('globals', $rootScope.globals);
+            //$cookieStore.put('globals', $rootScope.globals);
         }
 
         function ClearCredentials() {
-            $rootScope.globals = {};
-            $cookieStore.remove('globals');
+            //$cookieStore.remove('globals');
             //$http.defaults.headers.common.Authorization = 'Basic';
             //TODO call logout in server
+          $http({method: 'GET', url: 'logout'})
+          .then(function (response) {
+              $rootScope.globals = {};
+          }, function (response) {
+              
+          });
         }
     }
 

@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class ResponseMessage implements Serializable {
 
@@ -13,9 +14,21 @@ public class ResponseMessage implements Serializable {
 	
 	private String message;
 	
+	private Object data;
+	
 	public ResponseMessage(boolean status, String message) {
+		this(status, message, null);
+	}
+	
+	public ResponseMessage(boolean status, String message, Object data) {
 		this.success = status;
 		this.message = message;
+		if (data != null) {
+			this.data = data;
+		}
+		else {
+			this.data = new ArrayList<>();
+		}
 	}
 
 	public boolean isSuccess() {
@@ -24,5 +37,9 @@ public class ResponseMessage implements Serializable {
 
 	public String getMessage() {
 		return message;
+	}
+
+	public Object getData() {
+		return data;
 	}
 }
