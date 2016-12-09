@@ -17,6 +17,7 @@ package org.springframework.samples.petclinic.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.samples.petclinic.config.mvc.support.AuthorizeRequest;
 import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,6 +47,7 @@ public class VisitResource extends AbstractResourceController {
 
     @PostMapping("/owners/{ownerId}/pets/{petId}/visits")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @AuthorizeRequest("hasPermission()")
     public void create(
             @Valid @RequestBody Visit visit,
             @PathVariable("petId") int petId) {
@@ -55,6 +57,7 @@ public class VisitResource extends AbstractResourceController {
     }
 
     @GetMapping("/owners/{ownerId}/pets/{petId}/visits")
+    @AuthorizeRequest("hasPermission()")
     public Object visits(@PathVariable("petId") int petId) {
         return clinicService.findPetById(petId).getVisits();
     }

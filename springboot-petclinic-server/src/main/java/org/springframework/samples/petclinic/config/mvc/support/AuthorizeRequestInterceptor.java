@@ -22,6 +22,8 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  * @see http://mwenus.blogspot.pe/2014/02/spring-security-authorization-on.html
  * @see http://mwenus.blogspot.pe/2014/03/spring-security-authorization-on.html
  * @see https://github.com/mateuszwenus/spring4-webapp/tree/1.0
+ * @see http://www.concretepage.com/spring-4/spring-4-security-junit-test-with-withmockuser-and-withuserdetails-annotation-example-using-webappconfiguration
+ * @see https://kielczewski.eu/2014/12/spring-boot-security-application/
  * 
  */
 public class AuthorizeRequestInterceptor extends HandlerInterceptorAdapter {
