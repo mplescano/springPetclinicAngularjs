@@ -2,6 +2,7 @@ package org.springframework.samples.petclinic.config.mvc;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +38,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ComponentScan(basePackages = { "org.springframework.samples.petclinic.web" })
 public class MvcWebConfig extends WebMvcConfigurerAdapter {
 
+	@Autowired
+	public ObjectMapper jacksonObjectMapper;
+	
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
 		// Serve static resources (*.html, ...) from src/main/webapp/
@@ -81,18 +85,11 @@ public class MvcWebConfig extends WebMvcConfigurerAdapter {
 		exceptionResolvers.add(exceptionResolver);
 	}*/
 
-	@Bean
-	public ObjectMapper jacksonObjectMapper() {
-		ObjectMapper objectMapper = new ObjectMapper();
-		objectMapper.setSerializationInclusion(Include.NON_NULL);
-		return objectMapper;
-	}
-	
 	@Override
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 		//converters.add(new StringHttpMessageConverter(Charset.forName("UTF-8")));
 		//converters.add(new FormHttpMessageConverter());
-		converters.add(new MappingJackson2HttpMessageConverter(jacksonObjectMapper()));
+		converters.add(new MappingJackson2HttpMessageConverter(jacksonObjectMapper));
 	}
 	
 	@Override

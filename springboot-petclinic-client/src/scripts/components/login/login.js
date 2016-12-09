@@ -21,7 +21,7 @@ angular.module("login").component("login", {
         	self.dataLoading = true;
             AuthenticationService.Login(self.username, self.password, function (response) {
                 if (response.success) {
-                    AuthenticationService.SetCredentials(self.username, self.password);
+                    AuthenticationService.SetCredentials(self.username, response.data.roles, response.data.permissions);
                     $location.path('/welcome');
                 } else {
                     FlashService.Error(response.message);

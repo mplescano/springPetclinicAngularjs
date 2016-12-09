@@ -8,6 +8,9 @@ import org.springframework.context.annotation.EnableMBeanExport;
 import org.springframework.context.annotation.Import;
 import org.springframework.samples.petclinic.util.CallMonitoringAspect;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @Configuration
 @EnableMBeanExport
 @EnableAspectJAutoProxy
@@ -20,4 +23,10 @@ public class RootApplicationContextConfig {
 		return new CallMonitoringAspect();
 	}
 
+	@Bean
+	public ObjectMapper jacksonObjectMapper() {
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.setSerializationInclusion(Include.NON_NULL);
+		return objectMapper;
+	}
 }
