@@ -25,7 +25,7 @@ angular.module("visits").component("visits", {
             };
             console.log(data);
             $http.post(url, data).then(function() {
-                $location.url("rest/owners/" + $routeParams.ownerId);
+                $location.url("/owners/" + $routeParams.ownerId);
             }, function (response) {
                 var error = response.data;
                 alert(error.message + "\r\n" + error.data.map(function (e) {

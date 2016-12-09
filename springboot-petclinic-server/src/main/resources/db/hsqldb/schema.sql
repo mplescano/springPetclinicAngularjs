@@ -80,5 +80,5 @@ create table authorities (
 	id         INTEGER IDENTITY PRIMARY KEY,
 	role varchar(50) not null,
 	authority varchar(50) not null,
-	UNIQUE (role)
+	UNIQUE (role, authority)
 );

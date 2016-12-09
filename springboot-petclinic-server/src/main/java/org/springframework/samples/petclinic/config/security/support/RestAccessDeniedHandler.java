@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.config.security;
+package org.springframework.samples.petclinic.config.security.support;
 
 import java.io.IOException;
 

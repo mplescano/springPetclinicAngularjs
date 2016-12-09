@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.config.servlet;
+package org.springframework.samples.petclinic.config.mvc;
 
 import java.util.List;
 
@@ -9,8 +9,10 @@ import org.springframework.context.annotation.Description;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.samples.petclinic.config.mvc.support.AuthorizeRequestInterceptor;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -33,7 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 // POJOs labeled with the @Controller and @Service annotations are
 // auto-detected.
 @ComponentScan(basePackages = { "org.springframework.samples.petclinic.web" })
-public class WebConfig extends WebMvcConfigurerAdapter {
+public class MvcWebConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
@@ -91,6 +93,16 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		//converters.add(new StringHttpMessageConverter(Charset.forName("UTF-8")));
 		//converters.add(new FormHttpMessageConverter());
 		converters.add(new MappingJackson2HttpMessageConverter(jacksonObjectMapper()));
+	}
+	
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(authorizeRequestInterceptor());
+	}
+	
+	@Bean
+	public AuthorizeRequestInterceptor authorizeRequestInterceptor() {
+		return new AuthorizeRequestInterceptor();
 	}
 	
 }

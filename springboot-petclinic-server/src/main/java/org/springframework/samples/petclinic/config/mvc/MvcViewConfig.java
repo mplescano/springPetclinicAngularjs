@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.config.servlet;
+package org.springframework.samples.petclinic.config.mvc;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
