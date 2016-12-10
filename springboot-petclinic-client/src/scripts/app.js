@@ -1,8 +1,9 @@
 'use strict';
 /* App Module */
 var petClinicApp = angular.module('petClinicApp', [
-    'ngRoute', 'ngCookies', 'route-segment', 'view-segment', 'layoutNav', 'layoutFooter',
-    'ownerList', 'ownerDetails', 'ownerForm', 'petForm', 'visits', 'vetList', 'login', 'register']);
+    'ngRoute', 'ngCookies', 'route-segment', 'view-segment', 'permission', 'permission.ng',
+    'layoutNav', 'layoutFooter', 'ownerList', 'ownerDetails', 'ownerForm', 'petForm', 'visits', 
+    'vetList', 'login', 'register']);
 
 petClinicApp.config(config).run(run);
 
@@ -54,15 +55,15 @@ function config($locationProvider, $routeProvider, $httpProvider, $routeSegmentP
     // Configuring provider options
     $routeSegmentProvider.options.autoLoadTemplates = true;
     $routeSegmentProvider
-    	.when('/welcome',        						'session')
-    	.when('/owners/:ownerId',   					'session.ownersView')
-    	.when('/owners',   								'session.ownersList')
-    	.when('/owners/:ownerId/edit',  				'session.ownersEdit')
-    	.when('/new-owner',  							'session.ownersNew')
-    	.when('/owners/:ownerId/new-pet',  				'session.petsNew')
-    	.when('/owners/:ownerId/pets/:petId',  			'session.petsEdit')
-    	.when('/owners/:ownerId/pets/:petId/visits',  	'session.visitsList')
-    	.when('/vets',   								'session.vetsList')
+    	.when('/welcome',        						'session', {data:{permissions:{only:['AUTHORIZED'], redirectTo:'/login'}}})
+    	.when('/owners/:ownerId',   					'session.ownersView', {data:{permissions:{only:['AUTHORIZED'], redirectTo:'/login'}}})
+    	.when('/owners',   								'session.ownersList', {data:{permissions:{only:['AUTHORIZED'], redirectTo:'/login'}}})
+    	.when('/owners/:ownerId/edit',  				'session.ownersEdit', {data:{permissions:{only:['AUTHORIZED'], redirectTo:'/login'}}})
+    	.when('/new-owner',  							'session.ownersNew', {data:{permissions:{only:['AUTHORIZED'], redirectTo:'/login'}}})
+    	.when('/owners/:ownerId/new-pet',  				'session.petsNew', {data:{permissions:{only:['AUTHORIZED'], redirectTo:'/login'}}})
+    	.when('/owners/:ownerId/pets/:petId',  			'session.petsEdit', {data:{permissions:{only:['AUTHORIZED'], redirectTo:'/login'}}})
+    	.when('/owners/:ownerId/pets/:petId/visits',  	'session.visitsList', {data:{permissions:{only:['AUTHORIZED'], redirectTo:'/login'}}})
+    	.when('/vets',   								'session.vetsList', {data:{permissions:{only:['AUTHORIZED'], redirectTo:'/login'}}})
     	.when('/login',          						'nosession')
     	.when('/register',       						'nosession.register')
     	
@@ -115,22 +116,29 @@ function config($locationProvider, $routeProvider, $httpProvider, $routeSegmentP
     $routeProvider.otherwise({redirectTo: '/login'});
 };
 
-run.$inject = ['$rootScope', '$location', '$cookieStore', '$http'];
-function run($rootScope, $location, $cookieStore, $http) {
+run.$inject = ['$rootScope', '$location', '$cookieStore', '$http', 'PermRoleStore'];//
+function run($rootScope, $location, $cookieStore, $http, PermRoleStore) {//
     // keep user logged in after page refresh
     $rootScope.globals = $cookieStore.get('globals') || {};
     //if ($rootScope.globals.currentUser) {
     //    $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
     //}
+    /*$rootScope.$on('$routeChangeStart', function (event, next, current) {
+    	!!next.$$route.data.permissions;
+    });*/
 
-    $rootScope.$on('$locationChangeStart', function (event, next, current) {
+    /*$rootScope.$on('$locationChangeStart', function (event, next, current) {
         // redirect to login page if not logged in and trying to access a restricted page
     	var restrictedPage = ['/login', '/register'].indexOf($location.path()) === -1;
         var loggedIn = $rootScope.globals.currentUser;
         if (restrictedPage && !loggedIn) {
             $location.path('/login');
         }
-    });
+    });*/
+    
+    PermRoleStore.defineRole('AUTHORIZED', ['$rootScope', function ($rootScope) {
+        return !!$rootScope.globals.currentUser;
+    }]);
 }
 
 ['nav', 'footer'].forEach(function(c) {

@@ -6,8 +6,8 @@ angular.module('login', [
 
 angular.module("login").component("login", {
     templateUrl: "views/fragments/login.html",
-    controller: ["$http", '$location', '$routeParams', 'AuthenticationService', 'FlashService', function(
-    		$http, $location, $routeParams, AuthenticationService, FlashService) {
+    controller: ["$http", '$location', '$routeParams', 'AuthenticationService', 'FlashService', 'PermPermissionStore', function(
+    		$http, $location, $routeParams, AuthenticationService, FlashService, PermPermissionStore) {
         var self = this;
 
         self.login = login;
@@ -15,6 +15,7 @@ angular.module("login").component("login", {
         (function initController() {
             // reset login status
             AuthenticationService.ClearCredentials();
+            PermPermissionStore.clearStore();
         })();
 
         function login() {
@@ -22,6 +23,10 @@ angular.module("login").component("login", {
             AuthenticationService.Login(self.username, self.password, function (response) {
                 if (response.success) {
                     AuthenticationService.SetCredentials(self.username, response.data.roles, response.data.permissions);
+                    PermPermissionStore.defineManyPermissions(response.data.permissions, /*@ngInject*/ function (permissionName) {
+                    	  return true;
+                    });
+                    
                     $location.path('/welcome');
                 } else {
                     FlashService.Error(response.message);

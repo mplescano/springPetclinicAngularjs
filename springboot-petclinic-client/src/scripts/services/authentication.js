@@ -75,20 +75,19 @@
                 }
             };
 
-            //$http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line
             $cookieStore.put('globals', $rootScope.globals);// keep user data after page refresh
         }
 
         function ClearCredentials() {
             $cookieStore.remove('globals');
             //$http.defaults.headers.common.Authorization = 'Basic';
-            //TODO call logout in server
-          $http({method: 'GET', url: 'logout'})
-          .then(function (response) {
-              $rootScope.globals = {};
-          }, function (response) {
+            //call logout in server
+            $http({method: 'GET', url: 'logout'})
+                .then(function (response) {
+                    $rootScope.globals = {};
+                }, function (response) {
               
-          });
+                });
         }
     };
 

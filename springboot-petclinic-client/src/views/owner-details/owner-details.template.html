@@ -19,10 +19,10 @@
     </tr>
     <tr>
         <td>
-            <a class="btn btn-default" href="#!/owners/{{$ctrl.owner.id}}/edit">Edit Owner</a>
+            <a class="btn btn-default" permission permission-only="['PERM_MODIFY_OWNER']" href="#!/owners/{{$ctrl.owner.id}}/edit">Edit Owner</a>
         </td>
         <td>
-            <a href="#!/owners/{{$ctrl.owner.id}}/new-pet" class="btn btn-default">Add New Pet</a>
+            <a permission permission-only="['PERM_ADD_PET']" href="#!/owners/{{$ctrl.owner.id}}/new-pet" class="btn btn-default">Add New Pet</a>
         </td>
     </tr>
 </table>
@@ -34,7 +34,10 @@
         <td valign="top">
             <dl class="dl-horizontal">
                 <dt>Name</dt>
-                <dd><a href="#!/owners/{{$ctrl.owner.id}}/pets/{{pet.id}}">{{pet.name}}</a></dd>
+                <dd>
+                	<a permission permission-only="['PERM_MODIFY_PET']" href="#!/owners/{{$ctrl.owner.id}}/pets/{{pet.id}}">{{pet.name}}</a>
+                	<span permission permission-except="['PERM_MODIFY_PET']">{{pet.name}}</span>
+                </dd>
                 <dt>Birth Date</dt>
                 <dd>{{pet.birthDate | date:'yyyy MMM dd'}}</dd>
                 <dt>Type</dt>
@@ -55,10 +58,10 @@
                 </tr>
                 <tr>
                     <td>
-                        <a href="#!/owners/{{$ctrl.owner.id}}/pets/{{pet.id}}">Edit Pet</a>
+                        <a permission permission-only="['PERM_MODIFY_PET']" href="#!/owners/{{$ctrl.owner.id}}/pets/{{pet.id}}">Edit Pet</a>
                     </td>
                     <td>
-                        <a href="#!/owners/{{$ctrl.owner.id}}/pets/{{pet.id}}/visits">Add Visit</a>
+                        <a permission permission-only="['PERM_ADD_VISIT']" href="#!/owners/{{$ctrl.owner.id}}/pets/{{pet.id}}/visits">Add Visit</a>
                     </td>
                 </tr>
             </table>

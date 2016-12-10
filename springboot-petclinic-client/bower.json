@@ -21,6 +21,7 @@
     "angular-route": "~1.5.9",
     "angular-cookies": "~1.5.9",
     "angular-route-segment": "~1.5.1",
+    "angular-permission": "~5.0.0",
     "bootstrap": "components/bootstrap#~3.3.7",
     "jquery": "components/jquery#~3.1.0"
   }
