@@ -1,16 +1,15 @@
-# Spring Boot version of the Spring PetClinic Sample Application [![Build Status](https://travis-ci.org/spring-projects/spring-petclinic.png?branch=master)](https://travis-ci.org/spring-projects/spring-petclinic/)
+# Spring Boot version of the Spring PetClinic Sample Application [![Build Status](https://travis-ci.org/spring-petclinic/spring-petclinic-angular1.svg?branch=master)](https://travis-ci.org/spring-projects/spring-petclinic/)
 
 ## Understanding the Spring Petclinic application with a few diagrams
 <a href="https://speakerdeck.com/michaelisvy/spring-petclinic-sample-application">See the presentation here</a>
 
 ## Running petclinic locally
 ```
-	git clone https://github.com/spring-projects/spring-petclinic.git
+	git clone https://github.com/spring-petclinic/spring-petclinic-angular1.git
 	cd spring-petclinic
-	git checkout angularjs
 	./mvnw clean install
 	cd spring-petclinic-server
-	./mvnw spring-boot:run
+	../mvnw spring-boot:run
 ```
 
 You can then access petclinic here: http://localhost:8080/

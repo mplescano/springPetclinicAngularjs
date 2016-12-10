@@ -4,8 +4,8 @@
 
 	<parent>
 		<groupId>org.springframework.samples</groupId>
-		<artifactId>spring-petclinic</artifactId>
-		<version>1.4.1</version>
+		<artifactId>spring-petclinic-angular1</artifactId>
+		<version>1.4.2</version>
 	</parent>
 	<artifactId>spring-petclinic-client</artifactId>
 	<name>Spring Petclinic :: AngularJS Client</name>
@@ -29,7 +29,7 @@
 				<groupId>com.github.eirslett</groupId>
 				<artifactId>frontend-maven-plugin</artifactId>
 				<configuration>
-					<installDirectory>${basedir}</installDirectory>
+					<installDirectory>target</installDirectory>
 				</configuration>
 				<executions>
 					<execution>
