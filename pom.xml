@@ -9,14 +9,14 @@
 	</parent>
 
 	<groupId>org.springframework.samples</groupId>
-	<artifactId>springboot-petclinic</artifactId>
+	<artifactId>spring-petclinic</artifactId>
 	<version>1.4.1</version>
 	<name>Spring Petclinic :: Parent POM</name>
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>springboot-petclinic-client</module>
-		<module>springboot-petclinic-server</module>
+		<module>spring-petclinic-client</module>
+		<module>spring-petclinic-server</module>
 	</modules>
 
 	<dependencyManagement>
