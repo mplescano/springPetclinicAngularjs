@@ -91,7 +91,7 @@
 
         <dependency>
             <groupId>org.springframework.samples</groupId>
-            <artifactId>springboot-petclinic-client</artifactId>
+            <artifactId>spring-petclinic-client</artifactId>
         </dependency>
 
         <!--  JSon -->
@@ -115,18 +115,18 @@
             <artifactId>spring-data-jpa</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jdbc-core</artifactId>
-            <version>${spring-data-jdbc.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                <!--  because Spring Data usually comes with a slightly older version of Spring -->
-            </exclusions>
-        </dependency>
+<!--         <dependency> -->
+<!--             <groupId>org.springframework.data</groupId> -->
+<!--             <artifactId>spring-data-jdbc-core</artifactId> -->
+<!--             <version>${spring-data-jdbc.version}</version> -->
+<!--             <exclusions> -->
+<!--                 <exclusion> -->
+<!--                     <groupId>org.springframework</groupId> -->
+<!--                     <artifactId>*</artifactId> -->
+<!--                 </exclusion> -->
+<!--                  because Spring Data usually comes with a slightly older version of Spring -->
+<!--             </exclusions> -->
+<!--         </dependency> -->
 
         <dependency>
             <groupId>org.springframework</groupId>
@@ -295,7 +295,7 @@
                     <username>tomcat</username>
                     <password>s3cret</password>
                     <url>http://localhost:8080/manager/text</url>
-                    <path>/springboot-petclinic-server</path>
+                    <path>/spring-petclinic-server</path>
                 </configuration>
                 <!-- tomcat7:deploy tomcat7:redeploy -->
             </plugin>

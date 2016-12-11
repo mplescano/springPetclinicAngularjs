@@ -8,6 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Description;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.env.Environment;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.samples.petclinic.config.mvc.support.AuthorizeRequestInterceptor;
@@ -39,6 +40,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class MvcWebConfig extends WebMvcConfigurerAdapter {
 
 	@Autowired
+	private Environment env;
+	
+	@Autowired
 	public ObjectMapper jacksonObjectMapper;
 	
     @Override
@@ -49,7 +53,7 @@ public class MvcWebConfig extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/**").addResourceLocations("classpath:/public/");
+		registry.addResourceHandler("/**").addResourceLocations(env.getProperty("spring.resources.static-locations"));
 	}
 	
     @Override
@@ -62,7 +66,7 @@ public class MvcWebConfig extends WebMvcConfigurerAdapter {
 	public ReloadableResourceBundleMessageSource reloadableResourceBundleMessageSource() {
 		// Files are stored inside src/main/resources
 		ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-		messageSource.setBasenames("classpath:messages/messages");
+		messageSource.setBasenames(env.getProperty("spring.messages.basename"));
 		return messageSource;
 	}
 

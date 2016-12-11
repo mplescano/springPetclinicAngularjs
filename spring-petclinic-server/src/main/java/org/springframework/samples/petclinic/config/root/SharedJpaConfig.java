@@ -41,7 +41,7 @@ public class SharedJpaConfig {
         // the 'database' parameter refers to the database dialect being used.
     	// By default, Hibernate will use a 'HSQL' dialect because 'jpa.database' has been set to 'HSQL'
     	// inside file spring/data-access.properties
-        vendorAdapter.setDatabase(env.getProperty("spring.datasource.jpa.db", Database.class));
+        vendorAdapter.setDatabase(env.getProperty("spring.jpa.database", Database.class));
         return vendorAdapter;
     }
     
