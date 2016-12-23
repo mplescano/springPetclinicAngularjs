@@ -5,25 +5,25 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.4.1.RELEASE</version>
+		<version>1.4.2.RELEASE</version>
 	</parent>
 
 	<groupId>org.springframework.samples</groupId>
-	<artifactId>springboot-petclinic</artifactId>
-	<version>1.4.1</version>
+	<artifactId>spring-petclinic-angular1</artifactId>
+	<version>1.4.2</version>
 	<name>Spring Petclinic :: Parent POM</name>
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>springboot-petclinic-client</module>
-		<module>springboot-petclinic-server</module>
+		<module>spring-petclinic-client</module>
+		<module>spring-petclinic-server</module>
 	</modules>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>org.springframework.samples</groupId>
-				<artifactId>springboot-petclinic-client</artifactId>
+				<artifactId>spring-petclinic-client</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 		</dependencies>
