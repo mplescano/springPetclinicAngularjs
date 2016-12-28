@@ -18,6 +18,7 @@
   ],
   "dependencies": {
     "angular": "~1.5.8",
+    "angular-permission": "~5.0.0",
     "bootstrap": "components/bootstrap#~3.3.7",
     "jquery": "components/jquery#~3.1.0",
     "angular-ui-router": "ui-router#^0.3.2"

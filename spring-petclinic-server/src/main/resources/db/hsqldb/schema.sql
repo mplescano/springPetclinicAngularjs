@@ -5,7 +5,8 @@ DROP TABLE visits IF EXISTS;
 DROP TABLE pets IF EXISTS;
 DROP TABLE types IF EXISTS;
 DROP TABLE owners IF EXISTS;
-
+DROP TABLE users IF EXISTS;
+DROP TABLE authorities IF EXISTS;
 
 CREATE TABLE vets (
   id         INTEGER IDENTITY PRIMARY KEY,
@@ -62,3 +63,22 @@ CREATE TABLE visits (
 );
 ALTER TABLE visits ADD CONSTRAINT fk_visits_pets FOREIGN KEY (pet_id) REFERENCES pets (id);
 CREATE INDEX visits_pet_id ON visits (pet_id);
+
+CREATE TABLE users (
+  id         INTEGER IDENTITY PRIMARY KEY,
+  first_name VARCHAR(30) NOT NULL,
+  last_name  VARCHAR(30) NOT NULL,
+  roles    VARCHAR(255) NOT NULL,
+  username       VARCHAR(30) NOT NULL,
+  password  VARCHAR(255) NOT NULL,
+  enabled boolean not null,
+  UNIQUE (username),
+  UNIQUE (first_name, last_name)
+);
+
+create table authorities (
+	id         INTEGER IDENTITY PRIMARY KEY,
+	role varchar(50) not null,
+	authority varchar(50) not null,
+	UNIQUE (role, authority)
+);

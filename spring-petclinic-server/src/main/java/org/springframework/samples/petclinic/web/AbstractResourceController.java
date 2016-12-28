@@ -16,10 +16,12 @@
 package org.springframework.samples.petclinic.web;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @author Antoine Rey
  */
-@CrossOrigin
+//@CrossOrigin
+@RequestMapping(value = "/rest")
 abstract class AbstractResourceController {
 }
