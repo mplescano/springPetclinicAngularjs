@@ -19,11 +19,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
-import org.springframework.samples.petclinic.config.mvc.support.AuthorizeRequest;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.service.ClinicService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Size;
@@ -46,14 +46,14 @@ public class PetResource extends AbstractResourceController {
     }
 
     @GetMapping("/petTypes")
-    @AuthorizeRequest("hasPermission()")
+    @PreAuthorize("hasPermission()")
     Object getPetTypes() {
         return clinicService.findPetTypes();
     }
 
     @PostMapping("/owners/{ownerId}/pets")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @AuthorizeRequest("hasPermission()")
+    @PreAuthorize("hasPermission()")
     public void processCreationForm(
             @RequestBody PetRequest petRequest,
             @PathVariable("ownerId") int ownerId) {
@@ -67,7 +67,7 @@ public class PetResource extends AbstractResourceController {
 
     @PutMapping("/owners/{ownerId}/pets/{petId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @AuthorizeRequest("hasPermission()")
+    @PreAuthorize("hasPermission()")
     public void processUpdateForm(@RequestBody PetRequest petRequest) {
         save(clinicService.findPetById(petRequest.getId()), petRequest);
     }
@@ -87,7 +87,7 @@ public class PetResource extends AbstractResourceController {
     }
 
     @GetMapping("/owner/*/pet/{petId}")
-    @AuthorizeRequest("hasPermission()")
+    @PreAuthorize("hasPermission()")
     public PetDetails findPet(@PathVariable("petId") int petId) {
         Pet pet = this.clinicService.findPetById(petId);
         return new PetDetails(pet);

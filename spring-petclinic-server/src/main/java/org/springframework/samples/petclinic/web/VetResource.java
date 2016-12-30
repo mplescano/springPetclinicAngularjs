@@ -19,9 +19,9 @@ import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.samples.petclinic.config.mvc.support.AuthorizeRequest;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.service.ClinicService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,7 +44,7 @@ public class VetResource extends AbstractResourceController {
     }
     
     @GetMapping("/vets")
-    @AuthorizeRequest("hasPermission()")
+    @PreAuthorize("hasPermission()")
     public Collection<Vet> showResourcesVetList() {
         return this.clinicService.findVets();
     }

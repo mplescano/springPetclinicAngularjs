@@ -11,7 +11,6 @@ import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
-@Component
 public class RestAccessDeniedHandler implements AccessDeniedHandler {
 
 	@Override

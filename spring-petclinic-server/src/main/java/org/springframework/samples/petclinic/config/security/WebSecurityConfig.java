@@ -12,8 +12,9 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.http.HttpMethod;
 import org.springframework.samples.petclinic.config.security.support.CustomExpressionBasedPreInvocationAdvice;
 import org.springframework.samples.petclinic.config.security.support.CustomMethodSecurityExpressionHandler;
-import org.springframework.samples.petclinic.config.security.support.CustomPreInvocationAuthorizationAdviceVoter;
+/*import org.springframework.samples.petclinic.config.security.support.CustomPreInvocationAuthorizationAdviceVoter;*/
 import org.springframework.samples.petclinic.config.security.support.PropertySecuredResourceServiceImpl;
+import org.springframework.samples.petclinic.config.security.support.RestAccessDeniedHandler;
 import org.springframework.samples.petclinic.config.security.support.RestAuthenticationEntryPoint;
 import org.springframework.samples.petclinic.config.security.support.RestAuthenticationSuccessHandler;
 import org.springframework.samples.petclinic.config.security.support.SecuredResourceService;
@@ -31,9 +32,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -43,14 +46,20 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 /*@ComponentScan(basePackages = { "org.springframework.samples.petclinic.config.security.support" })*/
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+    	return new RestAuthenticationEntryPoint();
+    }
  
-    @Autowired
-    private RestAuthenticationSuccessHandler restAuthenticationSuccessHandler;
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler() {
+    	return new RestAuthenticationSuccessHandler();
+    }
     
-    @Autowired
-    private AccessDeniedHandler accessDeniedHandler;
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+    	return new RestAccessDeniedHandler();
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -146,16 +155,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http	
         .csrf().disable()
         .exceptionHandling()
-        .authenticationEntryPoint(restAuthenticationEntryPoint)
-        	.accessDeniedHandler(accessDeniedHandler)
+        .authenticationEntryPoint(authenticationEntryPoint())
+        	.accessDeniedHandler(accessDeniedHandler())
         .and()
-        .authorizeRequests().accessDecisionManager(accessDecisionManager())
+        .authorizeRequests()/*.accessDecisionManager(accessDecisionManager())*/
         	.antMatchers(HttpMethod.POST, "/rest/users").permitAll()
         	.antMatchers("/rest/**").authenticated()
         	.anyRequest().permitAll()
         .and()
         .formLogin()
-        	.successHandler(restAuthenticationSuccessHandler)
+        	.successHandler(authenticationSuccessHandler())
         	.failureHandler(failureHandler())
         .and()
         .logout().logoutSuccessHandler(logoutSuccessHandler());
@@ -171,7 +180,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     	return new HttpStatusReturningLogoutSuccessHandler();
     }
     
-    @Bean
+    /*@Bean
     public AccessDecisionManager accessDecisionManager() {
       WebExpressionVoter webExpressionVoter = new WebExpressionVoter();
       DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
@@ -183,5 +192,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
       
       return new AffirmativeBased(Arrays.<AccessDecisionVoter<? extends Object>>asList(webExpressionVoter, 
     		  new CustomPreInvocationAuthorizationAdviceVoter(expressionAdvice)));
-    }
+    }*/
 }

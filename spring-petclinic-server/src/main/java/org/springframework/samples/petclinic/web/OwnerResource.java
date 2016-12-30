@@ -19,9 +19,9 @@ import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.samples.petclinic.config.mvc.support.AuthorizeRequest;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.service.ClinicService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -65,7 +65,7 @@ public class OwnerResource extends AbstractResourceController {
      */
     @RequestMapping(value = "/owner", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    @AuthorizeRequest("hasPermission()")
+    @PreAuthorize("hasPermission()")
     public void createOwner(@Valid @RequestBody Owner owner) {
     	this.clinicService.saveOwner(owner);
     }
@@ -74,7 +74,7 @@ public class OwnerResource extends AbstractResourceController {
      * Read single Owner
      */
     @RequestMapping(value = "/owner/{ownerId}", method = RequestMethod.GET)
-    @AuthorizeRequest("hasPermission()")
+    @PreAuthorize("hasPermission()")
     public Owner findOwner(@PathVariable("ownerId") int ownerId) {
         return retrieveOwner(ownerId);
     }
@@ -83,7 +83,7 @@ public class OwnerResource extends AbstractResourceController {
      * Read List of Owners
      */
     @GetMapping("/owner/list")
-    @AuthorizeRequest("hasPermission()")
+    @PreAuthorize("hasPermission()")
     public Collection<Owner> findAll() {
         return clinicService.findAll();
     }
@@ -92,7 +92,7 @@ public class OwnerResource extends AbstractResourceController {
      * Update Owner
      */
     @RequestMapping(value = "/owner/{ownerId}", method = RequestMethod.PUT)
-    @AuthorizeRequest("hasPermission()")
+    @PreAuthorize("hasPermission()")
     public Owner updateOwner(@PathVariable("ownerId") int ownerId, @Valid @RequestBody Owner ownerRequest) {
     	Owner ownerModel = retrieveOwner(ownerId);
     	// This is done by hand for simplicity purpose. In a real life use-case we should consider using MapStruct.

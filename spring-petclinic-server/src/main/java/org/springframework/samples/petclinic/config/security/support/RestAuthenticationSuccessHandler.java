@@ -34,12 +34,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * login filter, to replace the default one. The new handler implements the
  * exact same login as the default
  * org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler
- * with one notable difference – the redirect logic is removed
+ * with one notable difference ï¿½ the redirect logic is removed
  * 
  * @author mplescano
  *
  */
-@Component("restAuthenticationSuccessHandler")
 public class RestAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
 	@Autowired
