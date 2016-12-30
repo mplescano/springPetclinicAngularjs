@@ -4,9 +4,11 @@ import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.http.HttpMethod;
@@ -42,7 +44,8 @@ import org.springframework.security.web.authentication.logout.HttpStatusReturnin
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 @Configuration
-@EnableWebSecurity
+@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
+/*@EnableWebSecurity*/
 /*@ComponentScan(basePackages = { "org.springframework.samples.petclinic.config.security.support" })*/
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
