@@ -20,10 +20,23 @@
 
     <script th:src="@{/angular/angular.js}"></script>
     <script th:src="@{/angular-ui-router/release/angular-ui-router.min.js}"></script>
+    <script th:src="@{/angular-cookies/angular-cookies.js}"></script>
 	<script th:src="@{angular-permission/dist/angular-permission.js}"></script>
-	<script th:src="@{angular-permission/dist/angular-permission-ng.js}"></script>
+	<script th:src="@{angular-permission/dist/angular-permission-ui.js}"></script>
 
     <script th:src="@{/scripts/app.js}"></script>
+
+    <script th:src="@{/scripts/services/flash.js}"></script>
+    <script th:src="@{/scripts/services/authentication.js}"></script>
+    <script th:src="@{/scripts/services/user-real.js}"></script>
+    
+    <script th:src="@{/scripts/login/login.js}"></script>
+    <script th:src="@{/scripts/login/login.controller.js}"></script>
+    <script th:src="@{/scripts/login/login.component.js}"></script>
+    
+    <script th:src="@{/scripts/register/register.js}"></script>
+    <script th:src="@{/scripts/register/register.controller.js}"></script>
+    <script th:src="@{/scripts/register/register.component.js}"></script>
 
     <script th:src="@{/scripts/owner-list/owner-list.js}"></script>
     <script th:src="@{/scripts/owner-list/owner-list.controller.js}"></script>
@@ -51,13 +64,8 @@
 </head>
 
 <body class="container">
-<layout-nav></layout-nav>
-<div class="container-fluid">
-    <div class="container xd-container">
-        <div ui-view=""></div>
-    </div>
-</div>
-<layout-footer></layout-footer>
+	<div ui-view=""></div>
+	<layout-footer></layout-footer>
 </body>
 
 </html>

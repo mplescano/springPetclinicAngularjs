@@ -19,7 +19,7 @@
 
     <tr ng-repeat="owner in $ctrl.owners | filter:$ctrl.query track by owner.id">
         <td>
-            <a ui-sref="ownerDetails({ ownerId: owner.id })">
+            <a ui-sref="session.ownerDetails({ ownerId: owner.id })">
                 {{owner.firstName}} {{owner.lastName}}
             </a>
         </td>

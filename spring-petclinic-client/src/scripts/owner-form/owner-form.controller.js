@@ -9,7 +9,7 @@ angular.module('ownerForm')
         if (!ownerId) {
             self.owner = {};
         } else {
-            $http.get("owner/" + ownerId).then(function (resp) {
+            $http.get("rest/owner/" + ownerId).then(function (resp) {
                 self.owner = resp.data;
             });
         }
@@ -18,16 +18,16 @@ angular.module('ownerForm')
             var id = self.owner.id;
             var req;
             if (id) {
-                req = $http.put("owner/" + id, self.owner);
+                req = $http.put("rest/owner/" + id, self.owner);
             } else {
-                req = $http.post("owner", self.owner);
+                req = $http.post("rest/owner", self.owner);
             }
 
             req.then(function () {
-                $state.go('owners');
+                $state.go('session.owners');
             }, function (response) {
                 var error = response.data;
-                alert(error.error + "\r\n" + error.errors.map(function (e) {
+                alert(error.message + "\r\n" + error.data.map(function (e) {
                         return e.field + ": " + e.defaultMessage;
                     }).join("\r\n"));
             });

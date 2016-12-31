@@ -3,14 +3,16 @@
 angular.module('ownerForm', ['ui.router'])
     .config(['$stateProvider', function ($stateProvider) {
         $stateProvider
-            .state('ownerNew', {
-                parent: 'app',
+            .state('session.ownerNew', {
+            	parent: 'session',
                 url: '/owners/new',
-                template: '<owner-form></owner-form>'
+                template: '<owner-form></owner-form>',
+                data:{permissions:{only:['AUTHORIZED'], redirectTo:'nosession.login'}}
             })
-            .state('ownerEdit', {
-                parent: 'app',
+            .state('session.ownerEdit', {
+            	parent: 'session',
                 url: '/owners/:ownerId/edit',
-                template: '<owner-form></owner-form>'
+                template: '<owner-form></owner-form>',
+                data:{permissions:{only:['AUTHORIZED'], redirectTo:'nosession.login'}}
             })
     }]);

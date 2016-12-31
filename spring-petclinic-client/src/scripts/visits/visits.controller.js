@@ -4,7 +4,7 @@ angular.module('visits')
     .controller('VisitsController', ['$http', '$state', '$stateParams', '$filter', function ($http, $state, $stateParams, $filter) {
         var self = this;
         var petId = $stateParams.petId || 0;
-        var url = "owners/" + ($stateParams.ownerId || 0) + "/pets/" + petId + "/visits";
+        var url = "rest/owners/" + ($stateParams.ownerId || 0) + "/pets/" + petId + "/visits";
         self.date = new Date();
         self.desc = "";
 
@@ -19,10 +19,10 @@ angular.module('visits')
             };
 
             $http.post(url, data).then(function () {
-                $state.go("owners", { ownerId: $stateParams.ownerId });
+                $state.go("session.owners", { ownerId: $stateParams.ownerId });
             }, function (response) {
                 var error = response.data;
-                alert(error.error + "\r\n" + error.errors.map(function (e) {
+                alert(error.message + "\r\n" + error.data.map(function (e) {
                         return e.field + ": " + e.defaultMessage;
                     }).join("\r\n"));
             });

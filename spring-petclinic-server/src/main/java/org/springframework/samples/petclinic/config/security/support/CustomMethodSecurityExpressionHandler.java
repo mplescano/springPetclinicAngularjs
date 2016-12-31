@@ -16,6 +16,7 @@ public class CustomMethodSecurityExpressionHandler extends DefaultMethodSecurity
     private SecuredResourceService securedResourceService;
     
     public CustomMethodSecurityExpressionHandler(SecuredResourceService securedResourceService) {
+    	Assert.notNull(securedResourceService, "A securedResourceService is required");
     	this.securedResourceService = securedResourceService;
     }
 

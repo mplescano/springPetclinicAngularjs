@@ -1,33 +1,18 @@
 package org.springframework.samples.petclinic.config.security;
 
-import java.util.Arrays;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
-import org.springframework.core.env.Environment;
-import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.http.HttpMethod;
-import org.springframework.samples.petclinic.config.security.support.CustomExpressionBasedPreInvocationAdvice;
-import org.springframework.samples.petclinic.config.security.support.CustomMethodSecurityExpressionHandler;
-/*import org.springframework.samples.petclinic.config.security.support.CustomPreInvocationAuthorizationAdviceVoter;*/
-import org.springframework.samples.petclinic.config.security.support.PropertySecuredResourceServiceImpl;
 import org.springframework.samples.petclinic.config.security.support.RestAccessDeniedHandler;
 import org.springframework.samples.petclinic.config.security.support.RestAuthenticationEntryPoint;
 import org.springframework.samples.petclinic.config.security.support.RestAuthenticationSuccessHandler;
-import org.springframework.samples.petclinic.config.security.support.SecuredResourceService;
-import org.springframework.security.access.AccessDecisionManager;
-import org.springframework.security.access.AccessDecisionVoter;
-import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
-import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -36,15 +21,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
-import org.springframework.security.web.access.expression.WebExpressionVoter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
+/*@EnableWebSecurity(debug = true)*/
 @Configuration
-@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
+//@Order(Ordered.LOWEST_PRECEDENCE - 1) //lowest of them all
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
