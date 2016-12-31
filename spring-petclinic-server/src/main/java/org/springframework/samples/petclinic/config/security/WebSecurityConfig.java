@@ -45,8 +45,6 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 
 @Configuration
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-/*@EnableWebSecurity*/
-/*@ComponentScan(basePackages = { "org.springframework.samples.petclinic.config.security.support" })*/
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
@@ -88,64 +86,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
     
-	/*@Configuration
-	protected static class AuthenticationConfiguration extends GlobalAuthenticationConfigurerAdapter {
-
-	    @Autowired
-	    @Qualifier("userService")
-	    private UserDetailsManager userService;
-
-	    @Bean
-	    public PasswordEncoder passwordEncoder() {
-	        return new BCryptPasswordEncoder();
-	    }
-	    
-		@Override
-		public void init(AuthenticationManagerBuilder auth) throws Exception {
-			auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
-		}
-	}*/
-    
-	@Configuration
-	@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
-	public static class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
-
-//	    @Autowired
-//	    private AuthenticationManager authenticationManager;
-//
-//	    @Override
-//	    protected AuthenticationManager authenticationManager() {
-//	        return authenticationManager;
-//	    }
-		
-		@Autowired
-		private MethodSecurityExpressionHandler expressionHandler;
-		
-		protected MethodSecurityExpressionHandler createExpressionHandler() {
-			return expressionHandler;
-		}
-		
-	}
-
-	@Autowired
-	private ResourcePatternResolver resourceLoader;
-	
-	@Autowired
-	private Environment env;
-	
-	@Bean
-	public SecuredResourceService securedResourceService() {
-		PropertySecuredResourceServiceImpl resourceService = new PropertySecuredResourceServiceImpl();
-		resourceService.setResource(resourceLoader.getResource(env.getProperty("petclinic.secured.resources")));
-		return resourceService;
-	}
-	
-	@Bean
-	public MethodSecurityExpressionHandler createExpressionHandler() {
-		MethodSecurityExpressionHandler expressionHandler = new CustomMethodSecurityExpressionHandler(securedResourceService());
-		return expressionHandler;
-	}
-	
     /**
      * accessDeniedHandler is only applied when an authenticated user tries to access a resource 
      * which has not privileges
@@ -182,18 +122,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public LogoutSuccessHandler logoutSuccessHandler() {
     	return new HttpStatusReturningLogoutSuccessHandler();
     }
-    
-    /*@Bean
-    public AccessDecisionManager accessDecisionManager() {
-      WebExpressionVoter webExpressionVoter = new WebExpressionVoter();
-      DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
-      //expressionHandler.setRoleHierarchy(roleHierarchy());
-      webExpressionVoter.setExpressionHandler(expressionHandler);
-      
-      CustomExpressionBasedPreInvocationAdvice expressionAdvice = new CustomExpressionBasedPreInvocationAdvice();
-      expressionAdvice.setExpressionHandler(createExpressionHandler());
-      
-      return new AffirmativeBased(Arrays.<AccessDecisionVoter<? extends Object>>asList(webExpressionVoter, 
-    		  new CustomPreInvocationAuthorizationAdviceVoter(expressionAdvice)));
-    }*/
 }
