@@ -5,11 +5,18 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.samples.petclinic.config.security.MethodSecurityConfig;
+import org.springframework.samples.petclinic.config.security.WebSecurityConfig;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.service.ClinicService;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -18,9 +25,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(PetResource.class)
+@Import({WebSecurityConfig.class, MethodSecurityConfig.class})
 public class PetResourceTests {
 
     @Autowired
@@ -28,7 +40,18 @@ public class PetResourceTests {
 
     @MockBean
     ClinicService clinicService;
+    
+    @MockBean(name = "userService")
+    UserDetailsManager userService;
 
+    private UserDetails setupUser() {
+    	List<GrantedAuthority> combinedAuthorities = new ArrayList<>();
+    	combinedAuthorities.add(new SimpleGrantedAuthority("ROLE_VIEWER"));
+    	combinedAuthorities.add(new SimpleGrantedAuthority("PERM_VIEW_PET"));
+    	return new org.springframework.security.core.userdetails.User("userMock", "passMock",
+				true, true, true, true, combinedAuthorities);
+    }
+    
     @Test
     public void shouldGetAPetInJSonFormat() throws Exception {
 
@@ -36,8 +59,9 @@ public class PetResourceTests {
 
         given(clinicService.findPetById(2)).willReturn(pet);
 
+        given(userService.loadUserByUsername("userMock")).willReturn(setupUser());
 
-        mvc.perform(get("/owner/2/pet/2.json").accept(MediaType.APPLICATION_JSON))
+        mvc.perform(get("/rest/owner/2/pet/2").accept(MediaType.APPLICATION_JSON).with(user(setupUser())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$.id").value(2))

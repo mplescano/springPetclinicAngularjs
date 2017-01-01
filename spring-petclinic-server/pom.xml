@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.samples</groupId>
         <artifactId>spring-petclinic-angular1</artifactId>
-        <version>1.4.2</version>
+        <version>1.4.3</version>
     </parent>
     <artifactId>spring-petclinic-server</artifactId>
     <name>Spring Petclinic :: Spring MVC REST server</name>
@@ -76,6 +76,12 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 
         <!-- EhCache -->
         <dependency>
