@@ -4,7 +4,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.samples.petclinic.dto.form.UserQueryForm;
 import org.springframework.samples.petclinic.model.Authority;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.repository.AuthorityRepository;
@@ -153,5 +162,31 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user = userRepository.save(user);
 		return user;
+	}
+
+	/**
+	 * @see http://stackoverflow.com/questions/28874135/dynamic-spring-data-jpa-repository-query-with-arbitrary-and-clauses
+	 * @see org.springframework.samples.petclinic.service.UserService#findUserList(org.springframework.samples.petclinic.dto.form.UserQueryForm, org.springframework.data.domain.Pageable)
+	 */
+	@Override
+	public Page<User> findUserList(final UserQueryForm userQueryForm, Pageable pageable) {
+
+		//TODO it could be reusable
+		Specification<User> specUser = new Specification<User>(){
+			@Override
+			public Predicate toPredicate(Root<User> root, 
+					CriteriaQuery<?> query, CriteriaBuilder cb) {
+				
+				List<Predicate> predicates = new ArrayList<Predicate>();
+				
+				if (StringUtils.hasText(userQueryForm.getUsernameSearch())) {
+					predicates.add(cb.like(root.get("username").as(String.class), "%" + userQueryForm.getUsernameSearch() + "%"));
+				}
+				
+				return  cb.and(predicates.toArray(new Predicate[predicates.size()]));
+			}}; 
+		
+		
+		return userRepository.findAll(specUser, pageable);
 	}
 }
