@@ -45,7 +45,6 @@ public class UserResource extends AbstractResourceController {
     	if (userService.userExists(user.getUsername())) {
     		message = new ResponseMessage(false, "Username '" + user.getUsername() + "' is already taken");
     	}
-    	user.setEnabled(true);
     	userService.save(user);
     	message = new ResponseMessage(true, null);
     	

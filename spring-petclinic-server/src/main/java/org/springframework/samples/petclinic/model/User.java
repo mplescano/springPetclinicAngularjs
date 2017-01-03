@@ -1,8 +1,11 @@
 package org.springframework.samples.petclinic.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -24,6 +27,10 @@ public class User extends Person {
 	
 	@Column(name = "enabled")
 	private boolean enabled;
+	
+	@Column(name = "createdAt")
+	@NotNull
+	private Date createdAt;
 
 	public String getRoles() {
 		return roles;
@@ -56,6 +63,12 @@ public class User extends Person {
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
-	
-	
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
 }

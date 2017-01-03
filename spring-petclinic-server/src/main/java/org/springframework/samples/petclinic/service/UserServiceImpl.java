@@ -2,6 +2,7 @@ package org.springframework.samples.petclinic.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -87,6 +88,7 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 		user.setUsername(userDetails.getUsername());
 		user.setPassword(userDetails.getPassword());
 		user.setEnabled(userDetails.isEnabled());
+		user.setCreatedAt(new Date());
 		user.setFirstName(userDetails.getUsername());
 		user.setLastName(userDetails.getUsername());
 		
@@ -114,7 +116,7 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 	@Transactional
 	@Override
 	public void deleteUser(String username) {
-		userRepository.deleteByUsername(rolePrefix);
+		userRepository.deleteByUsername(username);
 	}
 
 	@Override
@@ -159,9 +161,25 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 	@Transactional
 	@Override
 	public User save(User user) {
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		user = userRepository.save(user);
-		return user;
+		User userTemp;
+		if (user.isNew()) {
+	    	user.setEnabled(true);
+	    	user.setCreatedAt(new Date());
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
+			userTemp = user;
+		}
+		else {
+			//exclude some fields...
+			//how do you change your pass??
+			userTemp = userRepository.findOne(user.getId());
+			userTemp.setUsername(user.getUsername());
+			userTemp.setFirstName(user.getFirstName());
+			userTemp.setLastName(user.getLastName());
+			if (StringUtils.hasText(user.getPassword())) {
+				userTemp.setPassword(passwordEncoder.encode(user.getPassword()));
+			}
+		}
+		return userRepository.save(userTemp);
 	}
 
 	/**
@@ -181,6 +199,12 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 				
 				if (StringUtils.hasText(userQueryForm.getUsernameSearch())) {
 					predicates.add(cb.like(root.get("username").as(String.class), "%" + userQueryForm.getUsernameSearch() + "%"));
+				}
+				if (StringUtils.hasText(userQueryForm.getFirstNameSearch())) {
+					predicates.add(cb.like(root.get("firstName").as(String.class), "%" + userQueryForm.getFirstNameSearch() + "%"));
+				}
+				if (StringUtils.hasText(userQueryForm.getLastNameSearch())) {
+					predicates.add(cb.like(root.get("lastName").as(String.class), "%" + userQueryForm.getLastNameSearch() + "%"));
 				}
 				
 				return  cb.and(predicates.toArray(new Predicate[predicates.size()]));
