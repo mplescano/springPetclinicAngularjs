@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.samples.petclinic.dto.ResponseMessage;
+import org.springframework.samples.petclinic.dto.form.UserForm;
 import org.springframework.samples.petclinic.dto.form.UserQueryForm;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.UserService;
@@ -40,12 +41,9 @@ public class UserResource extends AbstractResourceController {
      */
     @RequestMapping(value = "/users", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseMessage createUser(@Valid @RequestBody User user) {
+    public ResponseMessage createUser(@Valid @RequestBody UserForm userForm) {
     	ResponseMessage message = null;
-    	if (userService.userExists(user.getUsername())) {
-    		message = new ResponseMessage(false, "Username '" + user.getUsername() + "' is already taken");
-    	}
-    	userService.save(user);
+    	userService.save(userForm);
     	message = new ResponseMessage(true, null);
     	
     	return message;

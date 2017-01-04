@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.samples.petclinic.dto.form.UserForm;
 import org.springframework.samples.petclinic.dto.form.UserQueryForm;
 import org.springframework.samples.petclinic.model.Authority;
 import org.springframework.samples.petclinic.model.User;
@@ -160,13 +161,13 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 
 	@Transactional
 	@Override
-	public User save(User user) {
+	public User save(UserForm user) {
 		User userTemp;
 		if (user.isNew()) {
-	    	user.setEnabled(true);
-	    	user.setCreatedAt(new Date());
+			userTemp = new User();
+			userTemp.setEnabled(true);
+			userTemp.setCreatedAt(new Date());
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
-			userTemp = user;
 		}
 		else {
 			//exclude some fields...
