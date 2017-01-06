@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.dto.form;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.samples.petclinic.constraint.Compare;
 import org.springframework.samples.petclinic.constraint.UniqueUsername;
 import org.springframework.samples.petclinic.dto.BaseForm;
 
@@ -11,7 +12,7 @@ import org.springframework.samples.petclinic.dto.BaseForm;
  * @author mplescano
  *
  */
-//@NotRepeatedUser
+@Compare(value = "password", compareAttribute = "passwordAgain")
 public class UserForm extends BaseForm {
 
 	@NotEmpty
@@ -24,7 +25,6 @@ public class UserForm extends BaseForm {
 	@NotEmpty
 	private String username;
 	
-	//@PasswordEquals()
 	@NotEmpty
 	private String password;
 	
