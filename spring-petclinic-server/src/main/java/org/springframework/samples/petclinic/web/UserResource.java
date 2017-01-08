@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.samples.petclinic.dto.ResponseMessage;
 import org.springframework.samples.petclinic.dto.form.UserForm;
 import org.springframework.samples.petclinic.dto.form.UserQueryForm;
+import org.springframework.samples.petclinic.dto.projection.UserForWebList;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -52,16 +53,16 @@ public class UserResource extends AbstractResourceController {
 	
     @GetMapping("/users")
     @PreAuthorize("hasPermission()")
-    public Page<User> findUserList(Pageable pageable) {
+    public Page<UserForWebList> findUserList(Pageable pageable) {
     	//TODO Do order by default
     	//TODO use projections for limiting data to be sent. 
-        return userService.findUserList(null, pageable);
+        return userService.findUserForWebList(null, pageable);
     }
     
     @PostMapping("/users/filter")
     @PreAuthorize("hasPermission()")
-    public Page<User> findFilteredUserList(@Valid @RequestBody UserQueryForm userQueryForm, 
+    public Page<UserForWebList> findFilteredUserList(@Valid @RequestBody UserQueryForm userQueryForm, 
     		Pageable pageable) {
-        return userService.findUserList(userQueryForm, pageable);
+        return userService.findUserForWebList(userQueryForm, pageable);
     }
 }

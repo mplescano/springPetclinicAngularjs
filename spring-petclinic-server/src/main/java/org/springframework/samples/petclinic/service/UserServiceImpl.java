@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.samples.petclinic.dto.form.UserForm;
 import org.springframework.samples.petclinic.dto.form.UserQueryForm;
+import org.springframework.samples.petclinic.dto.projection.UserForWebList;
 import org.springframework.samples.petclinic.model.Authority;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.repository.AuthorityRepository;
@@ -193,10 +194,15 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 	 */
 	@Override
 	public Page<User> findUserList(final UserQueryForm userQueryForm, Pageable pageable) {
-		Specification<User> specUser = null;
+		Specification<User> specUser = getSpecUserQueryForm(userQueryForm);
+		return userRepository.findAll(specUser, pageable);
+	}
+	
+	private Specification<User> getSpecUserQueryForm(final UserQueryForm userQueryForm) {
+		Specification<User> specUserQueryForm = null;
 		//TODO it could be reusable
 		if (userQueryForm != null) {
-			specUser = new Specification<User>(){
+			specUserQueryForm = new Specification<User>(){
 				@Override
 				public Predicate toPredicate(Root<User> root, 
 						CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -217,6 +223,11 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 				}}; 
 		}
 		
-		return userRepository.findAll(specUser, pageable);
+		return specUserQueryForm;
+	}
+	
+	public Page<UserForWebList> findUserForWebList(final UserQueryForm userQueryForm, Pageable pageable) {
+		Specification<User> specUser = getSpecUserQueryForm(userQueryForm);
+		return userRepository.findProjectedAll(specUser, pageable, UserForWebList.class);
 	}
 }

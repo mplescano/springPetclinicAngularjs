@@ -42,8 +42,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * Finally, let’s see how to handle method level security @PreAuthorize, @PostAuthorize and @Secure Access Denied.
-     * We’ll of course use the global exception handling mechanism that we discussed earlier to handle 
+     * Finally, let's see how to handle method level security @PreAuthorize, @PostAuthorize and @Secure Access Denied.
+     * We'll of course use the global exception handling mechanism that we discussed earlier to handle 
      * the new AccessDeniedException as well:
      * 
      * @param ex

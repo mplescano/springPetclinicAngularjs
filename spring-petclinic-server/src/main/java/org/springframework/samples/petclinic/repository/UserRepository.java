@@ -3,12 +3,17 @@ package org.springframework.samples.petclinic.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.samples.petclinic.model.User;
+import org.springframework.samples.petclinic.repository.support.ProjectableSpecificationExecutor;
 
-public interface UserRepository extends JpaRepository<User, Integer>, JpaSpecificationExecutor<User> {
+/**
+ * @author mplescano
+ *
+ */
+public interface UserRepository extends JpaRepository<User, Integer>, ProjectableSpecificationExecutor<User> {
 
 	List<User> findByUsername(String username);
 
 	Integer deleteByUsername(String username);
+	
 }
