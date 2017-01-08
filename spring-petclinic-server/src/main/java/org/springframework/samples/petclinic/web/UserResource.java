@@ -13,6 +13,7 @@ import org.springframework.samples.petclinic.dto.form.UserQueryForm;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,13 +50,15 @@ public class UserResource extends AbstractResourceController {
     	return message;
     }
 	
-    /*@GetMapping("/users/list")
+    @GetMapping("/users")
     @PreAuthorize("hasPermission()")
     public Page<User> findUserList(Pageable pageable) {
-        return userService.findUserList(pageable);
-    }*/
+    	//TODO Do order by default
+    	//TODO use projections for limiting data to be sent. 
+        return userService.findUserList(null, pageable);
+    }
     
-    @PostMapping("/users/list")
+    @PostMapping("/users/filter")
     @PreAuthorize("hasPermission()")
     public Page<User> findFilteredUserList(@Valid @RequestBody UserQueryForm userQueryForm, 
     		Pageable pageable) {

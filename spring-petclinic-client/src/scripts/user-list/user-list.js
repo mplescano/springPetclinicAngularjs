@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('user', ['ui.router'])
+angular.module('userList', ['ui.router'])
     .config(['$stateProvider', function ($stateProvider) {
         $stateProvider
-            .state('session.user', {
+            .state('session.users', {
                 parent: 'session',
                 url: '/users',
-                template: '<user></user>',
+                template: '<user-list></user-list>',
                 data:{permissions:{only:['AUTHORIZED'], redirectTo:'nosession.login'}}
             })
     }]);

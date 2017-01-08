@@ -167,7 +167,11 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 			userTemp = new User();
 			userTemp.setEnabled(true);
 			userTemp.setCreatedAt(new Date());
-			user.setPassword(passwordEncoder.encode(user.getPassword()));
+			userTemp.setPassword(passwordEncoder.encode(user.getPassword()));
+			userTemp.setFirstName(user.getFirstName());
+			userTemp.setLastName(user.getLastName());
+			userTemp.setUsername(user.getUsername());
+			userTemp.setRoles(user.getRoles());
 		}
 		else {
 			//exclude some fields...
@@ -189,28 +193,29 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 	 */
 	@Override
 	public Page<User> findUserList(final UserQueryForm userQueryForm, Pageable pageable) {
-
+		Specification<User> specUser = null;
 		//TODO it could be reusable
-		Specification<User> specUser = new Specification<User>(){
-			@Override
-			public Predicate toPredicate(Root<User> root, 
-					CriteriaQuery<?> query, CriteriaBuilder cb) {
-				
-				List<Predicate> predicates = new ArrayList<Predicate>();
-				
-				if (StringUtils.hasText(userQueryForm.getUsernameSearch())) {
-					predicates.add(cb.like(root.get("username").as(String.class), "%" + userQueryForm.getUsernameSearch() + "%"));
-				}
-				if (StringUtils.hasText(userQueryForm.getFirstNameSearch())) {
-					predicates.add(cb.like(root.get("firstName").as(String.class), "%" + userQueryForm.getFirstNameSearch() + "%"));
-				}
-				if (StringUtils.hasText(userQueryForm.getLastNameSearch())) {
-					predicates.add(cb.like(root.get("lastName").as(String.class), "%" + userQueryForm.getLastNameSearch() + "%"));
-				}
-				
-				return  cb.and(predicates.toArray(new Predicate[predicates.size()]));
-			}}; 
-		
+		if (userQueryForm != null) {
+			specUser = new Specification<User>(){
+				@Override
+				public Predicate toPredicate(Root<User> root, 
+						CriteriaQuery<?> query, CriteriaBuilder cb) {
+					
+					List<Predicate> predicates = new ArrayList<Predicate>();
+					
+					if (StringUtils.hasText(userQueryForm.getUsernameSearch())) {
+						predicates.add(cb.like(root.get("username").as(String.class), "%" + userQueryForm.getUsernameSearch() + "%"));
+					}
+					if (StringUtils.hasText(userQueryForm.getFirstNameSearch())) {
+						predicates.add(cb.like(root.get("firstName").as(String.class), "%" + userQueryForm.getFirstNameSearch() + "%"));
+					}
+					if (StringUtils.hasText(userQueryForm.getLastNameSearch())) {
+						predicates.add(cb.like(root.get("lastName").as(String.class), "%" + userQueryForm.getLastNameSearch() + "%"));
+					}
+					
+					return  cb.and(predicates.toArray(new Predicate[predicates.size()]));
+				}}; 
+		}
 		
 		return userRepository.findAll(specUser, pageable);
 	}

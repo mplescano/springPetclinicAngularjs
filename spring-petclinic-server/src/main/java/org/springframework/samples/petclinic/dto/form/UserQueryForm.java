@@ -2,12 +2,18 @@ package org.springframework.samples.petclinic.dto.form;
 
 import java.util.Date;
 
+import org.springframework.samples.petclinic.constraint.Compare;
+import org.springframework.samples.petclinic.constraint.Compare.Operator;
+import org.springframework.samples.petclinic.constraint.Compare.Type;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 /**
  * @author mplescano
  *
  */
+@Compare(value = "dateCreatedIni", compareAttribute = "dateCreatedEnd", 
+	operator = Operator.LESS_EQUAL_THAN, type = Type.DATE, allowEmpty = true)
 public class UserQueryForm {
 	
 	private String usernameSearch;

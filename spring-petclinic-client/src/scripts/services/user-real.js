@@ -20,8 +20,8 @@ function UserService($http) {
 
     return service;
 
-    function GetAll() {
-        return $http.get('/api/users').then(handleSuccess, handleError('Error getting all users'));
+    function GetAll(pageNumber, pageSize) {
+        return $http.get('/rest/users?page=' + pageNumber + '&size=' + pageSize).then(handleSuccess, handleError('Error getting all users'));
     }
 
     function GetById(id) {

@@ -3,7 +3,7 @@
 var petClinicApp = angular.module('petClinicApp', ['ngCookies', 
     'ui.router', 'permission', 'permission.ui', 'layoutNav', 'layoutFooter',
     'ownerList', 'ownerDetails', 'ownerForm', 'petForm', 'visits', 'vetList',
-    'login', 'register']);
+    'login', 'register', 'userList']);
 
 petClinicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider', function(
     $stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
