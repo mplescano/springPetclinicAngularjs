@@ -2,6 +2,8 @@ package org.springframework.samples.petclinic.dto.projection;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public interface UserForWebList {
 
 	Integer getId();
@@ -16,5 +18,6 @@ public interface UserForWebList {
 	
 	boolean isEnabled();
 	
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	Date getCreatedAt();
 }

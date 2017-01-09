@@ -55,7 +55,6 @@ public class UserResource extends AbstractResourceController {
     @PreAuthorize("hasPermission()")
     public Page<UserForWebList> findUserList(Pageable pageable) {
     	//TODO Do order by default
-    	//TODO use projections for limiting data to be sent. 
         return userService.findUserForWebList(null, pageable);
     }
     
