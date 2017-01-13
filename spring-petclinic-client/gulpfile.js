@@ -9,13 +9,18 @@ var paths = {
     "images" : "src/images/*",
     "html"   : "src/scripts/**/*.html",
     "js"     : "src/scripts/**/*.js",
-    "less"   : "src/less/*",
+    "less"   : "src/less/*.less",
     "dist"   : "target/dist/"
 };
 
 gulp.task('minify-css', function() {
     return gulp.src(paths.css)
         .pipe(cleanCSS())
+        .pipe(gulp.dest(paths.dist + 'css/'));
+});
+
+gulp.task('copy-css', function() {
+    return gulp.src(paths.css)
         .pipe(gulp.dest(paths.dist + 'css/'));
 });
 
@@ -51,5 +56,5 @@ gulp.task('copy-images', function() {
         .pipe(gulp.dest(paths.dist + 'images/'))
 });
 
-gulp.task('default', ['minify-css', 'copy-js', 'less',
+gulp.task('default', ['copy-css', 'copy-js', 'less',
           'copy-fonts', 'copy-html', 'copy-images'], function() {});

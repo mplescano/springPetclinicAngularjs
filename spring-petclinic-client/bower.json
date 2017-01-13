@@ -19,9 +19,15 @@
   "dependencies": {
     "angular": "~1.5.9",
     "angular-cookies": "~1.5.9",
+    "angular-touch": "~1.5.9",
+    "angular-animate": "~1.5.9",
     "angular-permission": "~5.0.0",
     "bootstrap": "components/bootstrap#~3.3.7",
     "jquery": "components/jquery#~3.1.0",
-    "angular-ui-router": "ui-router#^0.3.2"
+    "angular-ui-router": "ui-router#^0.3.2",
+    "angular-ui-grid": "~4.0.2"
+  },
+  "resolutions": {
+    "angular": "^1.0.8"
   }
 }

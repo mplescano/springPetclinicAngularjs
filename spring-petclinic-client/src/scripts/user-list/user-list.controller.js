@@ -1,35 +1,87 @@
 'use strict';
 
+/**
+ * @see http://ui-grid.info/docs/#/tutorial/314_external_pagination
+ * */
 angular.module('userList')
     .controller('UserListController', ['UserService', '$state', 
-                                       '$rootScope', 'FlashService', 
+                                       '$rootScope', 'FlashService', 'uiGridConstants',
                                        function(UserService, $state, 
-                                    		   $rootScope, FlashService) {
+                                    		   $rootScope, FlashService, uiGridConstants) {
         var self = this;
-        self.pageNumber = 0;
-        self.pageSize = 5;
 
-        self.search = search;
+        var paginationOptions = {
+    	    pageNumber: 0,
+    	    pageSize: 25,
+    	    sort: null
+        };
         
-        (function initController() {
-        	UserService.GetAll(self.pageNumber, self.pageSize)
-        		.then(function (response) {
-        			self.users = response.content;
-        		});
-        })();
+        self.gridOptions = {
+    	    paginationPageSizes: [paginationOptions.pageSize],
+    	    paginationPageSize: paginationOptions.pageSize,
+    	    useExternalPagination: true,
+    	    useExternalSorting: true,
+    	    data: [],
+    	    columnDefs: [
+    	      { name: 'username', enableSorting: false },
+    	      { name: 'firstName', enableSorting: false },
+    	      { name: 'lastName', enableSorting: false },
+    	      { name: 'createdAt', enableSorting: false },
+    	      { name: 'enabled', enableSorting: false }
+    	    ],
+    	    onRegisterApi: function(gridApi) {
+    	        self.gridApi = gridApi;
+    	        self.gridApi.core.on.sortChanged(self, function(grid, sortColumns) {
+    	        	if (sortColumns.length == 0) {
+    	        		paginationOptions.sort = null;
+    	        	}
+    	        	else {
+    	        		paginationOptions.sort = sortColumns[0].sort.direction;
+    	        	}
+    	        	getPage();
+    	        });
+    	        
+    	        gridApi.pagination.on.paginationChanged(self, function (newPage, pageSize) {
+    	        	paginationOptions.pageNumber = newPage;
+    	        	paginationOptions.pageSize = pageSize;
+    	        	getPage();
+    	        });
+    	    }
+        };
+        
 
-        function search() {
+        var getPage = function() {
+            /*var url;
+            switch(paginationOptions.sort) {
+              case uiGridConstants.ASC:
+                url = '/data/100_ASC.json';
+                break;
+              case uiGridConstants.DESC:
+                url = '/data/100_DESC.json';
+                break;
+              default:
+                url = '/data/100.json';
+                break;
+            }*/
+         
+            /*$http.get(url)
+            .success(function (data) {
+              $scope.gridOptions.totalItems = 100;
+              var firstRow = (paginationOptions.pageNumber - 1) * paginationOptions.pageSize;
+              $scope.gridOptions.data = data.slice(firstRow, firstRow + paginationOptions.pageSize);
+            });*/
         	self.dataLoading = true;
-            /*UserService.Create(self.user)
-                .then(function (response) {
-                    if (response.success) {
-                        FlashService.Success('Registration successful', true);
-                        $state.go('nosession.login');
-                    } else {
-                        FlashService.Error(response.message);
-                        self.dataLoading = false;
-                    }
-                });*/
-        }
-
+        	UserService.GetAll(paginationOptions.pageNumber, paginationOptions.pageSize)
+    		.then(function (response) {
+    			self.gridOptions.totalItems = response.totalElements;
+    			self.gridOptions.data = response.content;
+    			self.dataLoading = false;
+    		});
+            
+        };
+        
+        /*(function initController() {
+        	getPage();
+        })();*/
+        getPage();
     }]);

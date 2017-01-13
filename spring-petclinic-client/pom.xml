@@ -60,6 +60,37 @@
 							<goal>gulp</goal>
 						</goals>
 					</execution>
+					<!-- https://github.com/bower/bower/issues/1184 -->
+					<execution>
+						<id>bower-cache-clean</id>
+						<goals>
+							<goal>bower</goal>
+						</goals>
+						<phase>clean</phase>
+						<configuration>
+							<arguments>cache clean</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>bower-install---force</id>
+						<goals>
+							<goal>bower</goal>
+						</goals>
+						<phase>clean</phase>
+						<configuration>
+							<arguments>install --force</arguments>
+						</configuration>
+					</execution>
+					<execution>
+						<id>bower-prune</id>
+						<goals>
+							<goal>bower</goal>
+						</goals>
+						<phase>clean</phase>
+						<configuration>
+							<arguments>prune</arguments>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
