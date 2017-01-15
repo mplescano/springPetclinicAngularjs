@@ -10,6 +10,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.jpa.criteria.CriteriaBuilderImpl;
+import org.hibernate.jpa.criteria.expression.LiteralExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,7 @@ import org.springframework.samples.petclinic.model.Authority;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.repository.AuthorityRepository;
 import org.springframework.samples.petclinic.repository.UserRepository;
+import org.springframework.samples.petclinic.repository.support.NamedParamSpecification;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -198,11 +201,11 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 		return userRepository.findAll(specUser, pageable);
 	}
 	
-	private Specification<User> getSpecUserQueryForm(final UserQueryForm userQueryForm) {
-		Specification<User> specUserQueryForm = null;
+	private NamedParamSpecification<User> getSpecUserQueryForm(final UserQueryForm userQueryForm) {
+		NamedParamSpecification<User> specUserQueryForm = null;
 		//TODO it could be reusable
 		if (userQueryForm != null) {
-			specUserQueryForm = new Specification<User>(){
+			specUserQueryForm = new NamedParamSpecification<User>(){
 				@Override
 				public Predicate toPredicate(Root<User> root, 
 						CriteriaQuery<?> query, CriteriaBuilder cb) {
@@ -210,13 +213,28 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 					List<Predicate> predicates = new ArrayList<Predicate>();
 					
 					if (StringUtils.hasText(userQueryForm.getUsernameSearch())) {
-						predicates.add(cb.like(root.get("username").as(String.class), "%" + userQueryForm.getUsernameSearch() + "%"));
+						predicates.add(
+							cb.like(
+								cb.lower(root.<String>get("username")),
+								cb.lower(cb.literal("%" + userQueryForm.getUsernameSearch() + "%"))
+							)
+						);
 					}
 					if (StringUtils.hasText(userQueryForm.getFirstNameSearch())) {
-						predicates.add(cb.like(root.get("firstName").as(String.class), "%" + userQueryForm.getFirstNameSearch() + "%"));
+						predicates.add(
+							cb.like(
+								cb.lower(root.get("firstName").as(String.class)), 
+								cb.lower(cb.literal("%" + userQueryForm.getFirstNameSearch() + "%"))
+							)
+						);
 					}
 					if (StringUtils.hasText(userQueryForm.getLastNameSearch())) {
-						predicates.add(cb.like(root.get("lastName").as(String.class), "%" + userQueryForm.getLastNameSearch() + "%"));
+						predicates.add(
+							cb.like(
+								cb.lower(root.get("lastName").as(String.class)), 
+								cb.lower(addParameter(cb, String.class, "lastName", "%" + userQueryForm.getLastNameSearch() + "%"))
+							)
+						);
 					}
 					
 					return  cb.and(predicates.toArray(new Predicate[predicates.size()]));
@@ -227,7 +245,7 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 	}
 	
 	public Page<UserForWebList> findUserForWebList(final UserQueryForm userQueryForm, Pageable pageable) {
-		Specification<User> specUser = getSpecUserQueryForm(userQueryForm);
+		NamedParamSpecification<User> specUser = getSpecUserQueryForm(userQueryForm);
 		return userRepository.findProjectedAll(specUser, pageable, UserForWebList.class);
 	}
 }

@@ -7,8 +7,8 @@ angular
 	.module('petClinicApp')
     .factory('UserService', UserService);
 
-UserService.$inject = ['$http'];
-function UserService($http) {
+UserService.$inject = ['$http', '$httpParamSerializer'];
+function UserService($http, $httpParamSerializer) {
     var service = {};
 
     service.GetAll = GetAll;
@@ -17,12 +17,29 @@ function UserService($http) {
     service.Create = Create;
     service.Update = Update;
     service.Delete = Delete;
+    service.GetFiltered = GetFiltered;
 
     return service;
 
-    function GetAll(pageNumber, pageSize) {
-        return $http.get('/rest/users?page=' + pageNumber + '&size=' + pageSize).then(handleSuccess, handleError('Error getting all users'));
+    function GetAll(pageNumber, pageSize, arrSort/*["name,direction",]*/) {
+    	 var paramUrlSort = '';
+    	if (arrSort != null && arrSort.length > 0) {
+    		paramUrlSort = '&' + $httpParamSerializer({'sort': arrSort});
+    	}
+        return $http.get('/rest/users?page=' + pageNumber + '&size=' + pageSize + paramUrlSort)
+        	.then(handleSuccess, handleError('Error getting all users'));
     }
+    
+    function GetFiltered(objDataModel, pageNumber, pageSize, arrSort/*["name,direction",]*/) {
+    	var paramUrlSort = '';
+    	if (arrSort != null && arrSort.length > 0) {
+    		paramUrlSort = '&' + $httpParamSerializer({'sort': arrSort});
+    	}
+    	return $http.post(
+    			'/rest/users/filter?page=' + pageNumber + '&size=' + pageSize + paramUrlSort,
+    			objDataModel
+    			).then(handleSuccess, handleError('Error getting the users'));
+   }
 
     function GetById(id) {
         return $http.get('/api/users/' + id).then(handleSuccess, handleError('Error getting user by id'));

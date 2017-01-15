@@ -1,38 +1,40 @@
+<!-- @see https://scotch.io/tutorials/angularjs-form-validation -->
 <h2>Users</h2>
 
-<form class="form-horizontal" name="userQueryForm" id="userQueryForm">
-	<div class="form-group">
-		<label for="usernameSearch" class="col-sm-2 control-label">Username</label>
-		<div class="col-sm-10">
-			<input type="text" class="form-control" id="usernameSearch" name="usernameSearch" placeholder="Username">
-		</div>
-	</div>
+<form class="form-horizontal" name="userQueryForm" id="userQueryForm" ng-submit="$ctrl.submitUserQueryForm()" novalidate>
 	<div class="form-group">
 		<label for="firstNameSearch" class="col-sm-2 control-label">First Name</label>
-		<div class="col-sm-10">
-			<input type="text" class="form-control" id="firstNameSearch" name="firstNameSearch" placeholder="First Name">
+		<div class="col-sm-4">
+			<input type="text" class="form-control" id="firstNameSearch" name="firstNameSearch" placeholder="First Name" ng-model="$ctrl.userQueryForm.firstNameSearch" ng-minlength="3">
+		</div>
+		<label for="lastNameSearch" class="col-sm-2 control-label">Last Name</label>
+		<div class="col-sm-4">
+			<input type="text" class="form-control" id="lastNameSearch" name="lastNameSearch" placeholder="Last Name" ng-model="$ctrl.userQueryForm.lastNameSearch" ng-minlength="3">
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="lastNameSearch" class="col-sm-2 control-label">Last Name</label>
-		<div class="col-sm-10">
-			<input type="text" class="form-control" id="lastNameSearch" name="lastNameSearch" placeholder="Last Name">
+		<label for="usernameSearch" class="col-sm-2 control-label">Username</label>
+		<div class="col-sm-4">
+			<input type="text" class="form-control" id="usernameSearch" name="usernameSearch" placeholder="Username" ng-model="$ctrl.userQueryForm.usernameSearch" ng-minlength="3">
 		</div>
 	</div>
 	<div class="form-group">
 		<label for="dateCreatedIni" class="col-sm-2 control-label">Init. Date</label>
-		<div class="col-sm-10">
-			<input type="text" class="form-control" id="dateCreatedIni" name="dateCreatedIni" placeholder="Init. Date">
+		<div class="col-sm-4">
+			<input type="text" class="form-control" id="dateCreatedIni" name="dateCreatedIni" placeholder="Init. Date" ng-model="$ctrl.userQueryForm.dateCreatedIni">
+		</div>
+		<label for="dateCreatedEnd" class="col-sm-2 control-label">End Date</label>
+		<div class="col-sm-4">
+			<input type="text" class="form-control" id="dateCreatedEnd" name="dateCreatedEnd" placeholder="End Date" ng-model="$ctrl.userQueryForm.dateCreatedEnd">
 		</div>
 	</div>
 	
 	<div class="row">
-		<div class="col-sm-3 col-sm-offset-4">
-			<button class="btn" type="reset">Clear</button>
-			<button class="btn btn-default" type="submit">Search</button>
+		<div class="col-sm-3 col-sm-offset-5">
+			<button class="btn" type="button" ng-click="$ctrl.resetUserQueryForm()">Clear</button>
+			<button class="btn btn-default" type="submit" ng-disabled="userQueryForm.$invalid || ($ctrl.userQueryForm | isEmpty)">Search</button>
 		</div>
-		
 	</div>
 </form>
 
-<div ui-grid="gridOptions" ui-grid-pagination class="grid"></div>
+<div ui-grid="$ctrl.gridOptions" ui-grid-pagination class="grid"></div>

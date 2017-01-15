@@ -2,6 +2,9 @@ package org.springframework.samples.petclinic.dto.form;
 
 import java.util.Date;
 
+import javax.validation.constraints.Size;
+
+import org.springframework.samples.petclinic.constraint.AtLeastOneFilled;
 import org.springframework.samples.petclinic.constraint.Compare;
 import org.springframework.samples.petclinic.constraint.Compare.Operator;
 import org.springframework.samples.petclinic.constraint.Compare.Type;
@@ -14,12 +17,25 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  */
 @Compare(value = "dateCreatedIni", compareAttribute = "dateCreatedEnd", 
 	operator = Operator.LESS_EQUAL_THAN, type = Type.DATE, allowEmpty = true)
+@AtLeastOneFilled
 public class UserQueryForm {
 	
+	/**
+	 * convert empty string to null by StringTrimmerEditor
+	 */
+	@Size(min = 3)
 	private String usernameSearch;
 	
+	/**
+	 * convert empty string to null by StringTrimmerEditor
+	 */
+	@Size(min = 3)
 	private String firstNameSearch;
 	
+	/**
+	 * convert empty string to null by StringTrimmerEditor
+	 */
+	@Size(min = 3)
 	private String lastNameSearch;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd")
