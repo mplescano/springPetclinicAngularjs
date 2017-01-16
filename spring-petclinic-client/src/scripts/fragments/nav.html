@@ -1,15 +1,15 @@
 <nav class="navbar navbar-default" role="navigation">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#"><span></span></a>
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
-                <span class="sr-only"><os-p>Toggle navigation</os-p></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
-        <div class="navbar-collapse collapse" id="main-navbar">
-            <ul class="nav navbar-nav navbar-right">
+	<div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar" ng-click="isNavCollapsed = !isNavCollapsed">
+            <span class="sr-only"><os-p>Toggle navigation</os-p></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+		<a class="navbar-brand" href="#"><span></span></a>
+	</div>
+    <div class="navbar-collapse collapse" uib-collapse="isNavCollapsed" id="main-navbar">
+    	<ul class="nav navbar-nav navbar-right">
                 <li ui-sref-active="active">
                     <a ui-sref="session.welcome" title="home page">
                         <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
@@ -17,11 +17,11 @@
                     </a>
                 </li>
 
-                <li ui-sref-active="active" class="dropdown" permission permission-only="['PERM_VIEW_OWNER']">
-                    <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                <li ui-sref-active="active" uib-dropdown class="dropdown" permission permission-only="['PERM_VIEW_OWNER']">
+                    <a href="javascript:void(0)" uib-dropdown-toggle class="dropdown-toggle" data-toggle="dropdown" role="button"
                        aria-haspopup="true" aria-expanded="false">Owners<span class="caret"></span>
                     </a>
-                    <ul class="dropdown-menu">
+                    <ul uib-dropdown-menu class="dropdown-menu">
                         <li><a ui-sref="session.owners"><span class="glyphicon glyphicon-search" aria-hidden="true"></span><span> All</span></a></li>
                         <li permission permission-only="['PERM_ADD_OWNER']"><a ui-sref="session.ownerNew"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span> Register</span></a></li>
                     </ul>
@@ -34,11 +34,11 @@
                     </a>
                 </li>
                 
-                <li class="dropdown" permission permission-only="['PERM_VIEW_USER']">
-                    <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                <li ui-sref-active="active" uib-dropdown class="dropdown" permission permission-only="['PERM_VIEW_USER']">
+                    <a href="javascript:void(0)" uib-dropdown-toggle class="dropdown-toggle" data-toggle="dropdown" role="button"
                        aria-haspopup="true" aria-expanded="false">Admin<span class="caret"></span>
                     </a>
-                    <ul class="dropdown-menu">
+                    <ul uib-dropdown-menu class="dropdown-menu">
                         <li><a ui-sref="session.users"><span class="glyphicon glyphicon-search" aria-hidden="true"></span><span> Users</span></a></li>
                         <li permission permission-only="['PERM_ADD_USER']"><a><span class="glyphicon glyphicon-plus" aria-hidden="true"></span><span> New User</span></a></li>
                     </ul>
@@ -51,6 +51,6 @@
                         <span>Logout</span>
                     </a>
                 </li>
-            </ul>
-        </div>
+        </ul>
+    </div>
 </nav>

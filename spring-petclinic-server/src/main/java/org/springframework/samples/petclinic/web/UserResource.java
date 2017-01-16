@@ -1,13 +1,11 @@
 package org.springframework.samples.petclinic.web;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.SortDefault;
@@ -16,16 +14,14 @@ import org.springframework.samples.petclinic.dto.ResponseMessage;
 import org.springframework.samples.petclinic.dto.form.UserForm;
 import org.springframework.samples.petclinic.dto.form.UserQueryForm;
 import org.springframework.samples.petclinic.dto.projection.UserForWebList;
-import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -57,7 +53,7 @@ public class UserResource extends AbstractResourceController {
     /**
      * Create User
      */
-    @RequestMapping(value = "/users", method = RequestMethod.POST)
+    @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseMessage createUser(@Valid @RequestBody UserForm userForm) {
     	ResponseMessage message = null;
@@ -82,5 +78,13 @@ public class UserResource extends AbstractResourceController {
     public Page<UserForWebList> findFilteredUserList(@Valid @RequestBody UserQueryForm userQueryForm, 
     		@SortDefault(sort = {"firstName"}, direction = Direction.ASC) Pageable pageable) {
         return userService.findUserForWebList(userQueryForm, pageable);
+    }
+    
+    @DeleteMapping("/users")
+    @PreAuthorize("hasPermission()")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ResponseMessage deleteUserList(Integer[] userIds) {
+    	
+    	return null;
     }
 }

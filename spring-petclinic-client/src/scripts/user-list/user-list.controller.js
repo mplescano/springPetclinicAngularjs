@@ -6,12 +6,13 @@
  * @see https://toddmotto.com/digging-into-angulars-controller-as-syntax/
  * @see http://stackoverflow.com/questions/11605917/this-vs-scope-in-angularjs-controllers
  * @see http://stackoverflow.com/questions/14302267/how-to-use-a-filter-in-a-controller
+ * @see http://ui-grid.info/docs/#/tutorial/210_selection
  * */
 angular.module('userList')
     .controller('UserListController', ['UserService', '$state', 
-                                       '$scope', 'FlashService', 'uiGridConstants', 'clearObjectFilter',
+                                       '$scope', 'FlashService', 'uiGridConstants', 'clearObjectFilter', 'convertDateToStringFilter',
                                        function(UserService, $state, 
-                                    		   $scope, FlashService, uiGridConstants, clearObjectFilter) {
+                                    		   $scope, FlashService, uiGridConstants, clearObjectFilter, convertDateToStringFilter) {
         var self = this;
 
         var getPage = function() {
@@ -22,6 +23,8 @@ angular.module('userList')
         			self.gridOptions.totalItems = response.totalElements;
         			self.gridOptions.data = response.content;
         			self.dataLoading = false;
+        		}, function(response) {
+        			alert(response.message);
         		});
         	}
         	else {
@@ -30,6 +33,8 @@ angular.module('userList')
         			self.gridOptions.totalItems = response.totalElements;
         			self.gridOptions.data = response.content;
         			self.dataLoading = false;
+        		}, function(response) {
+        			alert(response.message);
         		});
         	}
         };
@@ -51,21 +56,27 @@ angular.module('userList')
         		enabled: null
         };
         
-        var copyUserQueryForm = angular.copy(self.userQueryForm);
-        
         self.gridOptions = {
         	gridMenuShowHideColumns: false,
         	paginationPageSizes: [paginationOptions.pageSize],
     	    paginationPageSize: paginationOptions.pageSize,
     	    useExternalPagination: true,
     	    useExternalSorting: true,
+    	    
+    	    enableRowSelection: true,
+    	    enableSelectAll: true,
+    	    multiSelect: true,
+    	    
     	    data: [],
     	    columnDefs: [
     	      { name: 'username', enableSorting: true, enableHiding: false },
     	      { name: 'firstName', enableSorting: true, enableHiding: false },
     	      { name: 'lastName', enableSorting: true, enableHiding: false },
     	      { name: 'createdAt', enableSorting: false, enableHiding: false },
-    	      { name: 'enabled', enableSorting: false, enableHiding: false }
+    	      { name: 'enabled', enableSorting: false, enableHiding: false },
+    	      { name: 'operations', displayName:'Operations', enableSorting: false, enableHiding: false,
+    	    	  cellTemplate: '<button class="btn btn-xs btn-primary" >Edit</button>&nbsp;<button class="btn btn-xs btn-primary">Delete</button>'  
+    	      }
     	    ],
     	    onRegisterApi: function(gridApi) {
     	        gridApi.core.on.sortChanged($scope, function(grid, sortColumns) {
@@ -89,7 +100,7 @@ angular.module('userList')
         };
         
         self.submitUserQueryForm = function() {
-        	varUserQueryForm = angular.copy(self.userQueryForm);//Clone copying
+        	varUserQueryForm = convertDateToStringFilter(angular.copy(self.userQueryForm), 'yyyy-MM-dd');//Clone copying
         	getPage();
         };
         
@@ -98,6 +109,14 @@ angular.module('userList')
         	varUserQueryForm = null;
         	getPage();
 		};
+		
+		self.deleteUsers = function() {
+			//gridApi.selection.getSelectedRows();
+		    var arrRows = self.gridApi.selection.getSelectedRows();
+		    arrRows.forEach(function(item, index){
+		        alert(item.id);
+		    });
+		}
         
         (function initController() {
         	getPage();

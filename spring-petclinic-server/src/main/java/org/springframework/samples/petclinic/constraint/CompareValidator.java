@@ -62,10 +62,11 @@ public class CompareValidator implements ConstraintValidator<Compare, Object> {
 		try {
 			Object value = parserValue.getValue(parentObject);
 			Object compareValue = parserValue.getCompareValue(parentObject);
-			if (value == null && parserValue.isAllowEmpty()) {
+			if ((value == null || compareValue == null) && parserValue.isAllowEmpty()) {
 				return true;
 			}
-			if (value != null && value instanceof CharSequence && !StringUtils.hasText((CharSequence) value) 
+			if (((value != null && value instanceof CharSequence && !StringUtils.hasText((CharSequence) value)) ||
+					(compareValue != null && compareValue instanceof CharSequence && !StringUtils.hasText((CharSequence) compareValue)))
 					&& parserValue.isAllowEmpty()) {
 				return true;
 			}

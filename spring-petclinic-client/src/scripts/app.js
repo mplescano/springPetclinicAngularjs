@@ -1,9 +1,9 @@
 'use strict';
 /* App Module */
 var petClinicApp = angular.module('petClinicApp', ['ngCookies', 
-    'ui.router', 'permission', 'permission.ui', 'layoutNav', 'layoutFooter',
-    'ownerList', 'ownerDetails', 'ownerForm', 'petForm', 'visits', 'vetList',
-    'login', 'register', 'userList']);
+    'ui.router', 'ngAnimate', 'ui.bootstrap', 'permission', 'permission.ui', 
+    'layoutNav', 'layoutFooter', 'ownerList', 'ownerDetails', 'ownerForm', 
+    'petForm', 'visits', 'vetList', 'login', 'register', 'userList']);
 
 petClinicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider', function(
     $stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
@@ -94,7 +94,7 @@ petClinicApp.filter('isEmpty', function() {
     return function (obj) {
 
         // null and undefined are "empty"
-        if (obj == null) return true;
+        if (obj == null) return obj;
         
         if (typeof obj !== "object") throw "Illegal argument, only objects";
 
@@ -105,7 +105,31 @@ petClinicApp.filter('isEmpty', function() {
         }
         return obj;
     };
-});
+})
+//@see http://stackoverflow.com/questions/33626232/parse-date-string-to-date-object-when-loading-angular-ui-bootstrap-datepicker
+//@see https://github.com/angular-ui/bootstrap/issues/4690
+.filter('convertDateToString', ['dateFilter', function(dateFilter) {
+	
+    var bar;
+
+	// Speed up calls to hasOwnProperty
+    var hasOwnProperty = Object.prototype.hasOwnProperty;
+    
+    return function (obj, format) {
+
+        // null and undefined are "empty"
+        if (obj == null) return obj;
+        
+        if (typeof obj !== "object") throw "Illegal argument, only objects";
+
+        for (bar in obj) {
+            if (hasOwnProperty.call(obj, bar) && angular.isDate(obj[bar])) {
+            	obj[bar] = dateFilter(obj[bar], format);
+            }
+        }
+        return obj;
+    };
+}]);
 
 ['nav', 'footer'].forEach(function(c) {
     var mod = 'layout' + c.toUpperCase().substring(0, 1) + c.substring(1);

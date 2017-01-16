@@ -7,8 +7,8 @@ angular
 	.module('petClinicApp')
     .factory('UserService', UserService);
 
-UserService.$inject = ['$http', '$httpParamSerializer'];
-function UserService($http, $httpParamSerializer) {
+UserService.$inject = ['$http', '$httpParamSerializer', '$q'];
+function UserService($http, $httpParamSerializer, $q) {
     var service = {};
 
     service.GetAll = GetAll;
@@ -57,8 +57,16 @@ function UserService($http, $httpParamSerializer) {
         return $http.put('/api/users/' + user.id, user).then(handleSuccess, handleError('Error updating user'));
     }
 
-    function Delete(id) {
-        return $http.delete('/api/users/' + id).then(handleSuccess, handleError('Error deleting user'));
+    function Delete(userId) {
+        return $http.delete('/api/users/' + userId).then(handleSuccess, handleError('Error deleting user'));
+    }
+    
+    function DeleteUsers(arrUserIds) {
+    	var paramUrl = '';
+    	if (arrUserIds != null && arrUserIds.length > 0) {
+    		paramUrl = $httpParamSerializer({'userIds': arrUserIds});
+    	}
+        return $http.delete('/api/users?' + paramUrl).then(handleSuccess, handleError('Error deleting user'));
     }
 
     // private functions
@@ -67,9 +75,10 @@ function UserService($http, $httpParamSerializer) {
         return res.data;
     }
 
+    //@see http://stackoverflow.com/questions/26186851/how-does-one-chain-successive-consecutive-http-posts-in-angular
     function handleError(error) {
         return function () {
-            return { success: false, message: error };
+            return $q.reject({ success: false, message: error });
         };
     }
 }

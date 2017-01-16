@@ -21,7 +21,7 @@ public class ProjectingConverter<T> implements Converter<Object, T> {
 	
 	private final ProjectionFactory factory;
 	
-	private final ConversionService conversionService = new DefaultConversionService();
+	private final ConversionService conversionService = new DefaultConversionService();//TODO it has to be singleton
 	
 	public ProjectingConverter(ReturnedType type, ProjectionFactory factory) {
 		this.type = type;

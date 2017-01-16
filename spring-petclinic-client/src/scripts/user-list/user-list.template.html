@@ -17,15 +17,29 @@
 		<div class="col-sm-4">
 			<input type="text" class="form-control" id="usernameSearch" name="usernameSearch" placeholder="Username" ng-model="$ctrl.userQueryForm.usernameSearch" ng-minlength="3">
 		</div>
+		<label for="enabled" class="col-sm-2 control-label">Only Enabled</label>
+		<div class="col-sm-4">
+			<input type="checkbox" ng-true-value="true" ng-false-value="null" class="form-control" id="enabled" name="enabled" placeholder="enabled" ng-model="$ctrl.userQueryForm.enabled">
+		</div>
 	</div>
 	<div class="form-group">
 		<label for="dateCreatedIni" class="col-sm-2 control-label">Init. Date</label>
 		<div class="col-sm-4">
-			<input type="text" class="form-control" id="dateCreatedIni" name="dateCreatedIni" placeholder="Init. Date" ng-model="$ctrl.userQueryForm.dateCreatedIni">
+			<p class="input-group">
+				<input type="text" class="form-control" id="dateCreatedIni" name="dateCreatedIni" placeholder="Init. Date" is-open="isDateCreatedIniOpened" uib-datepicker-popup="yyyy-MM-dd"  ng-model="$ctrl.userQueryForm.dateCreatedIni" datepicker-options="{maxDate:$ctrl.userQueryForm.dateCreatedEnd}">
+				<span class="input-group-btn">
+					<button type="button" class="btn btn-default" ng-click="isDateCreatedIniOpened = !isDateCreatedIniOpened"><i class="glyphicon glyphicon-calendar"></i></button>
+				</span>
+			</p>
 		</div>
 		<label for="dateCreatedEnd" class="col-sm-2 control-label">End Date</label>
 		<div class="col-sm-4">
-			<input type="text" class="form-control" id="dateCreatedEnd" name="dateCreatedEnd" placeholder="End Date" ng-model="$ctrl.userQueryForm.dateCreatedEnd">
+			<p class="input-group">
+				<input type="text" class="form-control" id="dateCreatedEnd" name="dateCreatedEnd" placeholder="End Date" is-open="isDateCreatedEndOpened" uib-datepicker-popup="yyyy-MM-dd" ng-model="$ctrl.userQueryForm.dateCreatedEnd" datepicker-options="{minDate:$ctrl.userQueryForm.dateCreatedIni}">
+				<span class="input-group-btn">
+					<button type="button" class="btn btn-default" ng-click="isDateCreatedEndOpened = !isDateCreatedEndOpened"><i class="glyphicon glyphicon-calendar"></i></button>
+				</span>
+			</p>
 		</div>
 	</div>
 	
@@ -36,5 +50,13 @@
 		</div>
 	</div>
 </form>
-
-<div ui-grid="$ctrl.gridOptions" ui-grid-pagination class="grid"></div>
+<div class="row">
+	<div class="col-sm-2">
+		<button class="btn" type="button" ng-click="$ctrl.deleteUsers()">Delete</button>
+	</div>
+</div>
+<div class="row">
+	<div class="col-sm-12">
+		<div ui-grid="$ctrl.gridOptions" ui-grid-pagination ui-grid-selection class="grid"></div>
+	</div>
+</div>

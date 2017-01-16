@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('userList', ['ui.router', 'ngTouch', 'ui.grid', 'ui.grid.pagination'])
+angular.module('userList', ['ui.router', 'ngTouch', 'ui.grid', 'ui.grid.pagination', 'ui.grid.selection'])
     .config(['$stateProvider', '$qProvider', function ($stateProvider, $qProvider) {
     	
         //@see https://github.com/angular-ui/ui-grid/issues/5890

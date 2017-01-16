@@ -10,8 +10,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.jpa.criteria.CriteriaBuilderImpl;
-import org.hibernate.jpa.criteria.expression.LiteralExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -234,6 +232,21 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 								cb.lower(root.get("lastName").as(String.class)), 
 								cb.lower(addParameter(cb, String.class, "lastName", "%" + userQueryForm.getLastNameSearch() + "%"))
 							)
+						);
+					}
+					if (userQueryForm.getDateCreatedIni() != null) {
+						predicates.add(
+							cb.greaterThanOrEqualTo(root.<Date>get("createdAt"), addParameter(cb, Date.class, "dateCreatedIni", userQueryForm.getDateCreatedIni()))
+						);
+					}
+					if (userQueryForm.getDateCreatedEnd() != null) {
+						predicates.add(
+							cb.lessThanOrEqualTo(root.<Date>get("createdAt"), addParameter(cb, Date.class, "dateCreatedEnd", userQueryForm.getDateCreatedEnd()))
+						);
+					}
+					if (userQueryForm.getEnabled() != null) {
+						predicates.add(
+							cb.equal(root.<Boolean>get("enabled"), userQueryForm.getEnabled())
 						);
 					}
 					

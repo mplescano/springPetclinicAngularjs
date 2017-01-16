@@ -48,7 +48,7 @@ public class ProjectableSpecificationExecutorImpl<T, ID extends Serializable>
 	    // Keep the EntityManager around to used from the newly introduced methods.
 	    this.em = entityManager;
 	    
-	    factory = new SpelAwareProxyProjectionFactory();
+	    factory = new SpelAwareProxyProjectionFactory();//TODO it has to be singleton
 	}
 
 	@Override
