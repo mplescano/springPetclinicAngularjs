@@ -17,6 +17,7 @@ function UserService($http, $httpParamSerializer, $q) {
     service.Create = Create;
     service.Update = Update;
     service.Delete = Delete;
+    service.DeleteUserList = DeleteUserList;
     service.GetFiltered = GetFiltered;
 
     return service;
@@ -61,12 +62,12 @@ function UserService($http, $httpParamSerializer, $q) {
         return $http.delete('/api/users/' + userId).then(handleSuccess, handleError('Error deleting user'));
     }
     
-    function DeleteUsers(arrUserIds) {
+    function DeleteUserList(arrUserIds) {
     	var paramUrl = '';
     	if (arrUserIds != null && arrUserIds.length > 0) {
     		paramUrl = $httpParamSerializer({'userIds': arrUserIds});
     	}
-        return $http.delete('/api/users?' + paramUrl).then(handleSuccess, handleError('Error deleting user'));
+        return $http.delete('/rest/users?' + paramUrl).then(handleSuccess, handleError('Error deleting user'));
     }
 
     // private functions

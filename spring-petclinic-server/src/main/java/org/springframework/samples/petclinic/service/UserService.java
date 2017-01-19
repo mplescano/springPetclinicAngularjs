@@ -16,4 +16,6 @@ public interface UserService {
 	Page<User> findUserList(UserQueryForm userQueryForm, Pageable pageable);
 	
 	Page<UserForWebList> findUserForWebList(final UserQueryForm userQueryForm, Pageable pageable);
+	
+	int deleteUserList(Integer[] userIds);
 }

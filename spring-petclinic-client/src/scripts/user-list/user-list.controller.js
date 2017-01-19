@@ -56,6 +56,20 @@ angular.module('userList')
         		enabled: null
         };
         
+		self.deleteUsers = function() {
+			//gridApi.selection.getSelectedRows();
+		    var arrRows = self.gridApi.selection.getSelectedRows();
+		    //arrRows.forEach(function(item, index){
+		    //    alert(item.id);
+		    //});
+		    UserService.DeleteUserList(arrRows.map(function(item){return item.id;}))
+		    .then(function (response) {
+                getPage();//TODO setTimeout because the DB in java is delaying in propagate the changes in the table's data  
+        	}, function(response) {
+        		alert(response.message);
+        	});
+		}
+        
         self.gridOptions = {
         	gridMenuShowHideColumns: false,
         	paginationPageSizes: [paginationOptions.pageSize],
@@ -110,14 +124,6 @@ angular.module('userList')
         	getPage();
 		};
 		
-		self.deleteUsers = function() {
-			//gridApi.selection.getSelectedRows();
-		    var arrRows = self.gridApi.selection.getSelectedRows();
-		    arrRows.forEach(function(item, index){
-		        alert(item.id);
-		    });
-		}
-        
         (function initController() {
         	getPage();
         })();

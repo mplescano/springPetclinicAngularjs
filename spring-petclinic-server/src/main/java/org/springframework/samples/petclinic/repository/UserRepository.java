@@ -10,7 +10,7 @@ import org.springframework.samples.petclinic.repository.support.ProjectableSpeci
  * @author mplescano
  *
  */
-public interface UserRepository extends JpaRepository<User, Integer>, ProjectableSpecificationExecutor<User> {
+public interface UserRepository extends JpaRepository<User, Integer>, ProjectableSpecificationExecutor<User, Integer> {
 
 	List<User> findByUsername(String username);
 

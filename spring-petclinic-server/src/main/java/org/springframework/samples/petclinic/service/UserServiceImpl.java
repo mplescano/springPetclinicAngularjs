@@ -1,8 +1,11 @@
 package org.springframework.samples.petclinic.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -260,5 +263,10 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 	public Page<UserForWebList> findUserForWebList(final UserQueryForm userQueryForm, Pageable pageable) {
 		NamedParamSpecification<User> specUser = getSpecUserQueryForm(userQueryForm);
 		return userRepository.findProjectedAll(specUser, pageable, UserForWebList.class);
+	}
+
+	@Override
+	public int deleteUserList(Integer[] userIds) {
+		return userRepository.deleteByIdInBatch(new HashSet<Integer>(Arrays.asList(userIds)));
 	}
 }

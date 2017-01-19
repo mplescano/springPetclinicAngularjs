@@ -1,11 +1,17 @@
 package org.springframework.samples.petclinic.repository.support;
 
+import static org.springframework.data.jpa.repository.query.QueryUtils.DELETE_ALL_QUERY_STRING;
+import static org.springframework.data.jpa.repository.query.QueryUtils.applyAndBind;
+import static org.springframework.data.jpa.repository.query.QueryUtils.getQueryString;
+
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -22,9 +28,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 /**
@@ -34,10 +42,12 @@ import org.springframework.util.Assert;
  * @param <ID>
  */
 public class ProjectableSpecificationExecutorImpl<T, ID extends Serializable> 
-	extends SimpleJpaRepository<T, ID> implements ProjectableSpecificationExecutor<T>, 
+	extends SimpleJpaRepository<T, ID> implements ProjectableSpecificationExecutor<T, ID>, 
 		BeanFactoryAware, BeanClassLoaderAware {
 
 	private final EntityManager em;
+	
+	private final JpaEntityInformation<T, ?> entityInformation;
 	
 	private final SpelAwareProxyProjectionFactory factory;
 	
@@ -45,8 +55,10 @@ public class ProjectableSpecificationExecutorImpl<T, ID extends Serializable>
 			EntityManager entityManager) {
 		super(entityInformation, entityManager);
 
-	    // Keep the EntityManager around to used from the newly introduced methods.
+	    // Keep the EntityManager around to be used from the newly introduced methods.
 	    this.em = entityManager;
+	    
+	    this.entityInformation = entityInformation;
 	    
 	    factory = new SpelAwareProxyProjectionFactory();//TODO it has to be singleton
 	}
@@ -155,4 +167,79 @@ public class ProjectableSpecificationExecutorImpl<T, ID extends Serializable>
 
 		return root;
 	}
+	
+	@Transactional
+	public int deleteById(Iterable<ID> entities) {
+		
+		int deleted = 0;
+		
+		Assert.notNull(entities, "The given Iterable of entities not be null!");
+
+		for (ID entity : entities) {
+			delete(entity);
+			deleted++;
+		}
+		return deleted;
+	}
+	
+	@Transactional
+	public int deleteByIdInBatch(Iterable<ID> entityIds) {
+
+		Assert.notNull(entityIds, "The given Iterable of entities not be null!");
+
+		if (!entityIds.iterator().hasNext()) {
+			return 0;
+		}
+
+		int deletes = applyAndBind(getQueryString(DELETE_ALL_QUERY_STRING, entityInformation.getEntityName()), 
+				entityInformation.getIdAttribute().getName(), entityIds, em)
+				.executeUpdate();
+		
+		flush();
+		
+		return deletes;
+	}
+	
+	public static <T> Query applyAndBind(String queryString, String attributeId, Iterable<T> entities, 
+			EntityManager entityManager) {
+
+		Assert.notNull(queryString);
+		Assert.notNull(entities);
+		Assert.notNull(entityManager);
+
+		Iterator<T> iterator = entities.iterator();
+
+		if (!iterator.hasNext()) {
+			return entityManager.createQuery(queryString);
+		}
+
+		String alias = QueryUtils.detectAlias(queryString);
+		StringBuilder builder = new StringBuilder(queryString);
+		builder.append(" where");
+
+		int i = 0;
+
+		while (iterator.hasNext()) {
+
+			iterator.next();
+
+			builder.append(String.format(" %s = ?%d", alias + "." + attributeId, ++i));
+
+			if (iterator.hasNext()) {
+				builder.append(" or");
+			}
+		}
+
+		Query query = entityManager.createQuery(builder.toString());
+
+		iterator = entities.iterator();
+		i = 0;
+
+		while (iterator.hasNext()) {
+			query.setParameter(++i, iterator.next());
+		}
+
+		return query;
+	}
+
 }

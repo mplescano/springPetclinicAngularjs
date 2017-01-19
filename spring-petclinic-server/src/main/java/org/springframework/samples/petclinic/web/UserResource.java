@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserResource extends AbstractResourceController {
 
-	
 	private final UserService userService;
 	
 	@Autowired
@@ -85,6 +84,8 @@ public class UserResource extends AbstractResourceController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseMessage deleteUserList(Integer[] userIds) {
     	
-    	return null;
+    	int deleted = userService.deleteUserList(userIds);
+    	
+    	return new ResponseMessage(true, "Successfuly deleted " + deleted + " items.");
     }
 }
