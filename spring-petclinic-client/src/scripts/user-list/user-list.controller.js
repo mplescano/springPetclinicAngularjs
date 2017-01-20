@@ -9,10 +9,10 @@
  * @see http://ui-grid.info/docs/#/tutorial/210_selection
  * */
 angular.module('userList')
-    .controller('UserListController', ['UserService', '$state', 
-                                       '$scope', 'FlashService', 'uiGridConstants', 'clearObjectFilter', 'convertDateToStringFilter',
-                                       function(UserService, $state, 
-                                    		   $scope, FlashService, uiGridConstants, clearObjectFilter, convertDateToStringFilter) {
+    .controller('UserListController', ['UserService', '$state', '$scope', 'FlashService', 'uiGridConstants', 
+                                       'clearObjectFilter', 'convertDateToStringFilter', '$timeout',
+                                       function(UserService, $state,  $scope, FlashService, uiGridConstants, 
+                                    		   clearObjectFilter, convertDateToStringFilter, $timeout) {
         var self = this;
 
         var getPage = function() {
@@ -64,7 +64,7 @@ angular.module('userList')
 		    //});
 		    UserService.DeleteUserList(arrRows.map(function(item){return item.id;}))
 		    .then(function (response) {
-                getPage();//TODO setTimeout because the DB in java is delaying in propagate the changes in the table's data  
+		    	$timeout(function(){getPage();}, 1000);//setTimeout because the DB in java is delaying in propagate the changes in the table's data  
         	}, function(response) {
         		alert(response.message);
         	});
