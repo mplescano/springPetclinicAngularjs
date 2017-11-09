@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.stereotype.Component;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
-public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class RestAuthExceptionThrower implements AuthenticationEntryPoint, AuthenticationFailureHandler {
 
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
@@ -22,8 +22,16 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 		 * "Custom", it just has to be different than "Basic".
 		 */
 		//TODO detect the accept application/json
-		response.setHeader("WWW-Authenticate", "FormBased");
+		//response.setHeader("WWW-Authenticate", "FormBased");
 		//response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
-		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		//response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		throw authException;
+	}
+
+	@Override
+	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+			AuthenticationException exception) throws IOException, ServletException {
+		// TODO Consider the failure in logout
+		throw exception;
 	}
 }

@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.samples.petclinic.config.security.support.RestAccessDeniedHandler;
-import org.springframework.samples.petclinic.config.security.support.RestAuthenticationEntryPoint;
+import org.springframework.samples.petclinic.config.security.support.RestAuthExceptionThrower;
 import org.springframework.samples.petclinic.config.security.support.RestAuthenticationSuccessHandler;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -15,10 +15,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
-import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
@@ -26,8 +24,8 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
-    public AuthenticationEntryPoint authenticationEntryPoint() {
-    	return new RestAuthenticationEntryPoint();
+    public RestAuthExceptionThrower authExceptionHandler() {
+    	return new RestAuthExceptionThrower();
     }
  
     @Bean
@@ -76,7 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http	
         .csrf().disable()
         .exceptionHandling()
-        .authenticationEntryPoint(authenticationEntryPoint())
+        .authenticationEntryPoint(authExceptionHandler())
         	.accessDeniedHandler(accessDeniedHandler())
         .and()
         .authorizeRequests()/*.accessDecisionManager(accessDecisionManager())*/
@@ -86,16 +84,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
         .formLogin()
         	.successHandler(authenticationSuccessHandler())
-        	.failureHandler(failureHandler())
+        	.failureHandler(authExceptionHandler())
         .and()
         .logout().logoutSuccessHandler(logoutSuccessHandler());
     }
  
-    @Bean
-    public SimpleUrlAuthenticationFailureHandler failureHandler() {
-        return new SimpleUrlAuthenticationFailureHandler();
-    }
-    
     @Bean
     public LogoutSuccessHandler logoutSuccessHandler() {
     	return new HttpStatusReturningLogoutSuccessHandler();

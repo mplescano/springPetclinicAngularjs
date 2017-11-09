@@ -3,7 +3,6 @@ package org.springframework.samples.petclinic.service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +15,6 @@ import javax.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.samples.petclinic.dto.form.UserForm;
 import org.springframework.samples.petclinic.dto.form.UserQueryForm;
 import org.springframework.samples.petclinic.dto.projection.UserForWebList;
@@ -198,7 +196,7 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 	 */
 	@Override
 	public Page<User> findUserList(final UserQueryForm userQueryForm, Pageable pageable) {
-		Specification<User> specUser = getSpecUserQueryForm(userQueryForm);
+		NamedParamSpecification<User> specUser = getSpecUserQueryForm(userQueryForm);
 		return userRepository.findAll(specUser, pageable);
 	}
 	
