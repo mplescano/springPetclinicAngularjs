@@ -2,10 +2,10 @@ package org.springframework.samples.petclinic.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.samples.petclinic.config.security.support.RestAccessDeniedHandler;
 import org.springframework.samples.petclinic.config.security.support.RestAuthExceptionThrower;
 import org.springframework.samples.petclinic.config.security.support.RestAuthenticationSuccessHandler;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,27 +15,20 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
-import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
-    public RestAuthExceptionThrower authExceptionHandler() {
+    public RestAuthExceptionThrower authExceptionThrower() {
     	return new RestAuthExceptionThrower();
     }
  
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
     	return new RestAuthenticationSuccessHandler();
-    }
-    
-    @Bean
-    public AccessDeniedHandler accessDeniedHandler() {
-    	return new RestAccessDeniedHandler();
     }
 
     @Override
@@ -62,6 +55,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
     
+    @Bean
+    public ErrorProperties errorProperties() {
+    	return new ErrorProperties();
+    }
+    
     /**
      * accessDeniedHandler is only applied when an authenticated user tries to access a resource 
      * which has not privileges
@@ -74,8 +72,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http	
         .csrf().disable()
         .exceptionHandling()
-        .authenticationEntryPoint(authExceptionHandler())
-        	.accessDeniedHandler(accessDeniedHandler())
+        .authenticationEntryPoint(authExceptionThrower())
+        	.accessDeniedHandler(authExceptionThrower())
         .and()
         .authorizeRequests()/*.accessDecisionManager(accessDecisionManager())*/
         	.antMatchers(HttpMethod.POST, "/rest/users").permitAll()
@@ -84,13 +82,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .and()
         .formLogin()
         	.successHandler(authenticationSuccessHandler())
-        	.failureHandler(authExceptionHandler())
+        	.failureHandler(authExceptionThrower())
         .and()
-        .logout().logoutSuccessHandler(logoutSuccessHandler());
+        .logout()
+        	.permitAll(false)
+        	.logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
     }
  
-    @Bean
-    public LogoutSuccessHandler logoutSuccessHandler() {
-    	return new HttpStatusReturningLogoutSuccessHandler();
-    }
+
 }
