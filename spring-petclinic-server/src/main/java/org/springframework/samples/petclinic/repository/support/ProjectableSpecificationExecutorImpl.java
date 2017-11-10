@@ -108,7 +108,7 @@ public class ProjectableSpecificationExecutorImpl<T, ID extends Serializable>
 	
 	private static Long executeCountQuery(TypedQuery<Long> query) {
 
-		Assert.notNull(query);
+		Assert.notNull(query, "query must be not null");
 
 		List<Long> totals = query.getResultList();
 		Long total = 0L;
@@ -150,8 +150,8 @@ public class ProjectableSpecificationExecutorImpl<T, ID extends Serializable>
 	private <S, U extends T> Root<U> applySpecificationToCriteria(NamedParamSpecification<U> spec, Class<U> domainClass,
 			CriteriaQuery<S> query) {
 
-		Assert.notNull(query);
-		Assert.notNull(domainClass);
+		Assert.notNull(query, "query must be not null");
+		Assert.notNull(domainClass, "domainClass must be not null");
 		Root<U> root = query.from(domainClass);
 
 		if (spec == null) {
@@ -203,9 +203,9 @@ public class ProjectableSpecificationExecutorImpl<T, ID extends Serializable>
 	public static <T> Query applyAndBind(String queryString, String attributeId, Iterable<T> entities, 
 			EntityManager entityManager) {
 
-		Assert.notNull(queryString);
-		Assert.notNull(entities);
-		Assert.notNull(entityManager);
+		Assert.notNull(queryString, "queryString must be not null");
+		Assert.notNull(entities, "entities must be not null");
+		Assert.notNull(entityManager, "entityManager must be not null");
 
 		Iterator<T> iterator = entities.iterator();
 
