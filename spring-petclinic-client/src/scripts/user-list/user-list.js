@@ -4,7 +4,7 @@ angular.module('userList', ['ui.router', 'ngTouch', 'ui.grid', 'ui.grid.paginati
     .config(['$stateProvider', '$qProvider', function ($stateProvider, $qProvider) {
     	
         //@see https://github.com/angular-ui/ui-grid/issues/5890
-        $qProvider.errorOnUnhandledRejections(false);
+        //$qProvider.errorOnUnhandledRejections(false);
         
         $stateProvider
             .state('session.users', {
