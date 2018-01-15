@@ -25,31 +25,22 @@ import org.springframework.security.config.annotation.method.configuration.Globa
  */
 @Configuration
 public class MethodSecurityConfig {
-
-	@Autowired
-	private ResourceLoader resourceLoader;
 	
-	@Autowired
-	private Environment env;
-	
-	@Bean(name = "securedResourceService")
-	public SecuredResourceService securedResourceService() {
+	@Bean
+	public SecuredResourceService securedResourceService(ResourceLoader resourceLoader, Environment env) {
 		PropertySecuredResourceServiceImpl resourceService = new PropertySecuredResourceServiceImpl();
 		resourceService.setResource(resourceLoader.getResource(env.getProperty("petclinic.secured.resources")));
 		return resourceService;
 	}
-
+	
 	@EnableGlobalMethodSecurity(prePostEnabled = true)
 	@Configuration
 	protected static class InnerMethodSecurityConfig extends GlobalMethodSecurityConfiguration 
 		implements BeanFactoryAware {
-
-		@Autowired(required = true)/*doesn't work*/
-		@Qualifier("securedResourceService")/*doesn't work*/
+		
 		private SecuredResourceService securedResourceService;
 		
 		@Bean
-		@DependsOn("securedResourceService")/*doesn't work*/
 		public MethodSecurityExpressionHandler createExpressionHandler() {
 			MethodSecurityExpressionHandler expressionHandler = new CustomMethodSecurityExpressionHandler(securedResourceService);
 			return expressionHandler;
@@ -57,8 +48,8 @@ public class MethodSecurityConfig {
 
 		@Override/*works! it's called twice!*/
 		public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-			securedResourceService = beanFactory.getBean("securedResourceService", SecuredResourceService.class);
+			securedResourceService = beanFactory.getBean(SecuredResourceService.class);
 		}
 	}
-
+	
 }
