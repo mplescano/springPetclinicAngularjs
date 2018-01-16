@@ -9,17 +9,26 @@ import org.springframework.http.HttpMethod;
 import org.springframework.samples.petclinic.config.security.support.RestAuthExceptionThrower;
 import org.springframework.samples.petclinic.config.security.support.RestAuthenticationSuccessHandler;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+    public static final String TOKEN_PREFIX = "Bearer";
+
+    public static final String HEADER_STRING = "Authorization";
+
 
     @Bean
     public RestAuthExceptionThrower authExceptionThrower() {
@@ -33,6 +42,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    	/*
+			DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+			provider.setUserDetailsService(userDetailsService);
+			if (passwordEncoder != null) {
+				provider.setPasswordEncoder(passwordEncoder);
+			}
+
+			auth.authenticationProvider(provider);
+    	 * */
     	auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
     }
     
@@ -75,20 +93,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .authenticationEntryPoint(authExceptionThrower())
         	.accessDeniedHandler(authExceptionThrower())
         .and()
+        .sessionManagement()
+        	.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and()
         .authorizeRequests()/*.accessDecisionManager(accessDecisionManager())*/
         	.antMatchers(HttpMethod.POST, "/rest/users").permitAll()
         	.antMatchers("/rest/**").authenticated()
         	.anyRequest().permitAll()
         .and()
-        .formLogin()
+        // We filter the api/login requests
+        .addFilterBefore(buildRestLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
+        // And filter other requests to check the presence of JWT in header
+        .addFilterBefore(buildJWTAuthenticationFilter(), LogoutFilter.class)
+        /*.formLogin()
         	.successHandler(authenticationSuccessHandler())
-        	.failureHandler(authExceptionThrower())
+        	.failureHandler(authExceptionThrower())*/
         .and()
         .logout()
         	.permitAll(false)
-        	.logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
-        	.invalidateHttpSession(true)
-        	.deleteCookies("JSESSIONID");
+        	.logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
     }
  
 

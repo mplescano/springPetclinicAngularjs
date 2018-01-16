@@ -7,6 +7,7 @@ DROP TABLE types IF EXISTS;
 DROP TABLE owners IF EXISTS;
 DROP TABLE users IF EXISTS;
 DROP TABLE authorities IF EXISTS;
+DROP TABLE auth_token IF EXISTS;
 
 CREATE TABLE vets (
   id         INTEGER IDENTITY PRIMARY KEY,
@@ -72,7 +73,7 @@ CREATE TABLE users (
   username       VARCHAR(30) NOT NULL,
   password  VARCHAR(255) NOT NULL,
   enabled boolean not null,
-  createdAt	TIMESTAMP not null,
+  created_at	TIMESTAMP not null,
   UNIQUE (username),
   UNIQUE (first_name, last_name)
 );
@@ -83,3 +84,14 @@ create table authorities (
 	authority varchar(50) not null,
 	UNIQUE (role, authority)
 );
+
+CREATE TABLE auth_tokens (
+	id         INTEGER IDENTITY PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    token VARCHAR(464) NOT NULL,
+    CREATED_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    EXPIRY_DATE TIMESTAMP,
+    UNIQUE (user_id, token)
+)
+
+ALTER TABLE auth_tokens ADD CONSTRAINT fk_tokens_users FOREIGN KEY (user_id) REFERENCES users (id);

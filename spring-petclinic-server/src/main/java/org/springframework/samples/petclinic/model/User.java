@@ -5,6 +5,8 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -28,7 +30,8 @@ public class User extends Person {
 	@Column(name = "enabled")
 	private boolean enabled;
 	
-	@Column(name = "createdAt")
+	@Column(name = "created_at")
+	@Temporal(TemporalType.TIMESTAMP)
 	@NotNull
 	private Date createdAt;
 

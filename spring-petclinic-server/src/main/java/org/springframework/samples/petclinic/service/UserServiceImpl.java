@@ -15,6 +15,7 @@ import javax.persistence.criteria.Root;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.samples.petclinic.dto.UserDto;
 import org.springframework.samples.petclinic.dto.form.UserForm;
 import org.springframework.samples.petclinic.dto.form.UserQueryForm;
 import org.springframework.samples.petclinic.dto.projection.UserForWebList;
@@ -80,7 +81,7 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 			
 		}
 		
-		return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
+		return new UserDto(user.getId(), user.getUsername(), user.getPassword(),
 				user.isEnabled(), true, true, true, combinedAuthorities);
 	}
 
