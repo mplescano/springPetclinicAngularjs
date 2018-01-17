@@ -34,6 +34,13 @@ public class User extends Person {
 	@Temporal(TemporalType.TIMESTAMP)
 	@NotNull
 	private Date createdAt;
+	
+	public User() {
+	}
+	
+	public User(Integer id) {
+		this.id = id;
+	}
 
 	public String getRoles() {
 		return roles;

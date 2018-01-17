@@ -4,28 +4,29 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jwt.JWTClaimsSet;
 
-import pe.com.scotiabank.imagine.api.config.security.PrincipalWebHolder;
-
+import org.joda.time.LocalDateTime;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.samples.petclinic.config.security.WebSecurityConfig;
 import org.springframework.samples.petclinic.config.security.jwt.token.BuilderTokenStrategy;
+import org.springframework.samples.petclinic.config.security.jwt.token.JwtAuthenticationToken;
 import org.springframework.samples.petclinic.config.security.jwt.token.TokenStrategy;
 import org.springframework.samples.petclinic.config.security.jwt.token.WrapperKey;
 import org.springframework.samples.petclinic.dto.UserDto;
+import org.springframework.samples.petclinic.service.AuthTokenService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
+	private final ObjectMapper mapper;
+	
     private final WrapperKey wrapperKey;
 
     private long expirationTime;
@@ -34,9 +35,10 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
     private BuilderTokenStrategy builder;
 
-    public JwtAuthenticationSuccessHandler(WrapperKey jwtKey, BuilderTokenStrategy builder,
+    public JwtAuthenticationSuccessHandler(ObjectMapper mapper, WrapperKey jwtKey, BuilderTokenStrategy builder,
                                             long expirationTime, AuthTokenService authTokenService) {
-        this.wrapperKey = jwtKey;
+    	this.mapper = mapper;
+    	this.wrapperKey = jwtKey;
         this.builder = builder;
         this.expirationTime = expirationTime;
         this.authTokenService = authTokenService;
@@ -55,14 +57,10 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 response.addHeader(WebSecurityConfig.HEADER_STRING, WebSecurityConfig.TOKEN_PREFIX + " " + jwToken);
             }
-
-
-
-
         } else if (authResult instanceof JwtAuthenticationToken) {
             JwtAuthenticationToken jwtToken = (JwtAuthenticationToken) authResult;
-            if (jwtToken.getPrincipal() instanceof PrincipalWebHolder) {
-                PrincipalWebHolder prinWebHolder = (PrincipalWebHolder) jwtToken.getPrincipal();
+            if (jwtToken.getPrincipal() instanceof UserDto) {
+            	UserDto prinWebHolder = (UserDto) jwtToken.getPrincipal();
                 String jwToken = processToken(authResult, prinWebHolder);
 
                 response.addHeader(WebSecurityConfig.HEADER_STRING, WebSecurityConfig.TOKEN_PREFIX + " " + jwToken);
@@ -74,16 +72,14 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
             throws JsonProcessingException, IOException {
         LocalDateTime curDate = LocalDateTime.now();
         // Prepare JWT with claims set
-        LocalDateTime expDate = curDate.plusSeconds(expirationTime);
+        LocalDateTime expDate = curDate.plusSeconds((int) expirationTime);
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                .subject(principalUser.getUsername())
-                //.claim("email", prinWebHolder.getLoginResponse().getUser().getEmail())
-                //.claim("session", prinWebHolder.getSession())
+                .jwtID(String.valueOf(principalUser.getId()))
+        		.subject(principalUser.getUsername())
                 .claim("roles", mapper.writeValueAsString(authResult.getAuthorities()))
                 .issuer("petclinic-api")
-                //.claim("user-context", mapper.writeValueAsString(prinWebHolder.getLoginResponse()))
-                .expirationTime(TimeUtil.toDate(expDate))
-                .issueTime(TimeUtil.toDate(curDate))
+                .expirationTime(expDate.toDate())
+                .issueTime(curDate.toDate())
                 .build();
 
         String jwToken = "";

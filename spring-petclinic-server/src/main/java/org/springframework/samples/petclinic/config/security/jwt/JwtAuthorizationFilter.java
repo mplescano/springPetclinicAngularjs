@@ -9,6 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.samples.petclinic.config.security.WebSecurityConfig;
+import org.springframework.samples.petclinic.config.security.jwt.token.JwtAuthenticationToken;
+import org.springframework.samples.petclinic.config.security.jwt.token.RawAccessJwtToken;
+import org.springframework.samples.petclinic.config.security.jwt.token.TokenExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -22,27 +26,20 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.StringUtils;
 
-import pe.com.scotiabank.imagine.api.config.SecurityConfiguration;
-import pe.com.scotiabank.imagine.api.config.security.BtLogoutHandler;
-import pe.com.scotiabank.imagine.api.config.security.PrincipalWebHolder;
-import pe.com.scotiabank.imagine.api.config.security.token.JwtAuthenticationToken;
-import pe.com.scotiabank.imagine.api.config.security.token.RawAccessJwtToken;
-import pe.com.scotiabank.imagine.api.login.model.endpoint.LogoutRequest;
-import pe.com.scotiabank.imagine.api.login.service.LoginService;
-import pe.com.scotiabank.imagine.api.web.rest.errors.TokenExpiredException;
 
-public class JWTAuthorizationFilter extends AbstractAuthenticationProcessingFilter {
+
+public class JwtAuthorizationFilter extends AbstractAuthenticationProcessingFilter {
 	
-	private static final Logger LOG = LoggerFactory.getLogger(JWTAuthorizationFilter.class);
+	private static final Logger LOG = LoggerFactory.getLogger(JwtAuthorizationFilter.class);
 
 	private LoginService loginService;
 	
 	private RequestMatcher logoutMatcherRequest;
 	
-	private BtLogoutHandler btLogoutHandler;
+	private AuthTokenLogoutHandler btLogoutHandler;
 	
-	public JWTAuthorizationFilter(RequestMatcher matchers, AuthenticationManager authenticationManager, AuthenticationSuccessHandler successHandler, 
-			AuthenticationFailureHandler failureHandler, LoginService loginService, RequestMatcher logoutRequest, BtLogoutHandler btLogoutHandler) {
+	public JwtAuthorizationFilter(RequestMatcher matchers, AuthenticationManager authenticationManager, AuthenticationSuccessHandler successHandler, 
+			AuthenticationFailureHandler failureHandler, LoginService loginService, RequestMatcher logoutRequest, AuthTokenLogoutHandler btLogoutHandler) {
 		super(matchers);
 		setAuthenticationManager(authenticationManager);
 		setAuthenticationSuccessHandler(successHandler);
@@ -57,15 +54,15 @@ public class JWTAuthorizationFilter extends AbstractAuthenticationProcessingFilt
 			throws AuthenticationException, IOException, ServletException {
 		
 		HttpServletRequest req = (HttpServletRequest) request;
-		String headerPayload = req.getHeader(SecurityConfiguration.HEADER_STRING);
+		String headerPayload = req.getHeader(WebSecurityConfig.HEADER_STRING);
 		
 		if (!StringUtils.hasText(headerPayload)) {
 			throw new InsufficientAuthenticationException("Authorization header cannot be blank!");
 		}
-		if (headerPayload.length() < (SecurityConfiguration.TOKEN_PREFIX.length() + 1)) {
+		if (headerPayload.length() < (WebSecurityConfig.TOKEN_PREFIX.length() + 1)) {
 			throw new InsufficientAuthenticationException("Invalid authorization header size.");
 		}
-		String tokenPayload = headerPayload.substring(SecurityConfiguration.TOKEN_PREFIX.length() + 1, headerPayload.length());
+		String tokenPayload = headerPayload.substring(WebSecurityConfig.TOKEN_PREFIX.length() + 1, headerPayload.length());
 		
 		return getAuthenticationManager().authenticate(new JwtAuthenticationToken(new RawAccessJwtToken(tokenPayload)));
 	}

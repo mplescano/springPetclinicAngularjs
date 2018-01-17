@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.dto;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -14,6 +15,11 @@ public class UserDto extends User {
 	
 	private Integer id;
 
+	public UserDto(Integer id, String username) {
+		super(username, null, false, false, false, false, new ArrayList<GrantedAuthority>());
+		this.id = id;
+	}
+	
 	public UserDto(Integer id, String username, String password, boolean enabled, boolean accountNonExpired,
 			boolean credentialsNonExpired, boolean accountNonLocked,
 			Collection<? extends GrantedAuthority> authorities) {

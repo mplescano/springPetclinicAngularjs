@@ -8,8 +8,13 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.samples.petclinic.config.security.jwt.token.BuilderTokenStrategy;
+import org.springframework.samples.petclinic.config.security.jwt.token.JwtAuthenticationToken;
+import org.springframework.samples.petclinic.config.security.jwt.token.RawAccessJwtToken;
 import org.springframework.samples.petclinic.config.security.jwt.token.TokenExpiredException;
+import org.springframework.samples.petclinic.config.security.jwt.token.TokenStrategy;
 import org.springframework.samples.petclinic.config.security.jwt.token.WrapperKey;
+import org.springframework.samples.petclinic.dto.UserDto;
+import org.springframework.samples.petclinic.service.AuthTokenService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -24,7 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jwt.JWTClaimsSet;
 
 @Component
-public class JWTAuthorizationProvider implements AuthenticationProvider {
+public class JwtAuthorizationProvider implements AuthenticationProvider {
 
 	private final WrapperKey wrapperKey;
 	
@@ -35,7 +40,7 @@ public class JWTAuthorizationProvider implements AuthenticationProvider {
 	private final AuthTokenService authTokenService;
 
     @Autowired
-    public JWTAuthorizationProvider(@Qualifier("jwtKey") WrapperKey jwtKey, ObjectMapper mapper,
+    public JwtAuthorizationProvider(@Qualifier("jwtKey") WrapperKey jwtKey, ObjectMapper mapper,
                                     BuilderTokenStrategy builder, AuthTokenService authTokenService) {
         this.wrapperKey = jwtKey;
         this.mapper = mapper;
@@ -57,24 +62,24 @@ public class JWTAuthorizationProvider implements AuthenticationProvider {
 
 		JWTClaimsSet claims;
 		String userId;
-		String session;
+		String username;
 		List<Map<String, String>> rawMapRoles;
 		List<GrantedAuthority> roles = new ArrayList<>();
-		PrincipalWebHolder principalWebHolder;
+		UserDto principalWebHolder;
 		try {
 			claims = tokenStrategy.getClaims();
-			userId = claims.getSubject();
-			session = (String) claims.getClaim("session");
+			userId = claims.getJWTID();
+			username = claims.getSubject();
 			rawMapRoles = mapper.readValue((String) claims.getClaim("roles"), new TypeReference<List<Map<String, String>>>() {
 			});
-			principalWebHolder = new PrincipalWebHolder(userId, session);
+			principalWebHolder = new UserDto(Integer.parseInt(userId), username);
 		} catch (Exception ex) {
 			throw new InternalAuthenticationServiceException("Parsing of claims failed.", ex);
 		}
 		for (Map<String, String> rawRol : rawMapRoles) {
 			roles.add(new SimpleGrantedAuthority(rawRol.get("authority")));
 		}
-		if(!authTokenService.existsToken(userId, rawAccessToken.getToken())){
+		if(!authTokenService.existsToken(Integer.parseInt(userId), rawAccessToken.getToken())){
 			throw new InsufficientAuthenticationException("Invalid Token.");
 		}
 		if ((new Date()).after(claims.getExpirationTime())) {
