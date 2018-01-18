@@ -18,20 +18,21 @@ public class AuthTokenServiceImpl implements AuthTokenService {
 
     @Override
     @Transactional
-    public void putToken(Integer userId, String token, LocalDateTime expiryDate) {
+    public AuthToken putToken(Integer userId, String token, LocalDateTime expiryDate) {
         AuthToken authToken = new AuthToken();
         authToken.setUser(new User(userId));
         authToken.setExpiryDate(expiryDate.toDate());
         authToken.setToken(HashUtil.hashString(token));
         
         repository.deleteByUserAndExpiryDateBefore(new User(userId), LocalDateTime.now().toDate());
-        repository.save(authToken);
+        return repository.save(authToken);
     }
 
     @Override
     @Transactional
-    public void removeToken(Integer userId) {
-        repository.delete(userId);
+    public void removeTokenByUserId(Integer userId) {
+        //repository.delete(userId);
+    	repository.deleteByUserAndExpiryDateBefore(new User(userId), LocalDateTime.now().toDate());
     }
 
     @Override

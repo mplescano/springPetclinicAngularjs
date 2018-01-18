@@ -88,7 +88,7 @@ create table authorities (
 CREATE TABLE auth_tokens (
 	id         INTEGER IDENTITY PRIMARY KEY,
     user_id INTEGER NOT NULL,
-    token VARCHAR(464) NOT NULL,
+    token VARCHAR(64) NOT NULL,
     CREATED_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     EXPIRY_DATE TIMESTAMP,
     UNIQUE (user_id, token)

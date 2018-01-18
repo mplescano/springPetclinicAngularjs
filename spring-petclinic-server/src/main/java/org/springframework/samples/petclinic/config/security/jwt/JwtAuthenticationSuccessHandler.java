@@ -29,7 +29,7 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
 	
     private final WrapperKey wrapperKey;
 
-    private long expirationTime;
+    private long expirationTimeInSeconds;
 
     private final AuthTokenService authTokenService;
 
@@ -40,7 +40,7 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
     	this.mapper = mapper;
     	this.wrapperKey = jwtKey;
         this.builder = builder;
-        this.expirationTime = expirationTime;
+        this.expirationTimeInSeconds = expirationTime;
         this.authTokenService = authTokenService;
     }
 
@@ -72,7 +72,7 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
             throws JsonProcessingException, IOException {
         LocalDateTime curDate = LocalDateTime.now();
         // Prepare JWT with claims set
-        LocalDateTime expDate = curDate.plusSeconds((int) expirationTime);
+        LocalDateTime expDate = curDate.plusSeconds((int) expirationTimeInSeconds);
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
                 .jwtID(String.valueOf(principalUser.getId()))
         		.subject(principalUser.getUsername())

@@ -43,7 +43,4 @@ public class TokenExpiredException extends AuthenticationException {
 	public void setCodeError(String codeError) {
 		this.codeError = codeError;
 	}
-	
-	
-	
 }

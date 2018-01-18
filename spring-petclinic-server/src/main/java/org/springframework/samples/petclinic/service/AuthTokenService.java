@@ -1,12 +1,13 @@
 package org.springframework.samples.petclinic.service;
 
 import org.joda.time.LocalDateTime;
+import org.springframework.samples.petclinic.model.AuthToken;
 
 public interface AuthTokenService {
 	
-	void putToken(Integer userId, String token, LocalDateTime expiryDate);
+	AuthToken putToken(Integer userId, String token, LocalDateTime expiryDate);
 	
-	void removeToken(Integer userId);
+	void removeTokenByUserId(Integer userId);
 	
 	boolean existsToken(Integer userId, String token);
 }

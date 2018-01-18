@@ -13,6 +13,8 @@ import org.springframework.samples.petclinic.config.security.WebSecurityConfig;
 import org.springframework.samples.petclinic.config.security.jwt.token.JwtAuthenticationToken;
 import org.springframework.samples.petclinic.config.security.jwt.token.RawAccessJwtToken;
 import org.springframework.samples.petclinic.config.security.jwt.token.TokenExpiredException;
+import org.springframework.samples.petclinic.dto.UserDto;
+import org.springframework.samples.petclinic.service.AuthTokenService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -26,20 +28,18 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.StringUtils;
 
-
-
 public class JwtAuthorizationFilter extends AbstractAuthenticationProcessingFilter {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(JwtAuthorizationFilter.class);
 
-	private LoginService loginService;
+	private AuthTokenService loginService;
 	
 	private RequestMatcher logoutMatcherRequest;
 	
 	private AuthTokenLogoutHandler btLogoutHandler;
 	
 	public JwtAuthorizationFilter(RequestMatcher matchers, AuthenticationManager authenticationManager, AuthenticationSuccessHandler successHandler, 
-			AuthenticationFailureHandler failureHandler, LoginService loginService, RequestMatcher logoutRequest, AuthTokenLogoutHandler btLogoutHandler) {
+			AuthenticationFailureHandler failureHandler, AuthTokenService loginService, RequestMatcher logoutRequest, AuthTokenLogoutHandler btLogoutHandler) {
 		super(matchers);
 		setAuthenticationManager(authenticationManager);
 		setAuthenticationSuccessHandler(successHandler);
@@ -86,21 +86,21 @@ public class JwtAuthorizationFilter extends AbstractAuthenticationProcessingFilt
 
 		if (failed instanceof TokenExpiredException) {
 			Authentication authentication = ((TokenExpiredException) failed).getAuthentication();
-			//Call BT
-			LogoutRequest logoutRequest;
+			Integer userId = null;
 			try {
-				if (authentication != null && authentication.getPrincipal() instanceof PrincipalWebHolder) {
-					PrincipalWebHolder principalWebHolder = (PrincipalWebHolder) authentication.getPrincipal();
-					logoutRequest = new LogoutRequest();
-					logoutRequest.setUserId(principalWebHolder.getUserId());
+				if (authentication != null && authentication.getPrincipal() instanceof UserDto) {
+					UserDto principalWebHolder = (UserDto) authentication.getPrincipal();
+					userId = principalWebHolder.getId();
 					if (logoutMatcherRequest.matches(request)) {
 						SecurityContext context = SecurityContextHolder.createEmptyContext();
 						context.setAuthentication(authentication);
 						SecurityContextHolder.setContext(context);
+						//TODO instead of this, it should call the chain
 						btLogoutHandler.logout(request, response, authentication);
+						return;
 					}
 					else {
-						loginService.logout(logoutRequest);
+						loginService.removeTokenByUserId(userId);
 					}
 				}
 			} catch (InternalAuthenticationServiceException ex) {

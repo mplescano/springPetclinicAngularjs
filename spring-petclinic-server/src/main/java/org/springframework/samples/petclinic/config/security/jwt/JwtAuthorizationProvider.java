@@ -72,7 +72,7 @@ public class JwtAuthorizationProvider implements AuthenticationProvider {
 			username = claims.getSubject();
 			rawMapRoles = mapper.readValue((String) claims.getClaim("roles"), new TypeReference<List<Map<String, String>>>() {
 			});
-			principalWebHolder = new UserDto(Integer.parseInt(userId), username);
+			principalWebHolder = new UserDto(Integer.valueOf(userId), username);
 		} catch (Exception ex) {
 			throw new InternalAuthenticationServiceException("Parsing of claims failed.", ex);
 		}
