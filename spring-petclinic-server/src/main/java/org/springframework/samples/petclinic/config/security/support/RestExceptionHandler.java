@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 
 import javax.persistence.PersistenceException;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -12,14 +13,21 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.samples.petclinic.config.security.jwt.token.TokenExpiredException;
 import org.springframework.samples.petclinic.dto.FieldErrorMessage;
 import org.springframework.samples.petclinic.dto.ResponseMessage;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AccountStatusException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -50,8 +58,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      * @param request
      * @return
      */
-    @ExceptionHandler({ AccessDeniedException.class })
-    public ResponseEntity<Object> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+    @ExceptionHandler({ InsufficientAuthenticationException.class, AccessDeniedException.class })
+    public ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
     	ResponseMessage message = new ResponseMessage(false, ex.getMessage());
         return handleExceptionInternal(ex, message, null, HttpStatus.FORBIDDEN, request);
     }
@@ -61,7 +69,27 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     	ResponseMessage message = new ResponseMessage(false, ex.getMessage());
     	return handleExceptionInternal(ex, message, null, HttpStatus.INTERNAL_SERVER_ERROR, request);
 	}
+    
+    @ExceptionHandler({ AccountStatusException.class, BadCredentialsException.class, UsernameNotFoundException.class, 
+    	InternalAuthenticationServiceException.class })
+    public ResponseEntity<Object> handleAuthenticateException(PersistenceException ex, WebRequest request) {
+    	ResponseMessage message = new ResponseMessage(false, ex.getMessage());
+    	return handleExceptionInternal(ex, message, null, HttpStatus.UNAUTHORIZED, request);
+	}
 	
+    @ExceptionHandler({ TokenExpiredException.class })
+    public ResponseMessage tokenExpiredException(Exception ex, WebRequest webRequest) {
+        if (webRequest instanceof ServletWebRequest) {
+            ServletWebRequest servletRequest = (ServletWebRequest) webRequest;
+            HttpServletResponse response = servletRequest.getNativeResponse(HttpServletResponse.class);
+            if (!response.isCommitted()) {
+                response.setStatus(440);//440 Login Time-out The client's session has expired and must log in again.[76]
+            }
+        }
+        ResponseMessage message = new ResponseMessage(false, ex.getMessage());
+    	return message;
+    }
+    
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
         BindingResult result = ex.getBindingResult();

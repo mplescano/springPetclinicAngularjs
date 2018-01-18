@@ -57,6 +57,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public static final String LOGOUT_ENTRY_POINT = "/logout";
     
+    private static final String ERROR_ENTRY_POINT = "/error";
+    
     @Autowired
     private ResourceLoader resourceLoader;
     
@@ -179,7 +181,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     	matchers.add(new AntPathRequestMatcher(LOGIN_ENTRY_POINT, HttpMethod.POST.toString()));
     	//matchers.add(new AntPathRequestMatcher(SYNC_ENTRY_POINT));
         //matchers.add(new AntPathRequestMatcher(REFRESH_ENTRY_POINT));
-    	//matchers.add(new AntPathRequestMatcher(ERROR_ENTRY_POINT));
+    	matchers.add(new AntPathRequestMatcher(ERROR_ENTRY_POINT));
     	/*if (environment.acceptsProfiles("debug")) {
     		matchers.add(new AntPathRequestMatcher("/swagger-ui.html"));
     		matchers.add(new AntPathRequestMatcher("/webjars/**"));
