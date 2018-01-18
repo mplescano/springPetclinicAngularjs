@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpMethod;
 import org.springframework.samples.petclinic.config.security.jwt.AuthTokenLogoutHandler;
@@ -27,7 +28,6 @@ import org.springframework.samples.petclinic.config.security.support.RestAuthExc
 import org.springframework.samples.petclinic.config.security.support.RestAuthenticationSuccessHandler;
 import org.springframework.samples.petclinic.service.AuthTokenService;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -47,6 +47,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
+@PropertySource("classpath:keystore-jwt.properties")
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public static final String TOKEN_PREFIX = "Bearer";
