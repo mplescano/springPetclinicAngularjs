@@ -16,7 +16,7 @@ public class UserDto extends User {
 	private Integer id;
 
 	public UserDto(Integer id, String username) {
-		super(username, null, false, false, false, false, new ArrayList<GrantedAuthority>());
+		super(username, username, false, false, false, false, new ArrayList<GrantedAuthority>());
 		this.id = id;
 	}
 	

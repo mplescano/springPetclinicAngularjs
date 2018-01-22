@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.samples.petclinic.config.security.jwt.token.BuilderTokenStrategy;
 import org.springframework.samples.petclinic.config.security.jwt.token.JwtAuthenticationToken;
 import org.springframework.samples.petclinic.config.security.jwt.token.RawAccessJwtToken;
@@ -22,13 +20,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.jwt.JWTClaimsSet;
 
-@Component
 public class JwtAuthorizationProvider implements AuthenticationProvider {
 
 	private final WrapperKey wrapperKey;
@@ -39,8 +35,7 @@ public class JwtAuthorizationProvider implements AuthenticationProvider {
 
 	private final AuthTokenService authTokenService;
 
-    @Autowired
-    public JwtAuthorizationProvider(@Qualifier("jwtKey") WrapperKey jwtKey, ObjectMapper mapper,
+    public JwtAuthorizationProvider(WrapperKey jwtKey, ObjectMapper mapper,
                                     BuilderTokenStrategy builder, AuthTokenService authTokenService) {
         this.wrapperKey = jwtKey;
         this.mapper = mapper;

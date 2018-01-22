@@ -16,14 +16,12 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@Component
 public class AuthTokenLogoutHandler implements LogoutHandler {
 
 	private AuthTokenService authTokenService;
 	
 	private final ObjectMapper mapper;
 	
-	@Autowired
 	public AuthTokenLogoutHandler(AuthTokenService authTokenService, ObjectMapper mapper) {
 		this.authTokenService = authTokenService;
 		this.mapper = mapper;

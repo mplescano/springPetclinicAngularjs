@@ -10,18 +10,21 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpMethod;
 import org.springframework.samples.petclinic.config.security.jwt.AuthTokenLogoutHandler;
 import org.springframework.samples.petclinic.config.security.jwt.JwtAuthenticationSuccessHandler;
 import org.springframework.samples.petclinic.config.security.jwt.JwtAuthorizationFilter;
+import org.springframework.samples.petclinic.config.security.jwt.JwtAuthorizationProvider;
 import org.springframework.samples.petclinic.config.security.jwt.RestAuthenticationFilter;
 import org.springframework.samples.petclinic.config.security.jwt.token.BuilderTokenStrategy;
+import org.springframework.samples.petclinic.config.security.jwt.token.BuilderTokenStrategyFactory;
 import org.springframework.samples.petclinic.config.security.jwt.token.SymmetricKey;
 import org.springframework.samples.petclinic.config.security.jwt.token.WrapperKey;
 import org.springframework.samples.petclinic.config.security.support.RestAuthExceptionThrower;
@@ -47,7 +50,6 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
-@PropertySource("classpath:keystore-jwt.properties")
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public static final String TOKEN_PREFIX = "Bearer";
@@ -75,18 +77,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthTokenLogoutHandler authTokenLogoutHandler;
     
-    @Value("${jwt.jks.file.path}")
-    private String jwtJksFilePath;
+    @Autowired
+    private JwtAuthorizationProvider jwtAuthorizationProvider;
     
-    @Value("${jwt.jks.file.password}")
-    private String jwtJksFilePassword;
-    
-    @Value("${jwt.jks.key.alias.name}")
-    private String jwtJksKeyAliasName;
-    
-    @Value("${jwt.jks.key.password}")
-    private String jwtJksKeyPassword;
-
     @Bean
     public RestAuthExceptionThrower authExceptionThrower() {
     	return new RestAuthExceptionThrower();
@@ -109,6 +102,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			auth.authenticationProvider(provider);
     	 * */
     	auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
+    	
+    	auth.authenticationProvider(jwtAuthorizationProvider);
+    	
     }
     
     @Bean("authenticationManager")
@@ -224,12 +220,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
     
     @Bean(name = "jwtKey")
-    protected WrapperKey jwtKey(@Qualifier("jwtKeystore") KeyStore keyStore) throws Exception {
+    protected WrapperKey jwtKey(@Qualifier("jwtKeystore") KeyStore keyStore, @Value("${jwt.jks.key.alias.name}") String jwtJksKeyAliasName, 
+    		@Value("${jwt.jks.key.password}") String jwtJksKeyPassword) throws Exception {
         return processKey(keyStore, jwtJksKeyAliasName, jwtJksKeyPassword.toCharArray());
     }
     
     @Bean(name = "jwtKeystore")
-    protected KeyStore jwtKeyStore() throws Exception {
+    protected KeyStore jwtKeyStore(@Value("${jwt.jks.file.path}") String jwtJksFilePath, @Value("${jwt.jks.file.password}") String jwtJksFilePassword) throws Exception {
         KeyStore keystore = KeyStore.getInstance("JCEKS");
         keystore.load(resourceLoader.getResource(jwtJksFilePath).getInputStream(), jwtJksFilePassword.toCharArray());
         return keystore;
@@ -247,5 +244,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public JwtAuthenticationSuccessHandler buildRestSuccessHandler(ObjectMapper mapper, @Qualifier("jwtKey") WrapperKey jwtKey,
     		BuilderTokenStrategy builder, @Value("${jwt.token.expiration.time.seconds}") long expirationTimeInSeconds, AuthTokenService authTokenService) {
     	return new JwtAuthenticationSuccessHandler(mapper, jwtKey, builder, expirationTimeInSeconds, authTokenService);
+    }
+    
+    @Bean(name = "builderTokenStrategy")
+    public BuilderTokenStrategyFactory builderTokenStrategyFactoryBean() {
+    	return new BuilderTokenStrategyFactory();
+    }
+    
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public BuilderTokenStrategy builderTokenStrategy() throws Exception {
+        return builderTokenStrategyFactoryBean().getObject();
+    }
+    
+    @Bean
+    public AuthTokenLogoutHandler buildAuthTokenLogoutHandler(AuthTokenService authTokenService, ObjectMapper mapper) {
+    	return new AuthTokenLogoutHandler(authTokenService, mapper);
+    }
+    
+    @Bean
+    public JwtAuthorizationProvider buildJwtAuthorizationProvider(@Qualifier("jwtKey") WrapperKey jwtKey, ObjectMapper mapper,
+            BuilderTokenStrategy builder, AuthTokenService authTokenService) {
+    	return new JwtAuthorizationProvider(jwtKey, mapper, builder, authTokenService);
     }
 }
