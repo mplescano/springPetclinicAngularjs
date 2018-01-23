@@ -7,14 +7,14 @@ import org.springframework.security.core.AuthenticationException;
  * @author s6026865
  *
  */
-public class TokenExpiredException extends TokenException {
+public class TokenInvalidedException extends TokenException {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public TokenExpiredException(String msg, Authentication authentication) {
+	public TokenInvalidedException(String msg, Authentication authentication) {
 		super(msg, authentication);
 	}
 

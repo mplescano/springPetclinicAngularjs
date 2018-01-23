@@ -9,6 +9,7 @@ import org.springframework.samples.petclinic.config.security.jwt.token.BuilderTo
 import org.springframework.samples.petclinic.config.security.jwt.token.JwtAuthenticationToken;
 import org.springframework.samples.petclinic.config.security.jwt.token.RawAccessJwtToken;
 import org.springframework.samples.petclinic.config.security.jwt.token.TokenExpiredException;
+import org.springframework.samples.petclinic.config.security.jwt.token.TokenInvalidedException;
 import org.springframework.samples.petclinic.config.security.jwt.token.TokenStrategy;
 import org.springframework.samples.petclinic.config.security.jwt.token.WrapperKey;
 import org.springframework.samples.petclinic.dto.UserDto;
@@ -75,7 +76,7 @@ public class JwtAuthorizationProvider implements AuthenticationProvider {
 			roles.add(new SimpleGrantedAuthority(rawRol.get("authority")));
 		}
 		if(!authTokenService.existsToken(Integer.parseInt(userId), rawAccessToken.getToken())){
-			throw new InsufficientAuthenticationException("Invalid Token.");
+			throw new TokenInvalidedException("Invalid Token.", new JwtAuthenticationToken(principalWebHolder, roles));
 		}
 		if ((new Date()).after(claims.getExpirationTime())) {
 			throw new TokenExpiredException("Token expired.", new JwtAuthenticationToken(principalWebHolder, roles));

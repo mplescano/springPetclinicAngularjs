@@ -14,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.config.security.jwt.token.TokenExpiredException;
+import org.springframework.samples.petclinic.config.security.jwt.token.TokenInvalidedException;
 import org.springframework.samples.petclinic.dto.FieldErrorMessage;
 import org.springframework.samples.petclinic.dto.ResponseMessage;
 import org.springframework.security.access.AccessDeniedException;
@@ -58,7 +59,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      * @param request
      * @return
      */
-    @ExceptionHandler({ InsufficientAuthenticationException.class, AccessDeniedException.class })
+    @ExceptionHandler({ TokenInvalidedException.class, InsufficientAuthenticationException.class, AccessDeniedException.class })
     public ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
     	ResponseMessage message = new ResponseMessage(false, ex.getMessage());
         return handleExceptionInternal(ex, message, null, HttpStatus.FORBIDDEN, request);

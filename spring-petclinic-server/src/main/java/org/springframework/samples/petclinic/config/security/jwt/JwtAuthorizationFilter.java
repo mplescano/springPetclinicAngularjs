@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.samples.petclinic.config.security.WebSecurityConfig;
 import org.springframework.samples.petclinic.config.security.jwt.token.JwtAuthenticationToken;
 import org.springframework.samples.petclinic.config.security.jwt.token.RawAccessJwtToken;
+import org.springframework.samples.petclinic.config.security.jwt.token.TokenException;
 import org.springframework.samples.petclinic.config.security.jwt.token.TokenExpiredException;
 import org.springframework.samples.petclinic.dto.UserDto;
 import org.springframework.samples.petclinic.service.AuthTokenService;
@@ -84,8 +85,8 @@ public class JwtAuthorizationFilter extends AbstractAuthenticationProcessingFilt
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException failed) throws IOException, ServletException {
 
-		if (failed instanceof TokenExpiredException) {
-			Authentication authentication = ((TokenExpiredException) failed).getAuthentication();
+		if (failed instanceof TokenException) {
+			Authentication authentication = ((TokenException) failed).getAuthentication();
 			Integer userId = null;
 			try {
 				if (authentication != null && authentication.getPrincipal() instanceof UserDto) {
