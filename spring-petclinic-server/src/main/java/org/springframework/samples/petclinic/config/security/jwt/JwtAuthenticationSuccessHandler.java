@@ -54,7 +54,7 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
                 String jwToken = processToken(authResult, principalUser);
 
                 response.setStatus(HttpStatus.OK.value());
-                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
                 response.addHeader(WebSecurityConfig.HEADER_STRING, WebSecurityConfig.TOKEN_PREFIX + " " + jwToken);
             }
         } else if (authResult instanceof JwtAuthenticationToken) {

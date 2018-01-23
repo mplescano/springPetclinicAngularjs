@@ -41,7 +41,7 @@ public class AuthTokenLogoutHandler implements LogoutHandler {
 
 			authTokenService.removeTokenByUserId(userId);
 			ResponseMessage message = new ResponseMessage(true, "Successful logout");
-			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+			response.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
 			mapper.writeValue(response.getWriter(), message);
 		} catch (Exception ex) {
 			throw new InternalAuthenticationServiceException("Error responding the logout", ex);
