@@ -1,4 +1,5 @@
 'use strict';
+//look http://yaacovcr.github.io/angular-stored-object/docs/#/api
 /* App Module */
 var petClinicApp = angular.module('petClinicApp', ['ngCookies', 
     'ui.router', 'ngAnimate', 'ui.bootstrap', 'permission', 'permission.ui', 
@@ -15,7 +16,7 @@ petClinicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider'
     //@see http://blog.ionic.io/angularjs-authentication/
     //@see http://stackoverflow.com/questions/32990836/get-jsessionid-value-and-create-cookie-in-angularjs
     //@see http://stackoverflow.com/questions/15026016/set-cookie-in-http-header-is-ignored-with-angularjs 
-    $httpProvider.defaults.withCredentials = true;
+    //$httpProvider.defaults.withCredentials = true;
     
     $locationProvider.hashPrefix('!');
     
