@@ -5,8 +5,8 @@
         .module('petClinicApp')
         .factory('AuthenticationService', AuthenticationService);
 
-    AuthenticationService.$inject = ['$http', '$cookieStore', '$rootScope', '$timeout', 'UserService'];
-    function AuthenticationService($http, $cookieStore, $rootScope, $timeout, UserService) {
+    AuthenticationService.$inject = ['$http', '$cookieStore', '$rootScope', '$timeout', 'UserService', '$localStorage'];
+    function AuthenticationService($http, $cookieStore, $rootScope, $timeout, UserService, $localStorage) {
         var service = {};
 
         service.Login = Login;
@@ -52,13 +52,20 @@
             })
             .then(function (response) {
             	/**
+            	 * The response object has these properties:
             	 * data – {string|Object} – The response body transformed with the transform functions.
             	 * status – {number} – HTTP status code of the response.
             	 * headers – {function([headerName])} – Header getter function.
             	 * config – {Object} – The configuration object that was used to generate the request.
             	 * statusText – {string} – HTTP status text of the response.
             	 * */
-            	var responseCallback = {success: true, message: response.statusText, data: response.data.data};
+                var responseCallback = {success: true, message: 'Invalid token or missing, verify it.'};
+                var rawToken = response.headers('Authorization');
+                var sizeBearer = "Bearer ".length;
+                if (rawToken != '' && rawToken.length > sizeBearer) {
+                    var token = rawToken.substring(sizeBearer, rawToken.length);
+                    responseCallback = {success: true, message: response.statusText, data: response.data.data, token: token};
+                }
                 callback(responseCallback);
             }, function (response) {
             	var responseCallback = {success: false, message: response.statusText};
@@ -66,21 +73,17 @@
             });
         }
 
-        function SetCredentials(username, roles, permissions) {
-            $rootScope.globals = {
-                currentUser: {
-                    username: username,
-                    roles: roles,
-                    permissions: permissions
-                }
+        function SetCredentials(username, roles, permissions, token) {
+            $localStorage.currentUser = {
+                username: username,
+                roles: roles,
+                permissions: permissions,
+                token: token
             };
-
-            $cookieStore.put('globals', $rootScope.globals);// keep user data after page refresh
         }
 
         function ClearCredentials() {
-            $cookieStore.remove('globals');
-            //$http.defaults.headers.common.Authorization = 'Basic';
+            delete $localStorage.currentUser;
             //call logout in server
             $http({method: 'GET', url: 'logout'})
                 .then(function (response) {

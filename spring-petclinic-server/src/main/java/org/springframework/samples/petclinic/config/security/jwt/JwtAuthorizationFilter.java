@@ -13,7 +13,6 @@ import org.springframework.samples.petclinic.config.security.WebSecurityConfig;
 import org.springframework.samples.petclinic.config.security.jwt.token.JwtAuthenticationToken;
 import org.springframework.samples.petclinic.config.security.jwt.token.RawAccessJwtToken;
 import org.springframework.samples.petclinic.config.security.jwt.token.TokenException;
-import org.springframework.samples.petclinic.config.security.jwt.token.TokenExpiredException;
 import org.springframework.samples.petclinic.dto.UserDto;
 import org.springframework.samples.petclinic.service.AuthTokenService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,89 +29,95 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.StringUtils;
 
 public class JwtAuthorizationFilter extends AbstractAuthenticationProcessingFilter {
-	
-	private static final Logger LOG = LoggerFactory.getLogger(JwtAuthorizationFilter.class);
 
-	private AuthTokenService loginService;
-	
-	private RequestMatcher logoutMatcherRequest;
-	
-	private AuthTokenLogoutHandler btLogoutHandler;
-	
-	public JwtAuthorizationFilter(RequestMatcher matchers, AuthenticationManager authenticationManager, AuthenticationSuccessHandler successHandler, 
-			AuthenticationFailureHandler failureHandler, AuthTokenService loginService, RequestMatcher logoutRequest, AuthTokenLogoutHandler btLogoutHandler) {
-		super(matchers);
-		setAuthenticationManager(authenticationManager);
-		setAuthenticationSuccessHandler(successHandler);
-		setAuthenticationFailureHandler(failureHandler);
-		this.loginService = loginService;
-		this.logoutMatcherRequest = logoutRequest;
-		this.btLogoutHandler = btLogoutHandler;
-	}
+    private static final Logger LOG = LoggerFactory.getLogger(JwtAuthorizationFilter.class);
 
-	@Override
-	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-			throws AuthenticationException, IOException, ServletException {
-		
-		HttpServletRequest req = (HttpServletRequest) request;
-		String headerPayload = req.getHeader(WebSecurityConfig.HEADER_STRING);
-		
-		if (!StringUtils.hasText(headerPayload)) {
-			throw new InsufficientAuthenticationException("Authorization header cannot be blank!");
-		}
-		if (headerPayload.length() < (WebSecurityConfig.TOKEN_PREFIX.length() + 1)) {
-			throw new InsufficientAuthenticationException("Invalid authorization header size.");
-		}
-		String tokenPayload = headerPayload.substring(WebSecurityConfig.TOKEN_PREFIX.length() + 1, headerPayload.length());
-		
-		return getAuthenticationManager().authenticate(new JwtAuthenticationToken(new RawAccessJwtToken(tokenPayload)));
-	}
+    private AuthTokenService loginService;
 
-	@Override
-	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
-			Authentication authResult) throws IOException, ServletException {
-		SecurityContext context = SecurityContextHolder.createEmptyContext();
-		context.setAuthentication(authResult);
-		SecurityContextHolder.setContext(context);
-		if (!logoutMatcherRequest.matches(request)) {
-			getSuccessHandler().onAuthenticationSuccess(request, response, authResult);			
-		}
+    private RequestMatcher logoutMatcherRequest;
 
-		chain.doFilter(request, response);
-	}
+    private AuthTokenLogoutHandler authTokenLogoutHandler;
 
-	@Override
-	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-			AuthenticationException failed) throws IOException, ServletException {
+    public JwtAuthorizationFilter(RequestMatcher matchers, AuthenticationManager authenticationManager,
+            AuthenticationSuccessHandler successHandler, AuthenticationFailureHandler failureHandler,
+            AuthTokenService loginService, RequestMatcher logoutRequest,
+            AuthTokenLogoutHandler authTokenLogoutHandler) {
+        super(matchers);
+        setAuthenticationManager(authenticationManager);
+        setAuthenticationSuccessHandler(successHandler);
+        setAuthenticationFailureHandler(failureHandler);
+        this.loginService = loginService;
+        this.logoutMatcherRequest = logoutRequest;
+        this.authTokenLogoutHandler = authTokenLogoutHandler;
+    }
 
-		if (failed instanceof TokenException) {
-			Authentication authentication = ((TokenException) failed).getAuthentication();
-			Integer userId = null;
-			try {
-				if (authentication != null && authentication.getPrincipal() instanceof UserDto) {
-					UserDto principalWebHolder = (UserDto) authentication.getPrincipal();
-					userId = principalWebHolder.getId();
-					if (logoutMatcherRequest.matches(request)) {
-						SecurityContext context = SecurityContextHolder.createEmptyContext();
-						context.setAuthentication(authentication);
-						SecurityContextHolder.setContext(context);
-						//TODO instead of this, it should call the chain
-						btLogoutHandler.logout(request, response, authentication);
-						return;
-					}
-					else {
-						loginService.removeTokenByUserId(userId);
-					}
-				}
-			} catch (InternalAuthenticationServiceException ex) {
-				throw ex;
-			}
-			catch (Exception ex) {
-				LOG.warn("Error processing the logout in the exception of JWTAuthorizationFilter", ex);
-			}
-		}
-		
-		super.unsuccessfulAuthentication(request, response, failed);
-	}
+    @Override
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationException, IOException, ServletException {
+
+        HttpServletRequest req = (HttpServletRequest) request;
+        String headerPayload = req.getHeader(WebSecurityConfig.HEADER_STRING);
+
+        if (!StringUtils.hasText(headerPayload)) {
+            throw new InsufficientAuthenticationException("Authorization header cannot be blank!");
+        }
+        if (headerPayload.length() < (WebSecurityConfig.TOKEN_PREFIX.length() + 1)) {
+            throw new InsufficientAuthenticationException("Invalid authorization header size.");
+        }
+        String tokenPayload = headerPayload.substring(WebSecurityConfig.TOKEN_PREFIX.length() + 1,
+                headerPayload.length());
+
+        return getAuthenticationManager().authenticate(new JwtAuthenticationToken(new RawAccessJwtToken(tokenPayload)));
+    }
+
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request,
+                                            HttpServletResponse response,
+                                            FilterChain chain,
+                                            Authentication authResult)
+            throws IOException, ServletException {
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(authResult);
+        SecurityContextHolder.setContext(context);
+        if (!logoutMatcherRequest.matches(request)) {
+            getSuccessHandler().onAuthenticationSuccess(request, response, authResult);
+        }
+
+        chain.doFilter(request, response);
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request,
+                                              HttpServletResponse response,
+                                              AuthenticationException failed)
+            throws IOException, ServletException {
+
+        if (failed instanceof TokenException) {
+            Authentication authentication = ((TokenException) failed).getAuthentication();
+            Integer userId = null;
+            try {
+                if (authentication != null && authentication.getPrincipal() instanceof UserDto) {
+                    UserDto principalWebHolder = (UserDto) authentication.getPrincipal();
+                    userId = principalWebHolder.getId();
+                    if (logoutMatcherRequest.matches(request)) {
+                        SecurityContext context = SecurityContextHolder.createEmptyContext();
+                        context.setAuthentication(authentication);
+                        SecurityContextHolder.setContext(context);
+                        // TODO instead of this, it should call the chain
+                        authTokenLogoutHandler.logout(request, response, authentication);
+                        return;
+                    } else {
+                        loginService.removeTokenByUserId(userId);
+                    }
+                }
+            } catch (InternalAuthenticationServiceException ex) {
+                throw ex;
+            } catch (Exception ex) {
+                LOG.warn("Error processing the logout in the exception of JWTAuthorizationFilter", ex);
+            }
+        }
+
+        super.unsuccessfulAuthentication(request, response, failed);
+    }
 
 }

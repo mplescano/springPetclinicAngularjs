@@ -25,7 +25,7 @@ import java.io.IOException;
 
 public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-	private final ObjectMapper mapper;
+    private final ObjectMapper mapper;
 	
     private final WrapperKey wrapperKey;
 

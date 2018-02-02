@@ -26,7 +26,8 @@
     "jquery": "components/jquery#~3.1.0",
     "angular-ui-router": "ui-router#^0.3.2",
     "angular-ui-grid": "~4.0.2",
-    "angular-bootstrap": "~2.4.0"
+    "angular-bootstrap": "~2.4.0",
+    "ngstorage": "0.3.11"
   },
   "resolutions": {
     "angular": "^1.0.8"
