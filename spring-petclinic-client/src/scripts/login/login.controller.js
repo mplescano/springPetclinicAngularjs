@@ -19,7 +19,7 @@ angular.module('login')
         	self.dataLoading = true;
             AuthenticationService.Login(self.username, self.password, function (response) {
                 if (response.success) {
-                    AuthenticationService.SetCredentials(self.username, response.data.roles, response.data.permissions);
+                    AuthenticationService.SetCredentials(self.username, response.data.roles, response.data.permissions, response.token);
                     PermPermissionStore.defineManyPermissions(response.data.permissions, /*@ngInject*/ function (permissionName) {
                     	  return true;
                     });

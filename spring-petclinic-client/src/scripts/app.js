@@ -47,15 +47,19 @@ petClinicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider'
             parent: 'app',
             templateUrl: 'scripts/fragments/nosession.html'
         });
+    
+    $httpProvider.interceptors.push('TokenInterceptorService');
 }]);
 
-petClinicApp.run(['$rootScope', '$location', '$cookieStore', '$http', 'PermRoleStore'
-            function($rootScope, $location, $cookieStore, $http, PermRoleStore) {
+petClinicApp.run(['$rootScope', '$location', '$cookieStore', '$http', 'PermRoleStore', 'AuthenticationService'
+            function($rootScope, $location, $cookieStore, $http, PermRoleStore, AuthenticationService) {
     // keep user logged in after page refresh
     //$rootScope.globals = $cookieStore.get('globals') || {};
     
-    PermRoleStore.defineRole('AUTHORIZED', ['$localStorage', function ($localStorage) {
-        return !!$localStorage.currentUser;
+    
+    
+    PermRoleStore.defineRole('AUTHORIZED', ['AuthenticationService', function (AuthenticationService) {
+        return AuthenticationService.IsLogged();
     }]);
 }]);
 

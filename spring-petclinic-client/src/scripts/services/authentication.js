@@ -11,7 +11,11 @@
 
         service.Login = Login;
         service.SetCredentials = SetCredentials;
+        service.SetNewToken = SetNewToken;
+        service.Logout = Logout;
         service.ClearCredentials = ClearCredentials;
+        service.IsLogged = IsLogged;
+        service.GetCurrentUser = GetCurrentUser;
 
         return service;
 
@@ -81,8 +85,12 @@
                 token: token
             };
         }
+        
+        function SetNewToken(token) {
+            $localStorage.currentUser.token = token;
+        }
 
-        function ClearCredentials() {
+        function Logout() {
             delete $localStorage.currentUser;
             //call logout in server
             $http({method: 'GET', url: 'logout'})
@@ -91,6 +99,18 @@
                 }, function (response) {
               
                 });
+        }
+        
+        function ClearCredentials() {
+            delete $localStorage.currentUser;
+        }
+        
+        function IsLogged() {
+            return !!$localStorage.currentUser;
+        }
+        
+        function GetCurrentUser() {
+            return $localStorage.currentUser;
         }
     };
 
