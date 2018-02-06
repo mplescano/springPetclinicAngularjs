@@ -56,6 +56,27 @@ petClinicApp.run(['$rootScope', '$location', '$cookieStore', '$http', 'PermRoleS
     // keep user logged in after page refresh
     //$rootScope.globals = $cookieStore.get('globals') || {};
     
+    /*
+     * 
+authenticated
+                    AuthenticationService.SetCredentials(self.username, response.data.roles, response.data.permissions, response.token);
+                    PermPermissionStore.defineManyPermissions(response.data.permissions, -@ngInject- function (permissionName) {
+                          return true;
+                    });
+
+
+nonAuthenticated
+            AuthenticationService.ClearCredentials();
+            PermPermissionStore.clearStore();
+
+
+authorized
+    AuthenticationService.SetNewToken
+
+unAuthorized-ExpiredToken
+            AuthenticationService.ClearCredentials();
+            PermPermissionStore.clearStore();
+     * */
     
     
     PermRoleStore.defineRole('AUTHORIZED', ['AuthenticationService', function (AuthenticationService) {
