@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.samples.petclinic.config.security.jwt.token.BuilderTokenStrategy;
+import org.springframework.samples.petclinic.config.security.jwt.token.BuilderTokenStrategyFactory;
 import org.springframework.samples.petclinic.config.security.jwt.token.JwtAuthenticationToken;
 import org.springframework.samples.petclinic.config.security.jwt.token.RawAccessJwtToken;
 import org.springframework.samples.petclinic.config.security.jwt.token.TokenExpiredException;
@@ -32,15 +32,15 @@ public class JwtAuthorizationProvider implements AuthenticationProvider {
 	
 	private final ObjectMapper mapper;
 
-	private BuilderTokenStrategy builder;
+	private BuilderTokenStrategyFactory builderFactory;
 
 	private final AuthTokenService authTokenService;
 
     public JwtAuthorizationProvider(WrapperKey jwtKey, ObjectMapper mapper,
-                                    BuilderTokenStrategy builder, AuthTokenService authTokenService) {
+                                    BuilderTokenStrategyFactory builderFactory, AuthTokenService authTokenService) {
         this.wrapperKey = jwtKey;
         this.mapper = mapper;
-        this.builder = builder;
+        this.builderFactory = builderFactory;
 		this.authTokenService = authTokenService;
     }
 
@@ -50,7 +50,7 @@ public class JwtAuthorizationProvider implements AuthenticationProvider {
 		
 		TokenStrategy tokenStrategy = null;
 		try {
-			tokenStrategy = builder.encrypterSigner(rawAccessToken.getToken()).withWrapperKey(wrapperKey).build();
+			tokenStrategy = builderFactory.getObject().encrypterSigner(rawAccessToken.getToken()).withWrapperKey(wrapperKey).build();
 			tokenStrategy.verify();
 		} catch (Exception e) {
 			throw new InsufficientAuthenticationException("Verification failed.", e);

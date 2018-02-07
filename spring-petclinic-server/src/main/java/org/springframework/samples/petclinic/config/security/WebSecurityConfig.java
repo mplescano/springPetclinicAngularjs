@@ -2,10 +2,9 @@ package org.springframework.samples.petclinic.config.security;
 
 import java.security.Key;
 import java.security.KeyStore;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.crypto.SecretKey;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,6 +18,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpMethod;
 import org.springframework.samples.petclinic.config.security.jwt.AuthTokenLogoutHandler;
+import org.springframework.samples.petclinic.config.security.jwt.CompositeAuthenticationSuccessHandler;
 import org.springframework.samples.petclinic.config.security.jwt.JwtAuthenticationSuccessHandler;
 import org.springframework.samples.petclinic.config.security.jwt.JwtAuthorizationFilter;
 import org.springframework.samples.petclinic.config.security.jwt.JwtAuthorizationProvider;
@@ -38,15 +38,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
-import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
-import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.util.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -95,7 +92,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
  
     @Bean
-    public AuthenticationSuccessHandler authenticationSuccessHandler() {
+    public RestAuthenticationSuccessHandler buildRestAuthenticationSuccessHandler() {
     	return new RestAuthenticationSuccessHandler();
     }
 
@@ -177,38 +174,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     protected RestAuthenticationFilter buildRestAuthenticationFilter() throws Exception {
         return new RestAuthenticationFilter(new AntPathRequestMatcher(LOGIN_ENTRY_POINT, HttpMethod.POST.toString()), authenticationManager(), objectMapper,
-                jwtAuthenticationSuccessHandler, authExceptionThrower());
+                new CompositeAuthenticationSuccessHandler(jwtAuthenticationSuccessHandler, buildRestAuthenticationSuccessHandler()), authExceptionThrower());
     }
 	
     @Bean
     protected JwtAuthorizationFilter buildJwtAuthorizationFilter() throws Exception {
-    	List<RequestMatcher> matchers = new ArrayList<>();
-    	//matchers.add(new AntPathRequestMatcher(PUBLIC_ENTRY_POINT));
-    	//matchers.add(new AntPathRequestMatcher(LOGIN_ENTRY_POINT, HttpMethod.POST.toString()));
-    	//matchers.add(new AntPathRequestMatcher(INDEX_ENTRY_POINT));
-    	//matchers.add(new AntPathRequestMatcher(ROOT_ENTRY_POINT));
-    	matchers.add(new AntPathRequestMatcher(REST_ENTRY_POINT));
-    	//matchers.add(new AntPathRequestMatcher(USERS_ENTRY_POINT, HttpMethod.POST.toString()));
-    	//matchers.add(new AntPathRequestMatcher(SYNC_ENTRY_POINT));
-        //matchers.add(new AntPathRequestMatcher(REFRESH_ENTRY_POINT));
-    	//matchers.add(new AntPathRequestMatcher(ERROR_ENTRY_POINT));
-    	/*if (environment.acceptsProfiles("debug")) {
-    		matchers.add(new AntPathRequestMatcher("/swagger-ui.html"));
-    		matchers.add(new AntPathRequestMatcher("/webjars/**"));
-    		matchers.add(new AntPathRequestMatcher("/swagger-resources/**"));
-    		matchers.add(new AntPathRequestMatcher("/v2/api-docs"));
-    		matchers.add(new AntPathRequestMatcher("/killsesion"));
-    	}*/
         JwtAuthorizationFilter filter = new JwtAuthorizationFilter(
-                new AndRequestMatcher(
-                    new NegatedRequestMatcher(
-                            new AntPathRequestMatcher(USERS_ENTRY_POINT, HttpMethod.POST.toString())
-                     ),
-                    new OrRequestMatcher(matchers.toArray(new RequestMatcher[matchers.size()]))
-                )
-                //new NegatedRequestMatcher(
-                        
-                /*)*/,
+        		new RequestMatcher() {
+					@Override
+					public boolean matches(HttpServletRequest request) {
+				        HttpServletRequest req = (HttpServletRequest) request;
+				        String headerPayload = req.getHeader(WebSecurityConfig.HEADER_STRING);
+				        if (!StringUtils.hasText(headerPayload) || 
+				        		headerPayload.length() < (WebSecurityConfig.TOKEN_PREFIX.length() + 1)) {
+				            return false;
+				        }
+						return true;
+					}
+        		},
                 authenticationManager(), jwtAuthenticationSuccessHandler, authExceptionThrower(), authTokenService,
                 new AntPathRequestMatcher(LOGOUT_ENTRY_POINT, HttpMethod.POST.toString()), authTokenLogoutHandler);
         return filter;
@@ -260,9 +243,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
     
     @Bean
-    public JwtAuthenticationSuccessHandler buildRestSuccessHandler(ObjectMapper mapper, @Qualifier("jwtKey") WrapperKey jwtKey,
-    		BuilderTokenStrategy builder, @Value("${jwt.token.expiration.time.seconds}") long expirationTimeInSeconds, AuthTokenService authTokenService) {
-    	return new JwtAuthenticationSuccessHandler(mapper, jwtKey, builder, expirationTimeInSeconds, authTokenService);
+    public JwtAuthenticationSuccessHandler buildJwtAuthenticationSuccessHandler(ObjectMapper mapper, @Qualifier("jwtKey") WrapperKey jwtKey,
+    		BuilderTokenStrategyFactory builderFactory, @Value("${jwt.token.expiration.time.seconds}") long expirationTimeInSeconds, AuthTokenService authTokenService) {
+    	return new JwtAuthenticationSuccessHandler(mapper, jwtKey, builderFactory, expirationTimeInSeconds, authTokenService);
     }
     
     @Bean(name = "builderTokenStrategy")
@@ -283,7 +266,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     
     @Bean
     public JwtAuthorizationProvider buildJwtAuthorizationProvider(@Qualifier("jwtKey") WrapperKey jwtKey, ObjectMapper mapper,
-            BuilderTokenStrategy builder, AuthTokenService authTokenService) {
-    	return new JwtAuthorizationProvider(jwtKey, mapper, builder, authTokenService);
+            BuilderTokenStrategyFactory builderFactory, AuthTokenService authTokenService) {
+    	return new JwtAuthorizationProvider(jwtKey, mapper, builderFactory, authTokenService);
     }
 }

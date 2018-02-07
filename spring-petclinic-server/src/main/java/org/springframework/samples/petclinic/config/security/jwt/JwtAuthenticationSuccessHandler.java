@@ -8,7 +8,7 @@ import org.joda.time.LocalDateTime;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.samples.petclinic.config.security.WebSecurityConfig;
-import org.springframework.samples.petclinic.config.security.jwt.token.BuilderTokenStrategy;
+import org.springframework.samples.petclinic.config.security.jwt.token.BuilderTokenStrategyFactory;
 import org.springframework.samples.petclinic.config.security.jwt.token.JwtAuthenticationToken;
 import org.springframework.samples.petclinic.config.security.jwt.token.TokenStrategy;
 import org.springframework.samples.petclinic.config.security.jwt.token.WrapperKey;
@@ -33,13 +33,13 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
     private final AuthTokenService authTokenService;
 
-    private BuilderTokenStrategy builder;
+    private BuilderTokenStrategyFactory builderFactory;
 
-    public JwtAuthenticationSuccessHandler(ObjectMapper mapper, WrapperKey jwtKey, BuilderTokenStrategy builder,
+    public JwtAuthenticationSuccessHandler(ObjectMapper mapper, WrapperKey jwtKey, BuilderTokenStrategyFactory builderFactory,
                                             long expirationTime, AuthTokenService authTokenService) {
     	this.mapper = mapper;
     	this.wrapperKey = jwtKey;
-        this.builder = builder;
+        this.builderFactory = builderFactory;
         this.expirationTimeInSeconds = expirationTime;
         this.authTokenService = authTokenService;
     }
@@ -84,7 +84,7 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
 
         String jwToken = "";
         try {
-            TokenStrategy tokenStrategy = builder.encrypterAesSignerDefault(claimsSet).withWrapperKey(wrapperKey).build();
+            TokenStrategy tokenStrategy = builderFactory.getObject().encrypterAesSignerDefault(claimsSet).withWrapperKey(wrapperKey).build();
             jwToken = tokenStrategy.encode();
 
             authTokenService.putToken(principalUser.getId(), jwToken, expDate);
