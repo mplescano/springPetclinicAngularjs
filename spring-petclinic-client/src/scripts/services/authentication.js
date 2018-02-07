@@ -10,12 +10,7 @@
         var service = {};
 
         service.Login = Login;
-        service.SetCredentials = SetCredentials;
-        service.SetNewToken = SetNewToken;
         service.Logout = Logout;
-        service.ClearCredentials = ClearCredentials;
-        service.IsLogged = IsLogged;
-        service.GetCurrentUser = GetCurrentUser;
 
         return service;
 
