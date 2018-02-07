@@ -1,7 +1,7 @@
 'use strict';
 //look http://yaacovcr.github.io/angular-stored-object/docs/#/api
 /* App Module */
-var petClinicApp = angular.module('petClinicApp', ['ngStorage', 'ngCookies', 
+var petClinicApp = angular.module('petClinicApp', ['ngStorage',  
     'ui.router', 'ngAnimate', 'ui.bootstrap', 'permission', 'permission.ui', 
     'layoutNav', 'layoutFooter', 'ownerList', 'ownerDetails', 'ownerForm', 
     'petForm', 'visits', 'vetList', 'login', 'register', 'userList']);
@@ -12,12 +12,6 @@ petClinicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider'
     // safari turns to be lazy sending the Cache-Control header
     $httpProvider.defaults.headers.common["Cache-Control"] = 'no-cache';
 
-    //Cookie-based Authentication
-    //@see http://blog.ionic.io/angularjs-authentication/
-    //@see http://stackoverflow.com/questions/32990836/get-jsessionid-value-and-create-cookie-in-angularjs
-    //@see http://stackoverflow.com/questions/15026016/set-cookie-in-http-header-is-ignored-with-angularjs 
-    //$httpProvider.defaults.withCredentials = true;
-    
     $locationProvider.hashPrefix('!');
     
     // Normal usage (creates INFDG error)
@@ -51,37 +45,13 @@ petClinicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider'
     $httpProvider.interceptors.push('TokenInterceptorService');
 }]);
 
-petClinicApp.run(['$rootScope', '$location', '$cookieStore', '$http', 'PermRoleStore', 'AuthenticationService'
-            function($rootScope, $location, $cookieStore, $http, PermRoleStore, AuthenticationService) {
-    // keep user logged in after page refresh
-    //$rootScope.globals = $cookieStore.get('globals') || {};
+petClinicApp.run(['$rootScope', '$location', '$http', 'PermRoleStore', 'CredentialStorageService', 
+    function($rootScope, $location, $http, PermRoleStore, CredentialStorageService) {
     
-    /*
-     * 
-authenticated
-                    AuthenticationService.SetCredentials(self.username, response.data.roles, response.data.permissions, response.token);
-                    PermPermissionStore.defineManyPermissions(response.data.permissions, -@ngInject- function (permissionName) {
-                          return true;
-                    });
-
-
-nonAuthenticated
-            AuthenticationService.ClearCredentials();
-            PermPermissionStore.clearStore();
-
-
-authorized
-    AuthenticationService.SetNewToken
-
-unAuthorized-ExpiredToken
-            AuthenticationService.ClearCredentials();
-            PermPermissionStore.clearStore();
-     * */
-    
-    
-    PermRoleStore.defineRole('AUTHORIZED', ['AuthenticationService', function (AuthenticationService) {
+    PermRoleStore.defineRole('AUTHORIZED', ['AuthenticationService', function (CredentialStorageService) {
         return AuthenticationService.IsLogged();
     }]);
+    
 }]);
 
 //@see http://stackoverflow.com/questions/4994201/is-object-empty

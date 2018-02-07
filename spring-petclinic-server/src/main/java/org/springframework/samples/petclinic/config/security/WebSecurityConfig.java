@@ -42,6 +42,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
@@ -57,6 +58,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String HEADER_STRING = "Authorization";
 
     private static final String LOGIN_ENTRY_POINT = "/login";
+    
+    private static final String INDEX_ENTRY_POINT = "/index";
+    
+    private static final String ROOT_ENTRY_POINT = "/";
+    
+    private static final String USERS_ENTRY_POINT = "/rest/users";
+    
+    private static final String REST_ENTRY_POINT = "/rest/**";
 
     public static final String LOGOUT_ENTRY_POINT = "/logout";
     
@@ -175,10 +184,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected JwtAuthorizationFilter buildJwtAuthorizationFilter() throws Exception {
     	List<RequestMatcher> matchers = new ArrayList<>();
     	//matchers.add(new AntPathRequestMatcher(PUBLIC_ENTRY_POINT));
-    	matchers.add(new AntPathRequestMatcher(LOGIN_ENTRY_POINT, HttpMethod.POST.toString()));
+    	//matchers.add(new AntPathRequestMatcher(LOGIN_ENTRY_POINT, HttpMethod.POST.toString()));
+    	//matchers.add(new AntPathRequestMatcher(INDEX_ENTRY_POINT));
+    	//matchers.add(new AntPathRequestMatcher(ROOT_ENTRY_POINT));
+    	matchers.add(new AntPathRequestMatcher(REST_ENTRY_POINT));
+    	//matchers.add(new AntPathRequestMatcher(USERS_ENTRY_POINT, HttpMethod.POST.toString()));
     	//matchers.add(new AntPathRequestMatcher(SYNC_ENTRY_POINT));
         //matchers.add(new AntPathRequestMatcher(REFRESH_ENTRY_POINT));
-    	matchers.add(new AntPathRequestMatcher(ERROR_ENTRY_POINT));
+    	//matchers.add(new AntPathRequestMatcher(ERROR_ENTRY_POINT));
     	/*if (environment.acceptsProfiles("debug")) {
     		matchers.add(new AntPathRequestMatcher("/swagger-ui.html"));
     		matchers.add(new AntPathRequestMatcher("/webjars/**"));
@@ -187,9 +200,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     		matchers.add(new AntPathRequestMatcher("/killsesion"));
     	}*/
         JwtAuthorizationFilter filter = new JwtAuthorizationFilter(
-                new NegatedRequestMatcher(
-                        new OrRequestMatcher(matchers.toArray(new RequestMatcher[matchers.size()]))
-                ),
+                new AndRequestMatcher(
+                    new NegatedRequestMatcher(
+                            new AntPathRequestMatcher(USERS_ENTRY_POINT, HttpMethod.POST.toString())
+                     ),
+                    new OrRequestMatcher(matchers.toArray(new RequestMatcher[matchers.size()]))
+                )
+                //new NegatedRequestMatcher(
+                        
+                /*)*/,
                 authenticationManager(), jwtAuthenticationSuccessHandler, authExceptionThrower(), authTokenService,
                 new AntPathRequestMatcher(LOGOUT_ENTRY_POINT, HttpMethod.POST.toString()), authTokenLogoutHandler);
         return filter;

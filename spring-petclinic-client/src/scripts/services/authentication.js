@@ -5,8 +5,8 @@
         .module('petClinicApp')
         .factory('AuthenticationService', AuthenticationService);
 
-    AuthenticationService.$inject = ['$http', '$cookieStore', '$rootScope', '$timeout', 'UserService', '$localStorage'];
-    function AuthenticationService($http, $cookieStore, $rootScope, $timeout, UserService, $localStorage) {
+    AuthenticationService.$inject = ['$http', '$rootScope', '$timeout'];
+    function AuthenticationService($http, $rootScope, $timeout) {
         var service = {};
 
         service.Login = Login;
@@ -21,27 +21,6 @@
 
         function Login(username, password, callback) {
 
-            /* Dummy authentication for testing, uses $timeout to simulate api call
-             ----------------------------------------------*/
-//            $timeout(function () {
-//                var response;
-//                UserService.GetByUsername(username)
-//                    .then(function (user) {
-//                        if (user !== null && user.password === password) {
-//                            response = { success: true };
-//                        } else {
-//                            response = { success: false, message: 'Username or password is incorrect' };
-//                        }
-//                        callback(response);
-//                    });
-//            }, 1000);
-
-            /* Use this for real authentication
-             ----------------------------------------------*/
-//            $http.post('login', { username: username, password: password })
-//                .success(function (response) {
-//                    callback(response);
-//                });
             $http({
             	method: 'POST',
             	url: 'login', 
@@ -77,22 +56,7 @@
             });
         }
 
-        function SetCredentials(username, roles, permissions, token) {
-            $localStorage.currentUser = {
-                username: username,
-                roles: roles,
-                permissions: permissions,
-                token: token
-            };
-        }
-        
-        function SetNewToken(token) {
-            $localStorage.currentUser.token = token;
-        }
-
         function Logout() {
-            delete $localStorage.currentUser;
-            //call logout in server
             $http({method: 'GET', url: 'logout'})
                 .then(function (response) {
                     $rootScope.globals = {};
@@ -101,17 +65,6 @@
                 });
         }
         
-        function ClearCredentials() {
-            delete $localStorage.currentUser;
-        }
-        
-        function IsLogged() {
-            return !!$localStorage.currentUser;
-        }
-        
-        function GetCurrentUser() {
-            return $localStorage.currentUser;
-        }
     };
 
 })();

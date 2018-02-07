@@ -92,6 +92,6 @@ CREATE TABLE auth_tokens (
     CREATED_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     EXPIRY_DATE TIMESTAMP,
     UNIQUE (user_id, token)
-)
+);
 
 ALTER TABLE auth_tokens ADD CONSTRAINT fk_tokens_users FOREIGN KEY (user_id) REFERENCES users (id);

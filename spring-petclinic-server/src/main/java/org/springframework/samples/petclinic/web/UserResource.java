@@ -61,7 +61,7 @@ public class UserResource extends AbstractResourceController {
     	
     	return message;
     }
-	
+    
     /**
      * @param pageable: it's always instantiated with default values.
      * @return
