@@ -16,8 +16,10 @@
         return interceptorService;
 
         function Request(config) {
-            //TODO detect urls containing /rest/**
-            if (CredentialStorageService.IsLogged() && CredentialStorageService.GetCurrentUser().token != '') {
+            if (config.headers["Content-Type"] != null && 
+                    config.headers["Content-Type"].indexOf("application/json") >= 0 &&
+                    CredentialStorageService.IsLogged() && 
+                    CredentialStorageService.GetCurrentUser().token != '') {
                 config.headers['Authorization'] = 'Bearer ' + CredentialStorageService.GetCurrentUser().token;
             }
             return config;
