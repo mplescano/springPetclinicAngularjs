@@ -16,6 +16,7 @@
         return interceptorService;
 
         function Request(config) {
+            //TODO detect urls containing /rest/**
             if (CredentialStorageService.IsLogged() && CredentialStorageService.GetCurrentUser().token != '') {
                 config.headers['Authorization'] = 'Bearer ' + CredentialStorageService.GetCurrentUser().token;
             }
@@ -26,7 +27,7 @@
             if (CredentialStorageService.IsLogged()) {
                 var rawToken = response.headers('Authorization');
                 var sizeBearer = "Bearer ".length;
-                if (rawToken != '' && rawToken.length > sizeBearer) {
+                if (rawToken != null && rawToken.length > sizeBearer) {
                     var token = rawToken.substring(sizeBearer, rawToken.length);
                     CredentialStorageService.SetNewToken(token);
                 }
@@ -41,7 +42,7 @@
                     PermPermissionStore.clearStore();
                 }
             }
-            return $q.reject(rejection);
+            return $q.reject(response);
         }
     };
 

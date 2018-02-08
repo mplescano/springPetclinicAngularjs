@@ -41,6 +41,7 @@ import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.HttpStatusReturningLogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.StringUtils;
@@ -180,6 +181,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     protected JwtAuthorizationFilter buildJwtAuthorizationFilter() throws Exception {
         JwtAuthorizationFilter filter = new JwtAuthorizationFilter(
+                new AndRequestMatcher(
         		new RequestMatcher() {
 					@Override
 					public boolean matches(HttpServletRequest request) {
@@ -192,6 +194,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 						return true;
 					}
         		},
+        		new AntPathRequestMatcher(REST_ENTRY_POINT)
+        	),
                 authenticationManager(), jwtAuthenticationSuccessHandler, authExceptionThrower(), authTokenService,
                 new AntPathRequestMatcher(LOGOUT_ENTRY_POINT, HttpMethod.POST.toString()), authTokenLogoutHandler);
         return filter;

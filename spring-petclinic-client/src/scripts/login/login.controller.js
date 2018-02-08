@@ -11,6 +11,7 @@ angular.module('login')
 
         (function initController() {
             // reset login status
+            AuthenticationService.Logout();
             CredentialStorageService.ClearCredentials();
             PermPermissionStore.clearStore();
         })();

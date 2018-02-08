@@ -48,8 +48,8 @@ petClinicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider'
 petClinicApp.run(['$rootScope', '$location', '$http', 'PermRoleStore', 'CredentialStorageService', 
     function($rootScope, $location, $http, PermRoleStore, CredentialStorageService) {
     
-    PermRoleStore.defineRole('AUTHORIZED', ['AuthenticationService', function (CredentialStorageService) {
-        return AuthenticationService.IsLogged();
+    PermRoleStore.defineRole('AUTHORIZED', ['CredentialStorageService', function (CredentialStorageService) {
+        return CredentialStorageService.IsLogged();
     }]);
     
 }]);

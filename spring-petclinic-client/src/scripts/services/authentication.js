@@ -46,7 +46,7 @@
                 }
                 callback(responseCallback);
             }, function (response) {
-            	var responseCallback = {success: false, message: response.statusText};
+            	var responseCallback = {success: false, message: response.data.message};
                 callback(responseCallback);
             });
         }

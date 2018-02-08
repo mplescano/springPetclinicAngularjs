@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.config.security.support;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -10,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -65,18 +67,18 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, message, null, HttpStatus.FORBIDDEN, request);
     }
     
-    @ExceptionHandler({ PersistenceException.class })
-    public ResponseEntity<Object> handlePersistenceException(PersistenceException ex, WebRequest request) {
+    @ExceptionHandler({ PersistenceException.class, DataAccessException.class })
+    public ResponseEntity<Object> handlePersistenceException(Exception ex, WebRequest request) {
     	ResponseMessage message = new ResponseMessage(false, ex.getMessage());
     	return handleExceptionInternal(ex, message, null, HttpStatus.INTERNAL_SERVER_ERROR, request);
-	}
+    }
     
     @ExceptionHandler({ AccountStatusException.class, BadCredentialsException.class, UsernameNotFoundException.class, 
     	InternalAuthenticationServiceException.class })
-    public ResponseEntity<Object> handleAuthenticateException(PersistenceException ex, WebRequest request) {
+    public ResponseEntity<Object> handleAuthenticateException(Exception ex, WebRequest request) {
     	ResponseMessage message = new ResponseMessage(false, ex.getMessage());
     	return handleExceptionInternal(ex, message, null, HttpStatus.UNAUTHORIZED, request);
-	}
+    }
 	
     @ExceptionHandler({ TokenExpiredException.class })
     public ResponseMessage tokenExpiredException(Exception ex, WebRequest webRequest) {
