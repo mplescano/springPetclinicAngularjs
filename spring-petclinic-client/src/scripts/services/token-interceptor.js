@@ -16,8 +16,9 @@
         return interceptorService;
 
         function Request(config) {
-            if (config.headers["Content-Type"] != null && 
-                    config.headers["Content-Type"].indexOf("application/json") >= 0 &&
+            /*config.headers["Content-Type"] != null && 
+                    config.headers["Content-Type"].indexOf("application/json") >= 0*/
+            if (config.url.startsWith('rest/') &&
                     CredentialStorageService.IsLogged() && 
                     CredentialStorageService.GetCurrentUser().token != '') {
                 config.headers['Authorization'] = 'Bearer ' + CredentialStorageService.GetCurrentUser().token;

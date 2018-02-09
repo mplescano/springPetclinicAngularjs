@@ -2,18 +2,24 @@
 
 angular.module('login')
     .controller('LoginController', ["$http", '$state', 'AuthenticationService', 'CredentialStorageService',
-                                    'FlashService', 'PermPermissionStore', 
+                                    'FlashService', 'PermPermissionStore', '$location',
                                     function ($http, $state, AuthenticationService, CredentialStorageService,
-                                    		FlashService, PermPermissionStore) {
+                                    		FlashService, PermPermissionStore, $location) {
         var self = this;
 
         self.login = login;
 
         (function initController() {
             // reset login status
-            AuthenticationService.Logout();
-            CredentialStorageService.ClearCredentials();
-            PermPermissionStore.clearStore();
+            var fromLink = ($location.search()).from;
+            if (fromLink == 'logout' && CredentialStorageService.IsLogged()) {
+                AuthenticationService.Logout();
+                CredentialStorageService.ClearCredentials();
+                PermPermissionStore.clearStore();
+            }
+            else if (CredentialStorageService.IsLogged()) {
+                $state.go('session.welcome');
+            }
         })();
 
         function login() {

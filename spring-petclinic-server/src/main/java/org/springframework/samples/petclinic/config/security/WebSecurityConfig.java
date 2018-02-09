@@ -67,6 +67,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public static final String LOGOUT_ENTRY_POINT = "/logout";
     
+    public static final RequestMatcher MATCHER_LOGOUT_ENTRY_POINT = new AntPathRequestMatcher(LOGOUT_ENTRY_POINT);
+    
     private static final String ERROR_ENTRY_POINT = "/error";
     
     @Autowired
@@ -167,7 +169,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .addFilterBefore(buildJwtAuthorizationFilter(), LogoutFilter.class)
         .logout()
         	.permitAll(false)
-	        .logoutRequestMatcher(new AntPathRequestMatcher(LOGOUT_ENTRY_POINT, HttpMethod.POST.toString()))
+	        .logoutRequestMatcher(MATCHER_LOGOUT_ENTRY_POINT)
 	        .addLogoutHandler(authTokenLogoutHandler)
         	.logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());
     }
@@ -197,7 +199,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         		new AntPathRequestMatcher(REST_ENTRY_POINT)
         	),
                 authenticationManager(), jwtAuthenticationSuccessHandler, authExceptionThrower(), authTokenService,
-                new AntPathRequestMatcher(LOGOUT_ENTRY_POINT, HttpMethod.POST.toString()), authTokenLogoutHandler);
+                MATCHER_LOGOUT_ENTRY_POINT, authTokenLogoutHandler);
         return filter;
     }
 

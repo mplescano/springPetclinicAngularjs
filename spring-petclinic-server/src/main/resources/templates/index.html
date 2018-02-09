@@ -72,6 +72,11 @@
     <script th:src="@{/scripts/vet-list/vet-list.js}"></script>
     <script th:src="@{/scripts/vet-list/vet-list.controller.js}"></script>
     <script th:src="@{/scripts/vet-list/vet-list.component.js}"></script>
+    
+    <script th:inline="javascript" type="text/javascript">
+    	var GLB_CONTEXT = /*[[@{/}]]*/ '/';
+    </script>
+    
 </head>
 
 <body class="container">
