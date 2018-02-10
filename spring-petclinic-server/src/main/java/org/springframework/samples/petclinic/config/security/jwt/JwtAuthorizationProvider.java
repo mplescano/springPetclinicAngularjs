@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.LocalDateTime;
 import org.springframework.samples.petclinic.config.security.jwt.token.BuilderTokenStrategyFactory;
 import org.springframework.samples.petclinic.config.security.jwt.token.JwtAuthenticationToken;
 import org.springframework.samples.petclinic.config.security.jwt.token.RawAccessJwtToken;
@@ -79,7 +80,8 @@ public class JwtAuthorizationProvider implements AuthenticationProvider {
 			throw new TokenInvalidedException("Invalid Token.", new JwtAuthenticationToken(principalWebHolder, roles));
 		}
 		if ((new Date()).after(claims.getExpirationTime())) {
-			throw new TokenExpiredException("Token expired.", new JwtAuthenticationToken(principalWebHolder, roles));
+			throw new TokenExpiredException("Token expired.", new LocalDateTime(claims.getExpirationTime().getTime()), 
+			        new JwtAuthenticationToken(principalWebHolder, roles));
 		}
 
 		return new JwtAuthenticationToken(principalWebHolder, roles);

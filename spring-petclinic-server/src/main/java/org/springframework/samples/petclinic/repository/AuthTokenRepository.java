@@ -11,5 +11,7 @@ public interface AuthTokenRepository extends JpaRepository<AuthToken, Integer> {
 
 	void deleteByUserAndExpiryDateBefore(User user, Date dateTime);
 	
+	void deleteByUserAndExpiryDate(User user, Date dateTime);
+	
 	AuthToken findByUserAndToken(User user, String token);
 }

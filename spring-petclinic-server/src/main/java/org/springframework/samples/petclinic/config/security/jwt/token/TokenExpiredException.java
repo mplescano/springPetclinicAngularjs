@@ -1,7 +1,7 @@
 package org.springframework.samples.petclinic.config.security.jwt.token;
 
+import org.joda.time.LocalDateTime;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 
 /**
  * @author s6026865
@@ -9,14 +9,19 @@ import org.springframework.security.core.AuthenticationException;
  */
 public class TokenExpiredException extends TokenException {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1L;
+    
+    private LocalDateTime expiryDate;
 
-	public TokenExpiredException(String msg, Authentication authentication) {
-		super(msg, authentication);
-	}
+    public TokenExpiredException(String msg, LocalDateTime expiryDate, Authentication authentication) {
+        super(msg, authentication);
+        this.expiryDate = expiryDate;
+    }
 
-
+    public LocalDateTime getExpiryDate() {
+        return expiryDate;
+    }
 }

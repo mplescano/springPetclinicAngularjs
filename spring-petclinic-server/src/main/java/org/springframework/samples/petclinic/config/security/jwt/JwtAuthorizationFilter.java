@@ -7,12 +7,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.joda.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.samples.petclinic.config.security.WebSecurityConfig;
 import org.springframework.samples.petclinic.config.security.jwt.token.JwtAuthenticationToken;
 import org.springframework.samples.petclinic.config.security.jwt.token.RawAccessJwtToken;
 import org.springframework.samples.petclinic.config.security.jwt.token.TokenException;
+import org.springframework.samples.petclinic.config.security.jwt.token.TokenExpiredException;
 import org.springframework.samples.petclinic.dto.UserDto;
 import org.springframework.samples.petclinic.service.AuthTokenService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -94,11 +96,8 @@ public class JwtAuthorizationFilter extends AbstractAuthenticationProcessingFilt
 
         if (failed instanceof TokenException) {
             Authentication authentication = ((TokenException) failed).getAuthentication();
-            Integer userId = null;
             try {
                 if (authentication != null && authentication.getPrincipal() instanceof UserDto) {
-                    UserDto principalWebHolder = (UserDto) authentication.getPrincipal();
-                    userId = principalWebHolder.getId();
                     if (logoutMatcherRequest.matches(request)) {
                         SecurityContext context = SecurityContextHolder.createEmptyContext();
                         context.setAuthentication(authentication);
@@ -106,8 +105,10 @@ public class JwtAuthorizationFilter extends AbstractAuthenticationProcessingFilt
                         // TODO instead of this, it should call the chain
                         authTokenLogoutHandler.logout(request, response, authentication);
                         return;
-                    } else {
-                        loginService.removeTokenByUserId(userId);
+                    } else if (failed instanceof TokenExpiredException) {
+                        UserDto principalWebHolder = (UserDto) authentication.getPrincipal();
+                        LocalDateTime expiryDate = ((TokenExpiredException) failed).getExpiryDate();
+                        loginService.removeTokenByUserId(principalWebHolder.getId(), expiryDate);
                     }
                 }
             } catch (InternalAuthenticationServiceException ex) {
