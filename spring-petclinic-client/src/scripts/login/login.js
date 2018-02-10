@@ -5,7 +5,7 @@ angular.module('login', ['ui.router'])
         $stateProvider
             .state('nosession.login', {
                 parent: 'nosession',
-                url: '/login',
+                url: '/login?from',
                 template: '<login></login>'
             })
     }]);

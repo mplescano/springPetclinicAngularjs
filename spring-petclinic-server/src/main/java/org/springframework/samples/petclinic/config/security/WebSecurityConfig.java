@@ -43,6 +43,7 @@ import org.springframework.security.web.authentication.logout.HttpStatusReturnin
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.util.StringUtils;
 
@@ -196,7 +197,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 						return true;
 					}
         		},
-        		new AntPathRequestMatcher(REST_ENTRY_POINT)
+        		new OrRequestMatcher(
+        		        new AntPathRequestMatcher(REST_ENTRY_POINT),
+        		        MATCHER_LOGOUT_ENTRY_POINT
+        		)
+        		
         	),
                 authenticationManager(), jwtAuthenticationSuccessHandler, authExceptionThrower(), authTokenService,
                 MATCHER_LOGOUT_ENTRY_POINT, authTokenLogoutHandler);

@@ -52,14 +52,8 @@
         }
 
         function Logout() {
-            $http({method: 'GET', url: 'logout'})
-                .then(function (response) {
-                    $rootScope.globals = {};
-                }, function (response) {
-              
-                });
+            return $http({method: 'GET', url: 'logout'});
         }
         
     };
-
 })();
