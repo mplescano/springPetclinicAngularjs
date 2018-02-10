@@ -1,6 +1,6 @@
 'use strict';
 /* App Module */
-var petClinicApp = angular.module('petClinicApp', ['ngCookies', 
+var petClinicApp = angular.module('petClinicApp', ['ngCookies', 'ngStorage',
     'ui.router', 'ngAnimate', 'ui.bootstrap', 'permission', 'permission.ui', 
     'layoutNav', 'layoutFooter', 'ownerList', 'ownerDetails', 'ownerForm', 
     'petForm', 'visits', 'vetList', 'login', 'register', 'userList']);
@@ -48,13 +48,11 @@ petClinicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider'
         });
 }]);
 
-petClinicApp.run(['$rootScope', '$location', '$cookieStore', '$http', 'PermRoleStore', 
-            function($rootScope, $location, $cookieStore, $http, PermRoleStore) {
-    // keep user logged in after page refresh
-    $rootScope.globals = $cookieStore.get('globals') || {};
+petClinicApp.run(['$rootScope', '$location', '$http', 'PermRoleStore', 'CredentialStorageService', 
+            function($rootScope, $location, $http, PermRoleStore, CredentialStorageService) {
     
-    PermRoleStore.defineRole('AUTHORIZED', ['$rootScope', function ($rootScope) {
-        return !!$rootScope.globals.currentUser;
+    PermRoleStore.defineRole('AUTHORIZED', ['CredentialStorageService', function (CredentialStorageService) {
+        return CredentialStorageService.IsLogged();
     }]);
 }]);
 

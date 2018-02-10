@@ -28,11 +28,13 @@
 	<script th:src="@{angular-permission/dist/angular-permission-ui.js}"></script>
 	<script th:src="@{/angular-ui-grid/ui-grid.js}"></script>
 	<script th:src="@{/angular-bootstrap/ui-bootstrap-tpls.js}"></script>
+	<script th:src="@{/ngstorage/ngStorage.js}"></script>
 
     <script th:src="@{/scripts/app.js}"></script>
 
     <script th:src="@{/scripts/services/flash.js}"></script>
     <script th:src="@{/scripts/services/authentication.js}"></script>
+    <script th:src="@{/scripts/services/credential-storage.js}"></script>
     <script th:src="@{/scripts/services/user-real.js}"></script>
     
     <script th:src="@{/scripts/login/login.js}"></script>
@@ -70,6 +72,11 @@
     <script th:src="@{/scripts/vet-list/vet-list.js}"></script>
     <script th:src="@{/scripts/vet-list/vet-list.controller.js}"></script>
     <script th:src="@{/scripts/vet-list/vet-list.component.js}"></script>
+    
+    <script th:inline="javascript" type="text/javascript">
+    	var GLB_CONTEXT = /*[[@{/}]]*/ '/';
+    </script>
+    
 </head>
 
 <body class="container">

@@ -5,13 +5,12 @@
         .module('petClinicApp')
         .factory('AuthenticationService', AuthenticationService);
 
-    AuthenticationService.$inject = ['$http', '$cookieStore', '$rootScope', '$timeout', 'UserService'];
-    function AuthenticationService($http, $cookieStore, $rootScope, $timeout, UserService) {
+    AuthenticationService.$inject = ['$http', '$rootScope', '$timeout'];
+    function AuthenticationService($http, $rootScope, $timeout) {
         var service = {};
 
         service.Login = Login;
-        service.SetCredentials = SetCredentials;
-        service.ClearCredentials = ClearCredentials;
+        service.Logout = Logout;
 
         return service;
 
@@ -66,28 +65,8 @@
             });
         }
 
-        function SetCredentials(username, roles, permissions) {
-            $rootScope.globals = {
-                currentUser: {
-                    username: username,
-                    roles: roles,
-                    permissions: permissions
-                }
-            };
-
-            $cookieStore.put('globals', $rootScope.globals);// keep user data after page refresh
-        }
-
-        function ClearCredentials() {
-            $cookieStore.remove('globals');
-            //$http.defaults.headers.common.Authorization = 'Basic';
-            //call logout in server
-            $http({method: 'GET', url: 'logout'})
-                .then(function (response) {
-                    $rootScope.globals = {};
-                }, function (response) {
-              
-                });
+        function Logout() {
+            return $http({method: 'GET', url: 'logout'});
         }
     };
 

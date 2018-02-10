@@ -1,9 +1,9 @@
 'use strict';
 
 angular.module('login')
-    .controller('LoginController', ["$http", '$state', 'AuthenticationService', 
+    .controller('LoginController', ["$http", '$state', '$stateParams', 'AuthenticationService', 'CredentialStorageService',
                                     'FlashService', 'PermPermissionStore', 
-                                    function ($http, $state, AuthenticationService, 
+                                    function ($http, $state, $stateParams, AuthenticationService, CredentialStorageService,
                                     		FlashService, PermPermissionStore) {
         var self = this;
 
@@ -11,15 +11,27 @@ angular.module('login')
 
         (function initController() {
             // reset login status
-            AuthenticationService.ClearCredentials();
-            PermPermissionStore.clearStore();
+            var fromLink = $stateParams.from;
+            if (fromLink == 'logout' && CredentialStorageService.IsLogged()) {
+                AuthenticationService.Logout().then(function() {
+                    CredentialStorageService.ClearCredentials();
+                    PermPermissionStore.clearStore();
+                });
+            }
+            else if (CredentialStorageService.IsLogged()) {
+                PermPermissionStore.defineManyPermissions(CredentialStorageService.GetCurrentUser().permissions, /*@ngInject*/ function (permissionName) {
+                    return true;
+                });
+                
+                $state.go('session.welcome');
+            }
         })();
 
         function login() {
         	self.dataLoading = true;
             AuthenticationService.Login(self.username, self.password, function (response) {
                 if (response.success) {
-                    AuthenticationService.SetCredentials(self.username, response.data.roles, response.data.permissions);
+                    CredentialStorageService.SetCredentials(self.username, response.data.roles, response.data.permissions);
                     PermPermissionStore.defineManyPermissions(response.data.permissions, /*@ngInject*/ function (permissionName) {
                     	  return true;
                     });
