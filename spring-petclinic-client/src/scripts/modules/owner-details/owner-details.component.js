@@ -2,6 +2,6 @@
 
 angular.module('ownerDetails')
     .component('ownerDetails', {
-        templateUrl: 'scripts/owner-details/owner-details.template.html',
+        templateUrl: 'scripts/modules/owner-details/owner-details.template.html',
         controller: 'OwnerDetailsController'
     });

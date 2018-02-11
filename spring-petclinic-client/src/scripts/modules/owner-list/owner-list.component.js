@@ -2,6 +2,6 @@
 
 angular.module('ownerList')
     .component('ownerList', {
-        templateUrl: 'scripts/owner-list/owner-list.template.html',
+        templateUrl: 'scripts/modules/owner-list/owner-list.template.html',
         controller: 'OwnerListController'
     });

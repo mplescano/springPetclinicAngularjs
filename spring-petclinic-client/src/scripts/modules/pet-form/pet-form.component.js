@@ -2,6 +2,6 @@
 
 angular.module('petForm')
     .component('petForm', {
-        templateUrl: 'scripts/pet-form/pet-form.template.html',
+        templateUrl: 'scripts/modules/pet-form/pet-form.template.html',
         controller: 'PetFormController'
     });

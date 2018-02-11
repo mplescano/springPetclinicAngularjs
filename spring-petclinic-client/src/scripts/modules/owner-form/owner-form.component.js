@@ -2,6 +2,6 @@
 
 angular.module('ownerForm')
     .component('ownerForm', {
-        templateUrl: 'scripts/owner-form/owner-form.template.html',
+        templateUrl: 'scripts/modules/owner-form/owner-form.template.html',
         controller: 'OwnerFormController'
     });

@@ -2,6 +2,6 @@
 
 angular.module('userList')
     .component('userList', {
-        templateUrl: 'scripts/user-list/user-list.template.html',
+        templateUrl: 'scripts/modules/user-list/user-list.template.html',
         controller: 'UserListController'
     });

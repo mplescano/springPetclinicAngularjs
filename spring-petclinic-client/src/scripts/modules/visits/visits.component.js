@@ -2,6 +2,6 @@
 
 angular.module('visits')
     .component('visits', {
-        templateUrl: 'scripts/visits/visits.template.html',
+        templateUrl: 'scripts/modules/visits/visits.template.html',
         controller: 'VisitsController'
     });

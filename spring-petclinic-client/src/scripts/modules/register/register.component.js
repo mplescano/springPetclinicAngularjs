@@ -3,7 +3,7 @@
 
 angular.module("register")
 	.component("register", {
-    templateUrl: "scripts/register/register.html",
+    templateUrl: "scripts/modules/register/register.html",
     controller: 'RegisterController',
     controllerAs:'vm'
 });
