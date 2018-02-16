@@ -14,6 +14,7 @@ function UserService($http, $httpParamSerializer, $q) {
     service.GetAll = GetAll;
     service.GetById = GetById;
     service.GetByUsername = GetByUsername;
+    service.Register = Register;
     service.Create = Create;
     service.Update = Update;
     service.Delete = Delete;
@@ -43,7 +44,7 @@ function UserService($http, $httpParamSerializer, $q) {
    }
 
     function GetById(id) {
-        return $http.get('api/users/' + id).then(handleSuccess, handleError('Error getting user by id'));
+        return $http.get('rest/users/' + id).then(handleSuccess, handleError('Error getting user by id'));
     }
 
     function GetByUsername(username) {
@@ -53,9 +54,13 @@ function UserService($http, $httpParamSerializer, $q) {
     function Create(user) {
         return $http.post('rest/users', user).then(handleSuccess, handleError('Error creating user'));
     }
+    
+    function Register(user) {
+        return $http.post('rest/users/register', user).then(handleSuccess, handleError('Error creating user'));
+    }
 
     function Update(user) {
-        return $http.put('api/users/' + user.id, user).then(handleSuccess, handleError('Error updating user'));
+        return $http.put('rest/users/' + user.id, user).then(handleSuccess, handleError('Error updating user'));
     }
 
     function Delete(userId) {

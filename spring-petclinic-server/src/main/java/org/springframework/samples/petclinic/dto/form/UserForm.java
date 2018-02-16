@@ -15,73 +15,81 @@ import org.springframework.samples.petclinic.dto.BaseForm;
 @Compare(value = "password", compareAttribute = "passwordAgain")
 public class UserForm extends BaseForm {
 
-	@NotEmpty
-	private String firstName;
-	
-	@NotEmpty
-	private String lastName;
-	
-	@UniqueUsername
-	@NotEmpty
-	private String username;
-	
-	@NotEmpty
-	private String password;
-	
-	@NotEmpty
-	private String passwordAgain;
-	
-	@NotEmpty
-	private String roles;
+    @NotEmpty
+    private String firstName;
 
-	public String getFirstName() {
-		return firstName;
-	}
+    @NotEmpty
+    private String lastName;
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+    @UniqueUsername
+    @NotEmpty
+    private String username;
 
-	public String getLastName() {
-		return lastName;
-	}
+    @NotEmpty
+    private String password;
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+    @NotEmpty
+    private String passwordAgain;
 
-	public String getUsername() {
-		return username;
-	}
+    @NotEmpty
+    private String roles;
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    private Boolean enabled;
 
-	public String getPassword() {
-		return password;
-	}
+    public String getFirstName() {
+        return firstName;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-	public String getPasswordAgain() {
-		return passwordAgain;
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	public void setPasswordAgain(String passwordAgain) {
-		this.passwordAgain = passwordAgain;
-	}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-	public String getRoles() {
-		return roles;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public void setRoles(String roles) {
-		this.roles = roles;
-	}
-	
-	
-	
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPasswordAgain() {
+        return passwordAgain;
+    }
+
+    public void setPasswordAgain(String passwordAgain) {
+        this.passwordAgain = passwordAgain;
+    }
+
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
 }

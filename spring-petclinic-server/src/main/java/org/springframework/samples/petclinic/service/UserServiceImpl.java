@@ -18,7 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.samples.petclinic.dto.UserDto;
 import org.springframework.samples.petclinic.dto.form.UserForm;
 import org.springframework.samples.petclinic.dto.form.UserQueryForm;
-import org.springframework.samples.petclinic.dto.projection.UserForWebList;
+import org.springframework.samples.petclinic.dto.projection.UserForGridWeb;
 import org.springframework.samples.petclinic.model.Authority;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.repository.AuthorityRepository;
@@ -251,6 +251,11 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 							cb.equal(root.<Boolean>get("enabled"), userQueryForm.getEnabled())
 						);
 					}
+					if (userQueryForm.getUserId() != null) {
+                                            predicates.add(
+                                                    cb.equal(root.<Integer>get("id"), userQueryForm.getUserId())
+                                            );
+					}
 					
 					return  cb.and(predicates.toArray(new Predicate[predicates.size()]));
 				}}; 
@@ -259,13 +264,20 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 		return specUserQueryForm;
 	}
 	
-	public Page<UserForWebList> findUserForWebList(final UserQueryForm userQueryForm, Pageable pageable) {
+	public Page<UserForGridWeb> findUserForWebList(final UserQueryForm userQueryForm, Pageable pageable) {
 		NamedParamSpecification<User> specUser = getSpecUserQueryForm(userQueryForm);
-		return userRepository.findProjectedAll(specUser, pageable, UserForWebList.class);
+		return userRepository.findProjectedAll(specUser, pageable, UserForGridWeb.class);
 	}
 
 	@Override
 	public int deleteUserList(Integer[] userIds) {
 		return userRepository.deleteByIdInBatch(new HashSet<Integer>(Arrays.asList(userIds)));
 	}
+
+    @Override
+    public UserForm findUserForWeb(UserQueryForm userQueryForm) {
+        UserForm result = userRepository.findProjectedOne(getSpecUserQueryForm(userQueryForm), UserForm.class);
+        result.setPassword(null);
+        return result;
+    }
 }

@@ -58,19 +58,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String LOGIN_ENTRY_POINT = "/login";
     
-    private static final String INDEX_ENTRY_POINT = "/index";
-    
-    private static final String ROOT_ENTRY_POINT = "/";
-    
-    private static final String USERS_ENTRY_POINT = "/rest/users";
-    
     private static final String REST_ENTRY_POINT = "/rest/**";
 
     public static final String LOGOUT_ENTRY_POINT = "/logout";
     
     public static final RequestMatcher MATCHER_LOGOUT_ENTRY_POINT = new AntPathRequestMatcher(LOGOUT_ENTRY_POINT);
-    
-    private static final String ERROR_ENTRY_POINT = "/error";
     
     @Autowired
     private ResourceLoader resourceLoader;
@@ -160,7 +152,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         	.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeRequests()/*.accessDecisionManager(accessDecisionManager())*/
-        	.antMatchers(HttpMethod.POST, "/rest/users").permitAll()
+        	.antMatchers(HttpMethod.POST, "/rest/users/register").permitAll()
         	.antMatchers("/rest/**").authenticated()
         	.anyRequest().permitAll()
         .and()

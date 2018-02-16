@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -27,6 +28,7 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
@@ -241,5 +243,26 @@ public class ProjectableSpecificationExecutorImpl<T, ID extends Serializable>
 
 		return query;
 	}
+
+    @Override
+    public T findOne(NamedParamSpecification<T> spec) {
+        try {
+            TypedQuery<T> query = getQuery(spec, (Sort) null);
+            if (spec != null) {
+                    for (Entry<String, Object> entryParam : spec.getParameters().entrySet()) {
+                            query.setParameter(entryParam.getKey(), entryParam.getValue());
+                    }
+            }
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    @Override
+    public <S> S findProjectedOne(NamedParamSpecification<T> spec, Class<S> projectionClass) {
+        ReturnedType type = ReturnedType.of(projectionClass, getDomainClass(), factory);
+        return (new ProjectingConverter<S>(type, factory)).convert(findOne(spec));
+    }
 
 }

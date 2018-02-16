@@ -15,82 +15,100 @@ import com.fasterxml.jackson.annotation.JsonFormat;
  * @author mplescano
  *
  */
-@Compare(value = "dateCreatedIni", compareAttribute = "dateCreatedEnd", 
-	operator = Operator.LESS_EQUAL_THAN, type = Type.DATE, allowEmpty = true)
+@Compare(value = "dateCreatedIni", compareAttribute = "dateCreatedEnd", operator = Operator.LESS_EQUAL_THAN,
+        type = Type.DATE, allowEmpty = true)
 @AtLeastOneFilled
 public class UserQueryForm {
-	
-	/**
-	 * convert empty string to null by StringTrimmerEditor
-	 */
-	@Size(min = 3)
-	private String usernameSearch;
-	
-	/**
-	 * convert empty string to null by StringTrimmerEditor
-	 */
-	@Size(min = 3)
-	private String firstNameSearch;
-	
-	/**
-	 * convert empty string to null by StringTrimmerEditor
-	 */
-	@Size(min = 3)
-	private String lastNameSearch;
-	
-	@JsonFormat(pattern = "yyyy-MM-dd")
-	private Date dateCreatedIni;
-	
-	@JsonFormat(pattern = "yyyy-MM-dd")
-	private Date dateCreatedEnd;
-	
-	private Boolean enabled;
 
-	public String getUsernameSearch() {
-		return usernameSearch;
-	}
+    private Integer userId;
+    
+    /**
+     * convert empty string to null by StringTrimmerEditor
+     */
+    @Size(min = 3)
+    private String usernameSearch;
 
-	public void setUsernameSearch(String usernameSearch) {
-		this.usernameSearch = usernameSearch;
-	}
+    /**
+     * convert empty string to null by StringTrimmerEditor
+     */
+    @Size(min = 3)
+    private String firstNameSearch;
 
-	public String getFirstNameSearch() {
-		return firstNameSearch;
-	}
+    /**
+     * convert empty string to null by StringTrimmerEditor
+     */
+    @Size(min = 3)
+    private String lastNameSearch;
 
-	public void setFirstNameSearch(String firstNameSearch) {
-		this.firstNameSearch = firstNameSearch;
-	}
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date dateCreatedIni;
 
-	public String getLastNameSearch() {
-		return lastNameSearch;
-	}
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date dateCreatedEnd;
 
-	public void setLastNameSearch(String lastNameSearch) {
-		this.lastNameSearch = lastNameSearch;
-	}
+    private Boolean enabled;
+    
+    public UserQueryForm() {
+    }
 
-	public Boolean getEnabled() {
-		return enabled;
-	}
+    public UserQueryForm(Integer userId) {
+        this.userId = userId;
+    }
 
-	public void setEnabled(Boolean enabled) {
-		this.enabled = enabled;
-	}
+    public String getUsernameSearch() {
+        return usernameSearch;
+    }
 
-	public Date getDateCreatedIni() {
-		return dateCreatedIni;
-	}
+    public void setUsernameSearch(String usernameSearch) {
+        this.usernameSearch = usernameSearch;
+    }
 
-	public void setDateCreatedIni(Date dateCreatedIni) {
-		this.dateCreatedIni = dateCreatedIni;
-	}
+    public String getFirstNameSearch() {
+        return firstNameSearch;
+    }
 
-	public Date getDateCreatedEnd() {
-		return dateCreatedEnd;
-	}
+    public void setFirstNameSearch(String firstNameSearch) {
+        this.firstNameSearch = firstNameSearch;
+    }
 
-	public void setDateCreatedEnd(Date dateCreatedEnd) {
-		this.dateCreatedEnd = dateCreatedEnd;
-	}
+    public String getLastNameSearch() {
+        return lastNameSearch;
+    }
+
+    public void setLastNameSearch(String lastNameSearch) {
+        this.lastNameSearch = lastNameSearch;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public Date getDateCreatedIni() {
+        return dateCreatedIni;
+    }
+
+    public void setDateCreatedIni(Date dateCreatedIni) {
+        this.dateCreatedIni = dateCreatedIni;
+    }
+
+    public Date getDateCreatedEnd() {
+        return dateCreatedEnd;
+    }
+
+    public void setDateCreatedEnd(Date dateCreatedEnd) {
+        this.dateCreatedEnd = dateCreatedEnd;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
 }
