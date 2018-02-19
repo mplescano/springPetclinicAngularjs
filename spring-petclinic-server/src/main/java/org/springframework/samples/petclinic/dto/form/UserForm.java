@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.samples.petclinic.constraint.Compare;
 import org.springframework.samples.petclinic.constraint.UniqueUsername;
 import org.springframework.samples.petclinic.dto.BaseForm;
+import org.springframework.samples.petclinic.model.User;
 
 /**
  * 
@@ -92,4 +93,15 @@ public class UserForm extends BaseForm {
         this.enabled = enabled;
     }
 
+    public static UserForm from(User user) {
+        UserForm result = new UserForm();
+        result.setId(user.getId());
+        result.setFirstName(user.getFirstName());
+        result.setLastName(user.getLastName());
+        result.setRoles(user.getRoles());
+        result.setEnabled(user.isEnabled());
+        result.setPassword(user.getPassword());
+        result.setUsername(user.getUsername());
+        return result;
+    }
 }

@@ -8,6 +8,7 @@ angular.module('register')
         
         (function initController() {
             self.dataLoading = false;
+            self.requiredPassword = true;
             self.user = {};
             self.title = 'Register';
             self.submit = register;
@@ -21,10 +22,10 @@ angular.module('register')
                     if (response.success) {
                         FlashService.Success('Registration successful', true);
                         $state.go('nosession.login');
-                    } else {
-                        FlashService.Error(response.message);
-                        self.dataLoading = false;
                     }
+                }, function (response) {
+                    FlashService.Error(response);
+                    self.dataLoading = false;
                 });
         }
         

@@ -4,25 +4,25 @@
  * 
  * */
 angular.module('userForm')
-    .controller('UserFormController', ['UserService', '$state', '$scope', 'FlashService', 
+    .controller('UserFormController', ['UserService', '$state', '$stateParams', '$scope', 'FlashService', 
                                        'clearObjectFilter', 'convertDateToStringFilter', '$timeout',
                                        function(UserService, $state, $stateParams, $scope, FlashService, 
                                     		   clearObjectFilter, convertDateToStringFilter, $timeout) {
         var self = this;
         
         (function initController() {
+            self.requiredPassword = false;
             self.dataLoading = false;
             var userId = $stateParams.userId;
             if (userId > 0) {
                 self.dataLoading = true;
                 self.title = 'Modify';
                 UserService.GetById(userId).then(function(response) {
-                    if (response.success) {
-                        self.user = response.data;
-                    } else {
-                        FlashService.Error(response.message);
-                        self.user = {};
-                    }
+                    self.user = response;
+                    self.dataLoading = false;
+                }, function(response) {
+                    FlashService.Error(response.message);
+                    self.user = {};
                     self.dataLoading = false;
                 });
             }

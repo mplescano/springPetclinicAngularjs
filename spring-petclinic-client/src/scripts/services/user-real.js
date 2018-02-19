@@ -64,7 +64,7 @@ function UserService($http, $httpParamSerializer, $q) {
     }
 
     function Delete(userId) {
-        return $http.delete('api/users/' + userId).then(handleSuccess, handleError('Error deleting user'));
+        return $http.delete('rest/users/' + userId).then(handleSuccess, handleError('Error deleting user'));
     }
     
     function DeleteUserList(arrUserIds) {
@@ -77,14 +77,24 @@ function UserService($http, $httpParamSerializer, $q) {
 
     // private functions
 
-    function handleSuccess(res) {
-        return res.data;
+    function handleSuccess(response) {
+        return response.data;
     }
 
+    /**
+     * the 'then' method only accepts definition of functions as a parameter 
+     */
     //@see http://stackoverflow.com/questions/26186851/how-does-one-chain-successive-consecutive-http-posts-in-angular
     function handleError(error) {
-        return function () {
-            return $q.reject({ success: false, message: error });
+        return function (response) {
+            if (angular.isObject(response.data) && response.data.hasOwnProperty('success') 
+                    && response.data.hasOwnProperty('message')) {
+                return $q.reject(response.data);
+            }
+            else {
+                return $q.reject({ success: false, message: error });                
+            }
+            
         };
     }
 }

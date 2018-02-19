@@ -56,6 +56,11 @@ angular.module('userList')
         		enabled: null
         };
         
+        self.editUser = function(userId) {
+            //$state.go('session.userForm({userId: ' + userId + '})');
+            $state.go('session.userForm', {"userId": userId});
+        }
+        
 		self.deleteUsers = function() {
 			//gridApi.selection.getSelectedRows();
 		    var arrRows = self.gridApi.selection.getSelectedRows();
@@ -69,6 +74,15 @@ angular.module('userList')
         		alert(response.message);
         	});
 		}
+		
+        self.deleteUser = function(userId) {
+            UserService.DeleteUser(userId)
+            .then(function (response) {
+                $timeout(function(){getPage();}, 1000);//setTimeout because the DB in java is delaying in propagate the changes in the table's data  
+            }, function(response) {
+                alert(response.message);
+            });
+        }
         
         self.gridOptions = {
         	gridMenuShowHideColumns: false,
@@ -80,7 +94,7 @@ angular.module('userList')
     	    enableRowSelection: true,
     	    enableSelectAll: true,
     	    multiSelect: true,
-    	    
+    	    //ng-click="$ctrl.deleteUser({row.entity.id})"
     	    data: [],
     	    columnDefs: [
     	      { name: 'username', enableSorting: true, enableHiding: false },
@@ -89,7 +103,7 @@ angular.module('userList')
     	      { name: 'createdAt', enableSorting: false, enableHiding: false },
     	      { name: 'enabled', enableSorting: false, enableHiding: false },
     	      { name: 'operations', displayName:'Operations', enableSorting: false, enableHiding: false,
-    	    	  cellTemplate: '<button class="btn btn-xs btn-primary">Edit {{row.entity.id}}</button>&nbsp;<button class="btn btn-xs btn-primary">Delete {{row.entity.id}}</button>'  
+    	    	  cellTemplate: '<button class="btn btn-xs btn-primary" ng-click="grid.appScope.$ctrl.editUser(row.entity.id)">Edit "{{ row.entity.id }}"</button>&nbsp;<button class="btn btn-xs btn-primary">Delete</button>'  
     	      }
     	    ],
     	    onRegisterApi: function(gridApi) {

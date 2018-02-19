@@ -1,0 +1,10 @@
+<div
+	ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }"
+	ng-if="flash">
+	<span ng-bind="flash.message"></span>
+	<ul class="" ng-if="flash.details && flash.details.length > 0">
+	  <li class="" ng-repeat="detail in flash.details">
+	    {{detail.message}}
+	  </li>
+	</ul>
+</div>

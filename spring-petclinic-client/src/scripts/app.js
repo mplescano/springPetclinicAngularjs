@@ -45,8 +45,14 @@ petClinicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider'
     $httpProvider.interceptors.push('TokenInterceptorService');
 }]);
 
-petClinicApp.run(['$rootScope', '$location', '$http', 'PermRoleStore', 'CredentialStorageService', 
-    function($rootScope, $location, $http, PermRoleStore, CredentialStorageService) {
+petClinicApp.run(['$rootScope', '$location', '$http', 'PermRoleStore', 'PermPermissionStore', 'CredentialStorageService', 
+    function($rootScope, $location, $http, PermRoleStore, PermPermissionStore, CredentialStorageService) {
+    
+    if (CredentialStorageService.IsLogged()) {
+        PermPermissionStore.defineManyPermissions(CredentialStorageService.GetCurrentUser().permissions, /*@ngInject*/ function (permissionName) {
+            return true;
+        });
+    }
     
     PermRoleStore.defineRole('AUTHORIZED', ['CredentialStorageService', function (CredentialStorageService) {
         return CredentialStorageService.IsLogged();

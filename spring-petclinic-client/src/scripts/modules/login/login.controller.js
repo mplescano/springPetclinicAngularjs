@@ -19,10 +19,6 @@ angular.module('login')
                 });
             }
             else if (CredentialStorageService.IsLogged()) {
-                PermPermissionStore.defineManyPermissions(CredentialStorageService.GetCurrentUser().permissions, /*@ngInject*/ function (permissionName) {
-                    return true;
-                });
-                
                 $state.go('session.welcome');
             }
         })();

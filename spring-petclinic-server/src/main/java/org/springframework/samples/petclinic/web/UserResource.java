@@ -71,14 +71,14 @@ public class UserResource extends AbstractResourceController {
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasPermission()")
-    public ResponseMessage createUser(@Valid @RequestBody UserForm userForm) {
+    public ResponseMessage createUser(@RequestBody UserForm userForm) {
         ResponseMessage message = null;
         userService.save(userForm);
         message = new ResponseMessage(true, "User created");
         return message;
     }
     
-    @PutMapping("/users/:userId")
+    @PutMapping("/users/{userId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasPermission()")
     public ResponseMessage modifyUser(@PathVariable Integer userId, @Valid @RequestBody UserForm userForm) {
@@ -99,7 +99,7 @@ public class UserResource extends AbstractResourceController {
         return userService.findUserForWebList(null, pageable);
     }
     
-    @GetMapping("/users/:userId")
+    @GetMapping("/users/{userId}")
     @PreAuthorize("hasPermission()")
     public UserForm findUser(@PathVariable Integer userId) {
         return userService.findUserForWeb(new UserQueryForm(userId));
@@ -120,5 +120,15 @@ public class UserResource extends AbstractResourceController {
     	int deleted = userService.deleteUserList(userIds);
     	
     	return new ResponseMessage(true, "Successfuly deleted " + deleted + " items.");
+    }
+    
+    @DeleteMapping("/users/{userId}")
+    @PreAuthorize("hasPermission()")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ResponseMessage deleteUser(@PathVariable Integer userId) {
+        
+        int deleted = userService.deleteUserList(new Integer[]{userId});
+        
+        return new ResponseMessage(true, "Successfuly deleted " + deleted + " items.");
     }
 }

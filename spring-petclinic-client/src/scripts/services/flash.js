@@ -42,12 +42,32 @@
             };
         }
 
-        function Error(message, keepAfterLocationChange) {
-            $rootScope.flash = {
-                message: message,
-                type: 'error',
-                keepAfterLocationChange: keepAfterLocationChange
-            };
+        function Error(response, keepAfterLocationChange) {
+            if (angular.isObject(response) && response.hasOwnProperty('message')) {
+                if (response.hasOwnProperty('data') && angular.isArray(response.data) && 
+                        response.data.length > 0) {
+                    $rootScope.flash = {
+                        message: response.message,
+                        details: response.data,
+                        type: 'error',
+                        keepAfterLocationChange: keepAfterLocationChange
+                    };
+                }
+                else {
+                    $rootScope.flash = {
+                        message: response.message,
+                        type: 'error',
+                        keepAfterLocationChange: keepAfterLocationChange
+                    };
+                }
+            }
+            else {
+                $rootScope.flash = {
+                    message: response,
+                    type: 'error',
+                    keepAfterLocationChange: keepAfterLocationChange
+                };
+            }
         }
     }
 
