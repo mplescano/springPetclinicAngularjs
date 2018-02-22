@@ -3,6 +3,8 @@ package org.springframework.samples.petclinic.dto.form;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.samples.petclinic.constraint.Compare;
 import org.springframework.samples.petclinic.constraint.UniqueUsername;
+import org.springframework.samples.petclinic.constraint.scenariogroups.InsertScenario;
+import org.springframework.samples.petclinic.constraint.scenariogroups.UpdateScenario;
 import org.springframework.samples.petclinic.dto.BaseForm;
 import org.springframework.samples.petclinic.model.User;
 
@@ -13,26 +15,26 @@ import org.springframework.samples.petclinic.model.User;
  * @author mplescano
  *
  */
-@Compare(value = "password", compareAttribute = "passwordAgain")
+@Compare(value = "password", compareAttribute = "passwordAgain", groups = {InsertScenario.class, UpdateScenario.class})
 public class UserForm extends BaseForm {
 
-    @NotEmpty
+    @NotEmpty(groups = {InsertScenario.class, UpdateScenario.class})
     private String firstName;
 
-    @NotEmpty
+    @NotEmpty(groups = {InsertScenario.class, UpdateScenario.class})
     private String lastName;
 
-    @UniqueUsername
-    @NotEmpty
+    @UniqueUsername(groups = {InsertScenario.class})
+    @NotEmpty(groups = {InsertScenario.class, UpdateScenario.class})
     private String username;
 
-    @NotEmpty
+    @NotEmpty(groups = {InsertScenario.class})
     private String password;
 
-    @NotEmpty
+    @NotEmpty(groups = {InsertScenario.class})
     private String passwordAgain;
 
-    @NotEmpty
+    @NotEmpty(groups = {InsertScenario.class, UpdateScenario.class})
     private String roles;
 
     private Boolean enabled;

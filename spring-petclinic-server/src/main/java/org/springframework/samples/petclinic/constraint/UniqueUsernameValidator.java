@@ -25,7 +25,7 @@ public class UniqueUsernameValidator implements ConstraintValidator<UniqueUserna
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-
+    	
         if (!StringUtils.hasText(value)) {
             return true;
         }

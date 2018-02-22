@@ -6,8 +6,8 @@ public class DetailErrorMessage {
     
     private String message;
     
-    public DetailErrorMessage(String field, String message) {
-        this.code = field;
+    public DetailErrorMessage(String code, String message) {
+        this.code = code;
         this.message = message;
     }
 

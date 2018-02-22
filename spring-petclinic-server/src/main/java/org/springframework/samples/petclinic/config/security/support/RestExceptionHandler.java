@@ -2,7 +2,6 @@ package org.springframework.samples.petclinic.config.security.support;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletResponse;
@@ -10,8 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.NestedRuntimeException;
 import org.springframework.dao.DataAccessException;
@@ -21,7 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.config.security.jwt.token.TokenExpiredException;
 import org.springframework.samples.petclinic.config.security.jwt.token.TokenInvalidedException;
 import org.springframework.samples.petclinic.dto.DetailErrorMessage;
-import org.springframework.samples.petclinic.dto.ResponseMessage;
+import org.springframework.samples.petclinic.dto.ErrorType;
+import org.springframework.samples.petclinic.dto.ResponseErrorMessage;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -52,7 +50,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     
     private static final Logger logger = LoggerFactory.getLogger(RestExceptionHandler.class);
 
-    private static final String VALIDATION_ERRORS_MESSAGE = "validation.errors"; 
+    private static final String VALIDATION_ERRORS_MESSAGE = "validation.error"; 
     
     private MessageSourceAccessor messageSource;
     
@@ -72,26 +70,32 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler({ TokenInvalidedException.class, InsufficientAuthenticationException.class, AccessDeniedException.class })
     public ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
-    	ResponseMessage message = new ResponseMessage(false, ex.getMessage());
+    	ResponseErrorMessage message = new ResponseErrorMessage(generateCodeFromException(ex), ErrorType.AUTHORIZATION_ERROR, ex.getMessage());
         return handleExceptionInternal(ex, message, null, HttpStatus.FORBIDDEN, request);
     }
     
-    @ExceptionHandler({ PersistenceException.class, DataAccessException.class, NullPointerException.class, NestedRuntimeException.class })
+    @ExceptionHandler({ PersistenceException.class, DataAccessException.class })
     public ResponseEntity<Object> handlePersistenceException(Exception ex, WebRequest request) {
-    	ResponseMessage message = new ResponseMessage(false, ex.getMessage());
+    	ResponseErrorMessage message = new ResponseErrorMessage(generateCodeFromException(ex), ErrorType.REPOSITORY_ERROR, ex.getMessage());
+    	return handleExceptionInternal(ex, message, null, HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    @ExceptionHandler({ NullPointerException.class, NestedRuntimeException.class })
+    public ResponseEntity<Object> handleInternalException(Exception ex, WebRequest request) {
+    	ResponseErrorMessage message = new ResponseErrorMessage(generateCodeFromException(ex), ErrorType.INTERNAL_ERROR, ex.getMessage());
     	return handleExceptionInternal(ex, message, null, HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
     
     @ExceptionHandler({ AccountStatusException.class, BadCredentialsException.class, UsernameNotFoundException.class, 
     	InternalAuthenticationServiceException.class })
     public ResponseEntity<Object> handleAuthenticateException(Exception ex, WebRequest request) {
-    	ResponseMessage message = new ResponseMessage(false, ex.getMessage());
+    	ResponseErrorMessage message = new ResponseErrorMessage(generateCodeFromException(ex), ErrorType.AUTHENTICATION_ERROR, ex.getMessage());
     	return handleExceptionInternal(ex, message, null, HttpStatus.UNAUTHORIZED, request);
     }
 	
     @ExceptionHandler({ TokenExpiredException.class })
     @ResponseBody
-    public ResponseMessage tokenExpiredException(Exception ex, WebRequest webRequest) {
+    public ResponseErrorMessage tokenExpiredException(Exception ex, WebRequest webRequest) {
         if (webRequest instanceof ServletWebRequest) {
             ServletWebRequest servletRequest = (ServletWebRequest) webRequest;
             HttpServletResponse response = servletRequest.getNativeResponse(HttpServletResponse.class);
@@ -99,7 +103,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 response.setStatus(440);//440 Login Time-out The client's session has expired and must log in again.[76]
             }
         }
-        ResponseMessage message = new ResponseMessage(false, ex.getMessage());
+        ResponseErrorMessage message = new ResponseErrorMessage(generateCodeFromException(ex), ErrorType.AUTHORIZATION_ERROR, ex.getMessage());
     	return message;
     }
     
@@ -109,12 +113,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   WebRequest request) {
         BindingResult result = ex.getBindingResult();
         List<ObjectError> objectErrors = result.getAllErrors();
-
-        return handleExceptionInternal(ex, processObjectErrors(objectErrors, ex), headers, status, request);
+        ResponseErrorMessage message = new ResponseErrorMessage(VALIDATION_ERRORS_MESSAGE, ErrorType.DATA_ERROR, messageSource.getMessage(VALIDATION_ERRORS_MESSAGE), 
+        		processObjectErrors(objectErrors, ex));
+        return handleExceptionInternal(ex, message, headers, status, request);
     }
     
-    private ResponseMessage processObjectErrors(List<ObjectError> objectErrors, Exception ex) {
-        ResponseMessage message = null;
+    private List<DetailErrorMessage> processObjectErrors(List<ObjectError> objectErrors, Exception ex) {
         List<DetailErrorMessage> detailFields = new ArrayList<>();
 
         for (final ObjectError objError: objectErrors) {
@@ -125,10 +129,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 detailFields.add(new DetailErrorMessage(objError.getCode(), resolveLocalizedErrorMessage(objError)));
             }
         }
-
-        message = new ResponseMessage(false, messageSource.getMessage(VALIDATION_ERRORS_MESSAGE), detailFields);
-
-        return message;
+        
+        return detailFields;
     }
     
     private String resolveLocalizedErrorMessage(ObjectError objError) {
@@ -159,4 +161,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         logger.error("Error", ex);
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
+    
+	private String generateCodeFromException(Exception ex) {
+		return ex.getClass().getSimpleName().replaceAll("[^A-Z]", "");
+	}
+
 }

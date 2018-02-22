@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.samples.petclinic.constraint.scenariogroups.InsertScenario;
+import org.springframework.samples.petclinic.constraint.scenariogroups.UpdateScenario;
 import org.springframework.samples.petclinic.dto.ResponseMessage;
 import org.springframework.samples.petclinic.dto.form.UserForm;
 import org.springframework.samples.petclinic.dto.form.UserQueryForm;
@@ -17,6 +19,7 @@ import org.springframework.samples.petclinic.dto.projection.UserForGridWeb;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,7 +60,7 @@ public class UserResource extends AbstractResourceController {
      */
     @PostMapping("/users/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseMessage registerUser(@Valid @RequestBody UserForm userForm) {
+    public ResponseMessage registerUser(@Validated(InsertScenario.class) @RequestBody UserForm userForm) {
     	ResponseMessage message = null;
     	userService.save(userForm);
     	message = new ResponseMessage(true, "User registered");
@@ -71,7 +74,7 @@ public class UserResource extends AbstractResourceController {
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasPermission()")
-    public ResponseMessage createUser(@RequestBody UserForm userForm) {
+    public ResponseMessage createUser(@Validated(InsertScenario.class) @RequestBody UserForm userForm) {
         ResponseMessage message = null;
         userService.save(userForm);
         message = new ResponseMessage(true, "User created");
@@ -81,7 +84,7 @@ public class UserResource extends AbstractResourceController {
     @PutMapping("/users/{userId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @PreAuthorize("hasPermission()")
-    public ResponseMessage modifyUser(@PathVariable Integer userId, @Valid @RequestBody UserForm userForm) {
+    public ResponseMessage modifyUser(@PathVariable Integer userId, @Validated(UpdateScenario.class) @RequestBody UserForm userForm) {
         ResponseMessage message = null;
         userForm.setId(userId);
         userService.save(userForm);

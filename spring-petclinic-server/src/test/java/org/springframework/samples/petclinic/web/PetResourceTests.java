@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
+import org.springframework.samples.petclinic.config.BeanServicesConfig;
 import org.springframework.samples.petclinic.config.PropertiesConfig;
 import org.springframework.samples.petclinic.config.security.MethodSecurityConfig;
 import org.springframework.samples.petclinic.config.security.WebSecurityConfig;
@@ -48,7 +49,7 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(PetResource.class)
-@Import({WebSecurityConfig.class, MethodSecurityConfig.class, PropertiesConfig.class, AuthTokenLogoutHandler.class})
+@Import({WebSecurityConfig.class, MethodSecurityConfig.class, PropertiesConfig.class, AuthTokenLogoutHandler.class, BeanServicesConfig.class})
 public class PetResourceTests {
 
     @Autowired
