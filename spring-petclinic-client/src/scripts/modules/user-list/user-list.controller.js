@@ -103,7 +103,7 @@ angular.module('userList')
     	      { name: 'createdAt', enableSorting: false, enableHiding: false },
     	      { name: 'enabled', enableSorting: false, enableHiding: false },
     	      { name: 'operations', displayName:'Operations', enableSorting: false, enableHiding: false,
-    	    	  cellTemplate: '<button class="btn btn-xs btn-primary" ng-click="grid.appScope.$ctrl.editUser(row.entity.id)">Edit "{{ row.entity.id }}"</button>&nbsp;<button class="btn btn-xs btn-primary">Delete</button>'  
+    	    	  cellTemplate: '<button class="btn btn-xs btn-primary" ng-click="grid.appScope.$ctrl.editUser(row.entity.id)">Edit</button>&nbsp;<button class="btn btn-xs btn-primary">Delete</button>'  
     	      }
     	    ],
     	    onRegisterApi: function(gridApi) {

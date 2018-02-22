@@ -11,30 +11,30 @@ import org.springframework.util.StringUtils;
  * @author mplescano
  *
  */
-public class UniqueUsernameValidator implements ConstraintValidator<UniqueUsername, String>{
+public class UniqueUsernameValidator implements ConstraintValidator<UniqueUsername, String> {
 
-	private UniqueUsername constraintAnnotation;
-	
-	@Autowired
-	private UserService userService;
-	
-	@Override
-	public void initialize(UniqueUsername constraintAnnotation) {
-		this.constraintAnnotation = constraintAnnotation;
-	}
+    private UniqueUsername constraintAnnotation;
 
-	@Override
-	public boolean isValid(String value, ConstraintValidatorContext context) {
+    @Autowired
+    private UserService userService;
 
-		if (!StringUtils.hasText(value)) {
-			 return true;
-		}
-		
-	    if (userService.userExists(value)) {
-	    	return false;
-		}
-		
-		return true;
-	}
+    @Override
+    public void initialize(UniqueUsername constraintAnnotation) {
+        this.constraintAnnotation = constraintAnnotation;
+    }
+
+    @Override
+    public boolean isValid(String value, ConstraintValidatorContext context) {
+
+        if (!StringUtils.hasText(value)) {
+            return true;
+        }
+
+        if (userService.userExists(value)) {
+            return false;
+        }
+
+        return true;
+    }
 
 }
