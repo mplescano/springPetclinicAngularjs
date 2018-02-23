@@ -24,7 +24,8 @@ angular.module('userList')
         			self.gridOptions.data = response.content;
         			self.dataLoading = false;
         		}, function(response) {
-        			alert(response.message);
+        		    FlashService.Error(response);
+        		    self.dataLoading = false;
         		});
         	}
         	else {
@@ -34,7 +35,8 @@ angular.module('userList')
         			self.gridOptions.data = response.content;
         			self.dataLoading = false;
         		}, function(response) {
-        			alert(response.message);
+                    FlashService.Error(response);
+                    self.dataLoading = false;
         		});
         	}
         };
