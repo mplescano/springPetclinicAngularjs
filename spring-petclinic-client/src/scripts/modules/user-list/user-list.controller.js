@@ -67,21 +67,29 @@ angular.module('userList')
 		    //arrRows.forEach(function(item, index){
 		    //    alert(item.id);
 		    //});
-		    UserService.DeleteUserList(arrRows.map(function(item){return item.id;}))
-		    .then(function (response) {
-		    	$timeout(function(){getPage();}, 1000);//setTimeout because the DB in java is delaying in propagate the changes in the table's data  
-        	}, function(response) {
-        		alert(response.message);
-        	});
+		    if (arrRows.length > 0) {
+		        var blnConfirm = confirm("Are you sure to delete these " + arrRows.length + " users?");
+		        if (blnConfirm) {
+		            UserService.DeleteUserList(arrRows.map(function(item){return item.id;}))
+		            .then(function (response) {
+		                $timeout(function(){getPage();}, 1000);//setTimeout because the DB in java is delaying in propagate the changes in the table's data  
+		            }, function(response) {
+		                alert(response.message);
+		            });
+		        }
+		    }
 		}
 		
         self.deleteUser = function(userId) {
-            UserService.DeleteUser(userId)
-            .then(function (response) {
-                $timeout(function(){getPage();}, 1000);//setTimeout because the DB in java is delaying in propagate the changes in the table's data  
-            }, function(response) {
-                alert(response.message);
-            });
+            var blnConfirm = confirm("Are you sure to delete the user " + userId + "?");
+            if (blnConfirm) {
+                UserService.Delete(userId)
+                .then(function (response) {
+                    $timeout(function(){getPage();}, 1000);//setTimeout because the DB in java is delaying in propagate the changes in the table's data  
+                }, function(response) {
+                    alert(response.message);
+                });
+            }
         }
         
         self.gridOptions = {
@@ -103,7 +111,7 @@ angular.module('userList')
     	      { name: 'createdAt', enableSorting: false, enableHiding: false },
     	      { name: 'enabled', enableSorting: false, enableHiding: false },
     	      { name: 'operations', displayName:'Operations', enableSorting: false, enableHiding: false,
-    	    	  cellTemplate: '<button class="btn btn-xs btn-primary" ng-click="grid.appScope.$ctrl.editUser(row.entity.id)">Edit</button>&nbsp;<button class="btn btn-xs btn-primary">Delete</button>'  
+    	    	  cellTemplate: '<button class="btn btn-xs btn-primary" ng-click="grid.appScope.$ctrl.editUser(row.entity.id)">Edit</button>&nbsp;<button class="btn btn-xs btn-primary" ng-click="grid.appScope.$ctrl.deleteUser(row.entity.id)">Delete</button>'  
     	      }
     	    ],
     	    onRegisterApi: function(gridApi) {
