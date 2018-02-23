@@ -15,7 +15,11 @@ import org.springframework.samples.petclinic.model.User;
  * @author mplescano
  *
  */
-@Compare(value = "password", compareAttribute = "passwordAgain", groups = {InsertScenario.class, UpdateScenario.class})
+//
+@Compare.List({
+    @Compare(value = "password", compareAttribute = "passwordAgain", groups = {InsertScenario.class}),
+    @Compare(value = "password", compareAttribute = "passwordAgain", groups = {UpdateScenario.class}, allowEmpty = true)
+})
 public class UserForm extends BaseForm {
 
     @NotEmpty(groups = {InsertScenario.class, UpdateScenario.class})

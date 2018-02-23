@@ -42,7 +42,7 @@
 
         <div class="form-group" permission permission-only="['PERM_ADD_USER']" ng-class="{ 'has-error': form.enabled.$dirty && form.enabled.$error.required }">
             <label for="enabled">Enabled</label>
-            <input type="checkbox" ng-true-value="true" ng-false-value="null" name="enabled" id="enabled" class="form-control" ng-model="vm.user.enabled">
+            <input type="checkbox" ng-true-value="true" ng-false-value="false" name="enabled" id="enabled" class="form-control" ng-model="vm.user.enabled">
             <span ng-show="form.enabled.$dirty && form.enabled.$error.required" class="help-block">Error in check enabled</span>
         </div>
         

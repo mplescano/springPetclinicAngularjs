@@ -56,9 +56,10 @@ angular.module('userForm')
                     if (response.success) {
                         FlashService.Success('Successful registration ', true);
                         $state.go('session.users');
-                    } else {
-                        FlashService.Error(response.message);
                     }
+                    self.dataLoading = false;
+                }, function (response) {
+                    FlashService.Error(response);
                     self.dataLoading = false;
                 });
             }

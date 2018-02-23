@@ -187,6 +187,9 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 			if (StringUtils.hasText(user.getPassword())) {
 				userTemp.setPassword(passwordEncoder.encode(user.getPassword()));
 			}
+			if (user.getEnabled() != null) {
+			    userTemp.setEnabled(user.getEnabled().booleanValue());
+			}
 		}
 		return userRepository.save(userTemp);
 	}
