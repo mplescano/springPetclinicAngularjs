@@ -19,6 +19,10 @@ public interface ProjectableSpecificationExecutor<T, ID extends Serializable> ex
 
 	Page<T> findAll(NamedParamSpecification<T> spec, Pageable pageable);
 	
+	T findOne(NamedParamSpecification<T> spec);
+	
+	<S> S findProjectedOne(NamedParamSpecification<T> spec, Class<S> projectionClass);
+	
 	int deleteById(Iterable<ID> entityIds);
 	
 	int deleteByIdInBatch(Iterable<ID> entityIds);

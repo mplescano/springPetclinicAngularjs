@@ -12,23 +12,23 @@
     <link rel="shortcut icon" type="image/x-icon" th:href="@{/images/favicon.png}"/>
 
     <title>PetClinic :: a Spring Framework demonstration</title>
-    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}"/>
-    <link rel="stylesheet" th:href="@{/angular-ui-grid/ui-grid.css}"/>
+    <link rel="stylesheet" th:href="@{/libs/bootstrap/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/libs/angular-ui-grid/ui-grid.css}"/>
     <link rel="stylesheet" th:href="@{/css/petclinic.css}"/>
 
-    <script th:src="@{/jquery/jquery.min.js}"></script>
+    <script th:src="@{/libs/jquery/jquery.min.js}"></script>
 <!--     <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script> -->
 
-    <script th:src="@{/angular/angular.js}"></script>
-    <script th:src="@{/angular-touch/angular-touch.js}"></script>
-    <script th:src="@{/angular-animate/angular-animate.js}"></script>
-    <script th:src="@{/angular-ui-router/release/angular-ui-router.min.js}"></script>
-    <script th:src="@{/angular-cookies/angular-cookies.js}"></script>
-	<script th:src="@{angular-permission/dist/angular-permission.js}"></script>
-	<script th:src="@{angular-permission/dist/angular-permission-ui.js}"></script>
-	<script th:src="@{/angular-ui-grid/ui-grid.js}"></script>
-	<script th:src="@{/angular-bootstrap/ui-bootstrap-tpls.js}"></script>
-	<script th:src="@{/ngstorage/ngStorage.js}"></script>
+    <script th:src="@{/libs/angular/angular.js}"></script>
+    <script th:src="@{/libs/angular-touch/angular-touch.js}"></script>
+    <script th:src="@{/libs/angular-animate/angular-animate.js}"></script>
+    <script th:src="@{/libs/angular-ui-router/release/angular-ui-router.min.js}"></script>
+    <script th:src="@{/libs/angular-cookies/angular-cookies.js}"></script>
+	<script th:src="@{/libs/angular-permission/dist/angular-permission.js}"></script>
+	<script th:src="@{/libs/angular-permission/dist/angular-permission-ui.js}"></script>
+	<script th:src="@{/libs/angular-ui-grid/ui-grid.js}"></script>
+	<script th:src="@{/libs/angular-bootstrap/ui-bootstrap-tpls.js}"></script>
+	<script th:src="@{/libs/ngstorage/ngStorage.js}"></script>
 
     <script th:src="@{/scripts/app.js}"></script>
 
@@ -37,41 +37,45 @@
     <script th:src="@{/scripts/services/credential-storage.js}"></script>
     <script th:src="@{/scripts/services/user-real.js}"></script>
     
-    <script th:src="@{/scripts/login/login.js}"></script>
-    <script th:src="@{/scripts/login/login.controller.js}"></script>
-    <script th:src="@{/scripts/login/login.component.js}"></script>
+    <script th:src="@{/scripts/modules/login/login.js}"></script>
+    <script th:src="@{/scripts/modules/login/login.controller.js}"></script>
+    <script th:src="@{/scripts/modules/login/login.component.js}"></script>
     
-    <script th:src="@{/scripts/register/register.js}"></script>
-    <script th:src="@{/scripts/register/register.controller.js}"></script>
-    <script th:src="@{/scripts/register/register.component.js}"></script>
+    <script th:src="@{/scripts/modules/register/register.js}"></script>
+    <script th:src="@{/scripts/modules/register/register.controller.js}"></script>
+    <script th:src="@{/scripts/modules/register/register.component.js}"></script>
 
-    <script th:src="@{/scripts/owner-list/owner-list.js}"></script>
-    <script th:src="@{/scripts/owner-list/owner-list.controller.js}"></script>
-    <script th:src="@{/scripts/owner-list/owner-list.component.js}"></script>
+    <script th:src="@{/scripts/modules/owner-list/owner-list.js}"></script>
+    <script th:src="@{/scripts/modules/owner-list/owner-list.controller.js}"></script>
+    <script th:src="@{/scripts/modules/owner-list/owner-list.component.js}"></script>
 
-    <script th:src="@{/scripts/user-list/user-list.js}"></script>
-    <script th:src="@{/scripts/user-list/user-list.controller.js}"></script>
-    <script th:src="@{/scripts/user-list/user-list.component.js}"></script>
+    <script th:src="@{/scripts/modules/user-list/user-list.js}"></script>
+    <script th:src="@{/scripts/modules/user-list/user-list.controller.js}"></script>
+    <script th:src="@{/scripts/modules/user-list/user-list.component.js}"></script>
 
-    <script th:src="@{/scripts/owner-details/owner-details.js}"></script>
-    <script th:src="@{/scripts/owner-details/owner-details.controller.js}"></script>
-    <script th:src="@{/scripts/owner-details/owner-details.component.js}"></script>
+    <script th:src="@{/scripts/modules/user-form/user-form.js}"></script>
+    <script th:src="@{/scripts/modules/user-form/user-form.controller.js}"></script>
+    <script th:src="@{/scripts/modules/user-form/user-form.component.js}"></script>
 
-    <script th:src="@{/scripts/owner-form/owner-form.js}"></script>
-    <script th:src="@{/scripts/owner-form/owner-form.controller.js}"></script>
-    <script th:src="@{/scripts/owner-form/owner-form.component.js}"></script>
+    <script th:src="@{/scripts/modules/owner-details/owner-details.js}"></script>
+    <script th:src="@{/scripts/modules/owner-details/owner-details.controller.js}"></script>
+    <script th:src="@{/scripts/modules/owner-details/owner-details.component.js}"></script>
 
-    <script th:src="@{/scripts/pet-form/pet-form.js}"></script>
-    <script th:src="@{/scripts/pet-form/pet-form.controller.js}"></script>
-    <script th:src="@{/scripts/pet-form/pet-form.component.js}"></script>
+    <script th:src="@{/scripts/modules/owner-form/owner-form.js}"></script>
+    <script th:src="@{/scripts/modules/owner-form/owner-form.controller.js}"></script>
+    <script th:src="@{/scripts/modules/owner-form/owner-form.component.js}"></script>
 
-    <script th:src="@{/scripts/visits/visits.js}"></script>
-    <script th:src="@{/scripts/visits/visits.controller.js}"></script>
-    <script th:src="@{/scripts/visits/visits.component.js}"></script>
+    <script th:src="@{/scripts/modules/pet-form/pet-form.js}"></script>
+    <script th:src="@{/scripts/modules/pet-form/pet-form.controller.js}"></script>
+    <script th:src="@{/scripts/modules/pet-form/pet-form.component.js}"></script>
 
-    <script th:src="@{/scripts/vet-list/vet-list.js}"></script>
-    <script th:src="@{/scripts/vet-list/vet-list.controller.js}"></script>
-    <script th:src="@{/scripts/vet-list/vet-list.component.js}"></script>
+    <script th:src="@{/scripts/modules/visits/visits.js}"></script>
+    <script th:src="@{/scripts/modules/visits/visits.controller.js}"></script>
+    <script th:src="@{/scripts/modules/visits/visits.component.js}"></script>
+
+    <script th:src="@{/scripts/modules/vet-list/vet-list.js}"></script>
+    <script th:src="@{/scripts/modules/vet-list/vet-list.controller.js}"></script>
+    <script th:src="@{/scripts/modules/vet-list/vet-list.component.js}"></script>
     
     <script th:inline="javascript" type="text/javascript">
     	var GLB_CONTEXT = /*[[@{/}]]*/ '/';

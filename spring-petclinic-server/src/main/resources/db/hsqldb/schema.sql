@@ -72,7 +72,7 @@ CREATE TABLE users (
   username       VARCHAR(30) NOT NULL,
   password  VARCHAR(255) NOT NULL,
   enabled boolean not null,
-  createdAt	TIMESTAMP not null,
+  created_at	TIMESTAMP not null,
   UNIQUE (username),
   UNIQUE (first_name, last_name)
 );

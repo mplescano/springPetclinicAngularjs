@@ -3,7 +3,7 @@
 var petClinicApp = angular.module('petClinicApp', ['ngCookies', 'ngStorage',
     'ui.router', 'ngAnimate', 'ui.bootstrap', 'permission', 'permission.ui', 
     'layoutNav', 'layoutFooter', 'ownerList', 'ownerDetails', 'ownerForm', 
-    'petForm', 'visits', 'vetList', 'login', 'register', 'userList']);
+    'petForm', 'visits', 'vetList', 'login', 'register', 'userList', 'userForm']);
 
 petClinicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider', '$httpProvider', function(
     $stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
@@ -48,8 +48,14 @@ petClinicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider'
         });
 }]);
 
-petClinicApp.run(['$rootScope', '$location', '$http', 'PermRoleStore', 'CredentialStorageService', 
-            function($rootScope, $location, $http, PermRoleStore, CredentialStorageService) {
+petClinicApp.run(['$rootScope', '$location', '$http', 'PermRoleStore', 'PermPermissionStore', 'CredentialStorageService', 
+            function($rootScope, $location, $http, PermRoleStore, PermPermissionStore, CredentialStorageService) {
+    
+    if (CredentialStorageService.IsLogged()) {
+        PermPermissionStore.defineManyPermissions(CredentialStorageService.GetCurrentUser().permissions, /*@ngInject*/ function (permissionName) {
+            return true;
+        });
+    }
     
     PermRoleStore.defineRole('AUTHORIZED', ['CredentialStorageService', function (CredentialStorageService) {
         return CredentialStorageService.IsLogged();

@@ -20,6 +20,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @AtLeastOneFilled
 public class UserQueryForm {
 	
+	private Integer userId;
+	
 	/**
 	 * convert empty string to null by StringTrimmerEditor
 	 */
@@ -93,4 +95,12 @@ public class UserQueryForm {
 	public void setDateCreatedEnd(Date dateCreatedEnd) {
 		this.dateCreatedEnd = dateCreatedEnd;
 	}
+	
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
 }

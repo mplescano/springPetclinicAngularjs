@@ -1,8 +1,6 @@
 <div class="container-fluid">
     <div><!-- class="container xd-container" -->
-		<div
-			ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }"
-			ng-if="flash" ng-bind="flash.message"></div>
+		<ng-include src="'scripts/fragments/flash-message.html'"></ng-include>
         <div ui-view=""></div>
     </div>
 </div>

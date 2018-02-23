@@ -76,7 +76,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         	.accessDeniedHandler(authExceptionThrower())
         .and()
         .authorizeRequests()/*.accessDecisionManager(accessDecisionManager())*/
-        	.antMatchers(HttpMethod.POST, "/rest/users").permitAll()
+        	.antMatchers(HttpMethod.POST, "/rest/users/register").permitAll()
         	.antMatchers("/rest/**").authenticated()
         	.anyRequest().permitAll()
         .and()
