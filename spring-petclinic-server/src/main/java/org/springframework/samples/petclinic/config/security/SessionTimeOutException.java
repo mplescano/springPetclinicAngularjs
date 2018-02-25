@@ -12,4 +12,8 @@ public class SessionTimeOutException extends AuthenticationException {
     public SessionTimeOutException(String msg) {
         super(msg);
     }
+
+    public SessionTimeOutException(String msg, AuthenticationException authException) {
+        super(msg, authException);
+    }
 }

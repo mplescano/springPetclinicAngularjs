@@ -10,24 +10,18 @@
         var service = {};
 
         service.SetCredentials = SetCredentials;
-        service.SetNewToken = SetNewToken;
         service.ClearCredentials = ClearCredentials;
         service.IsLogged = IsLogged;
         service.GetCurrentUser = GetCurrentUser;
 
         return service;
 
-        function SetCredentials(username, roles, permissions, token) {
+        function SetCredentials(username, roles, permissions) {
             $localStorage.currentUser = {
                 username: username,
                 roles: roles,
-                permissions: permissions,
-                token: token
+                permissions: permissions
             };
-        }
-        
-        function SetNewToken(token) {
-            $localStorage.currentUser.token = token;
         }
         
         function ClearCredentials() {

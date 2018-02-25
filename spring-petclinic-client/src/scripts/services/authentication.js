@@ -60,7 +60,7 @@
             	var responseCallback = {success: true, message: response.statusText, data: response.data.data};
                 callback(responseCallback);
             }, function (response) {
-            	var responseCallback = {success: false, message: response.statusText};
+            	var responseCallback = response.data;
                 callback(responseCallback);
             });
         }

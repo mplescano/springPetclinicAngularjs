@@ -21,6 +21,8 @@ import org.springframework.security.web.authentication.logout.HttpStatusReturnin
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    public static final String COOKIE_SESSION = "JSESSIONID";
+
     @Bean
     public RestAuthExceptionThrower authExceptionThrower() {
     	return new RestAuthExceptionThrower();
@@ -71,6 +73,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http	
         .csrf().disable()
+        //.apply(new ExceptionHandlingConfigurer<HttpSecurity>())
         .exceptionHandling()
         .authenticationEntryPoint(authExceptionThrower())
         	.accessDeniedHandler(authExceptionThrower())
@@ -79,8 +82,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         	.antMatchers(HttpMethod.POST, "/rest/users/register").permitAll()
         	.antMatchers("/rest/**").authenticated()
         	.anyRequest().permitAll()
-         .and()
-         .sessionManagement().invalidSessionStrategy(authExceptionThrower())
         .and()
         .formLogin()
         	.successHandler(authenticationSuccessHandler())
@@ -90,7 +91,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         	.permitAll(false)
         	.logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler())
         	.invalidateHttpSession(true)
-        	.deleteCookies("JSESSIONID");
+        	.deleteCookies(COOKIE_SESSION)
+        .and()
+        .sessionManagement()
+        .maximumSessions(1).maxSessionsPreventsLogin(true)
+        //.expiredSessionStrategy(authExceptionThrower())
+        ;
     }
  
 

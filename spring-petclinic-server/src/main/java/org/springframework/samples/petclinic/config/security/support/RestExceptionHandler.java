@@ -25,6 +25,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -85,7 +86,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     	return handleExceptionInternal(ex, message, null, HttpStatus.INTERNAL_SERVER_ERROR, request);
     }
     
-    @ExceptionHandler({ AccountStatusException.class, BadCredentialsException.class, UsernameNotFoundException.class, 
+    @ExceptionHandler({ SessionAuthenticationException.class, AccountStatusException.class, 
+        BadCredentialsException.class, UsernameNotFoundException.class, 
     	InternalAuthenticationServiceException.class })
     public ResponseEntity<Object> handleAuthenticateException(Exception ex, WebRequest request) {
     	ResponseErrorMessage message = new ResponseErrorMessage(generateCodeFromException(ex), ErrorType.AUTHENTICATION_ERROR, ex.getMessage());

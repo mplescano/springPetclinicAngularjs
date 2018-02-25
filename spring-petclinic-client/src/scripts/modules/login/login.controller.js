@@ -31,10 +31,10 @@ angular.module('login')
                     PermPermissionStore.defineManyPermissions(response.data.permissions, /*@ngInject*/ function (permissionName) {
                     	  return true;
                     });
-                    
                     $state.go('session.welcome');
+                    self.dataLoading = false;
                 } else {
-                    FlashService.Error(response.message);
+                    FlashService.Error(response);
                     self.dataLoading = false;
                 }
             });
