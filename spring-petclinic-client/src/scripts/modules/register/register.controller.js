@@ -5,21 +5,32 @@ angular.module('register')
                                        function(UserService, $state, 
                                     		   $rootScope, FlashService) {
         var self = this;
-
-        self.register = register;
+        
+        (function initController() {
+            self.dataLoading = false;
+            self.requiredPassword = true;
+            self.user = {};
+            self.title = 'Register';
+            self.submit = register;
+            self.cancel = cancel;
+        })();
 
         function register() {
         	self.dataLoading = true;
-            UserService.Create(self.user)
+            UserService.Register(self.user)
                 .then(function (response) {
                     if (response.success) {
                         FlashService.Success('Registration successful', true);
                         $state.go('nosession.login');
-                    } else {
-                        FlashService.Error(response.message);
-                        self.dataLoading = false;
                     }
+                }, function (response) {
+                    FlashService.Error(response);
+                    self.dataLoading = false;
                 });
+        }
+        
+        function cancel() {
+            $state.go('nosession.login'); 
         }
 
     }]);

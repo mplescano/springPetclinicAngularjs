@@ -48,6 +48,13 @@ public class UserQueryForm {
 	
 	private Boolean enabled;
 
+    public UserQueryForm() {
+    }
+
+    public UserQueryForm(Integer userId) {
+        this.userId = userId;
+    }
+    
 	public String getUsernameSearch() {
 		return usernameSearch;
 	}

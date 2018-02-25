@@ -79,6 +79,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         	.antMatchers(HttpMethod.POST, "/rest/users/register").permitAll()
         	.antMatchers("/rest/**").authenticated()
         	.anyRequest().permitAll()
+         .and()
+         .sessionManagement().invalidSessionStrategy(authExceptionThrower())
         .and()
         .formLogin()
         	.successHandler(authenticationSuccessHandler())

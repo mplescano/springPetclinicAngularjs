@@ -102,6 +102,12 @@ public class UserResource extends AbstractResourceController {
         return userService.findUserForWebList(null, pageable);
     }
     
+    @GetMapping("/users/{userId}")
+    @PreAuthorize("hasPermission()")
+    public UserForm findUser(@PathVariable Integer userId) {
+        return userService.findUserForWeb(new UserQueryForm(userId));
+    }
+    
     @PostMapping("/users/filter")
     @PreAuthorize("hasPermission()")
     public Page<UserForGridWeb> findFilteredUserList(@Valid @RequestBody UserQueryForm userQueryForm, 

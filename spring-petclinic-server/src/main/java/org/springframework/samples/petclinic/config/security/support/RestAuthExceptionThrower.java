@@ -6,13 +6,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.samples.petclinic.config.security.SessionTimeOutException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.session.InvalidSessionStrategy;
 
-public class RestAuthExceptionThrower implements AuthenticationEntryPoint, AuthenticationFailureHandler, AccessDeniedHandler {
+public class RestAuthExceptionThrower implements AuthenticationEntryPoint, AuthenticationFailureHandler, 
+    AccessDeniedHandler, InvalidSessionStrategy {
 
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
@@ -53,4 +56,10 @@ public class RestAuthExceptionThrower implements AuthenticationEntryPoint, Authe
 		}
 		
 	}
+
+    @Override
+    public void onInvalidSessionDetected(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        throw new SessionTimeOutException("Expired session.");        
+    }
 }

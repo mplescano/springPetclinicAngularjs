@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.PersistenceException;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.samples.petclinic.config.security.SessionTimeOutException;
 import org.springframework.samples.petclinic.dto.DetailErrorMessage;
 import org.springframework.samples.petclinic.dto.ErrorType;
 import org.springframework.samples.petclinic.dto.ResponseErrorMessage;
@@ -29,6 +31,8 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -86,6 +90,20 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleAuthenticateException(Exception ex, WebRequest request) {
     	ResponseErrorMessage message = new ResponseErrorMessage(generateCodeFromException(ex), ErrorType.AUTHENTICATION_ERROR, ex.getMessage());
     	return handleExceptionInternal(ex, message, null, HttpStatus.UNAUTHORIZED, request);
+    }
+    
+    @ExceptionHandler({ SessionTimeOutException.class })
+    @ResponseBody
+    public ResponseErrorMessage tokenExpiredException(Exception ex, WebRequest webRequest) {
+        if (webRequest instanceof ServletWebRequest) {
+            ServletWebRequest servletRequest = (ServletWebRequest) webRequest;
+            HttpServletResponse response = servletRequest.getNativeResponse(HttpServletResponse.class);
+            if (!response.isCommitted()) {
+                response.setStatus(440);//440 Login Time-out The client's session has expired and must log in again.[76]
+            }
+        }
+        ResponseErrorMessage message = new ResponseErrorMessage(generateCodeFromException(ex), ErrorType.AUTHORIZATION_ERROR, ex.getMessage());
+        return message;
     }
     
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,

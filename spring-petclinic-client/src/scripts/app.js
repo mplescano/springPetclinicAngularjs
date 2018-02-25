@@ -46,6 +46,8 @@ petClinicApp.config(['$stateProvider', '$urlRouterProvider', '$locationProvider'
             parent: 'app',
             templateUrl: 'scripts/fragments/nosession.html'
         });
+    
+    $httpProvider.interceptors.push('SessionTimeOutInterceptorService');
 }]);
 
 petClinicApp.run(['$rootScope', '$location', '$http', 'PermRoleStore', 'PermPermissionStore', 'CredentialStorageService', 
@@ -60,6 +62,7 @@ petClinicApp.run(['$rootScope', '$location', '$http', 'PermRoleStore', 'PermPerm
     PermRoleStore.defineRole('AUTHORIZED', ['CredentialStorageService', function (CredentialStorageService) {
         return CredentialStorageService.IsLogged();
     }]);
+    
 }]);
 
 //@see http://stackoverflow.com/questions/4994201/is-object-empty
