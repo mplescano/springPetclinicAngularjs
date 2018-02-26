@@ -68,7 +68,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
      * @param request
      * @return
      */
-    @ExceptionHandler({ TokenInvalidedException.class, InsufficientAuthenticationException.class, AccessDeniedException.class })
+    @ExceptionHandler({ /*TokenInvalidedException.class,*/ InsufficientAuthenticationException.class, AccessDeniedException.class })
     public ResponseEntity<Object> handleAccessDeniedException(Exception ex, WebRequest request) {
     	ResponseErrorMessage message = new ResponseErrorMessage(generateCodeFromException(ex), ErrorType.AUTHORIZATION_ERROR, ex.getMessage());
         return handleExceptionInternal(ex, message, null, HttpStatus.FORBIDDEN, request);
@@ -93,7 +93,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     	return handleExceptionInternal(ex, message, null, HttpStatus.UNAUTHORIZED, request);
     }
 	
-    @ExceptionHandler({ TokenExpiredException.class })
+    /*@ExceptionHandler({ TokenExpiredException.class })
     @ResponseBody
     public ResponseErrorMessage tokenExpiredException(Exception ex, WebRequest webRequest) {
         if (webRequest instanceof ServletWebRequest) {
@@ -105,7 +105,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         }
         ResponseErrorMessage message = new ResponseErrorMessage(generateCodeFromException(ex), ErrorType.AUTHORIZATION_ERROR, ex.getMessage());
     	return message;
-    }
+    }*/
     
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers,

@@ -43,23 +43,6 @@
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
 
-<!--         <dependency> -->
-<!--             <groupId>org.springframework.boot</groupId> -->
-<!--             <artifactId>spring-boot-starter-actuator</artifactId> -->
-<!--         </dependency> -->
-
-<!--         <dependency> -->
-<!--             <groupId>org.springframework.boot</groupId> -->
-<!--             <artifactId>spring-boot-devtools</artifactId> -->
-<!--             <optional>true</optional> -->
-<!--         </dependency> -->
-
-<!--         <dependency> -->
-<!--             <groupId>org.springframework.boot</groupId> -->
-<!--             <artifactId>spring-boot-configuration-processor</artifactId> -->
-<!--             <optional>true</optional> -->
-<!--         </dependency> -->
-
         <dependency>
             <groupId>org.springframework.samples</groupId>
             <artifactId>spring-petclinic-client</artifactId>
@@ -83,26 +66,9 @@
 			<scope>test</scope>
 		</dependency>
 
-        <!-- EhCache -->
-        <dependency>
-            <groupId>javax.cache</groupId>
-            <artifactId>cache-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.nimbusds</groupId>
-            <artifactId>nimbus-jose-jwt</artifactId>
-            <version>5.1</version>
-        </dependency>
-        
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
-            <version>2.9.9</version>
         </dependency>
         
 		<dependency>

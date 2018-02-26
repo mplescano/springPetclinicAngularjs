@@ -2,9 +2,11 @@ package org.springframework.samples.petclinic.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.samples.petclinic.config.security.support.RestAuthExceptionThrower;
 import org.springframework.samples.petclinic.config.security.support.RestAuthenticationSuccessHandler;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,17 +21,13 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
 @Configuration
+@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public static final String TOKEN_PREFIX = "Bearer";
 
     public static final String HEADER_STRING = "Authorization";
 
-    public static final String LOGOUT_ENTRY_POINT = "/logout";
-    
-    public static final RequestMatcher MATCHER_LOGOUT_ENTRY_POINT = new AntPathRequestMatcher(LOGOUT_ENTRY_POINT);
-    
-    
     @Bean
     public RestAuthExceptionThrower authExceptionThrower() {
     	return new RestAuthExceptionThrower();
@@ -103,10 +101,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .antMatchers("/tokens/**").permitAll()
         .anyRequest().authenticated()
          * */
-        	.antMatchers("/rest/login").permitAll()
-        	.antMatchers("/rest/revokeById").permitAll()
-        	.antMatchers("/rest/tokens/**").permitAll()
-        	.antMatchers("/rest/**").authenticated()
+        	.antMatchers("/login").permitAll()
+        	.antMatchers("/revokeById").permitAll()
+        	.antMatchers("/tokens/**").permitAll()
+        	.antMatchers("/**").authenticated()
         	.anyRequest().authenticated()
         .and().formLogin().permitAll();
     }
