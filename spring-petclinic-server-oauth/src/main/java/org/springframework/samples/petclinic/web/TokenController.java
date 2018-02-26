@@ -26,7 +26,7 @@ public class TokenController {
     @Resource(name = "tokenStore")
     TokenStore tokenStore;
 
-    @RequestMapping(method = RequestMethod.POST, value = "/oauth/token/revokeById/{tokenId}")
+    @RequestMapping(method = RequestMethod.POST, value = "/revokeTokenById/{tokenId}")
     @ResponseBody
     public void revokeToken(HttpServletRequest request, @PathVariable String tokenId) {
         tokenServices.revokeToken(tokenId);
@@ -45,7 +45,7 @@ public class TokenController {
         return tokenValues;
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/tokens/revokeRefreshToken/{tokenId:.*}")
+    @RequestMapping(method = RequestMethod.POST, value = "/revokeRefreshToken/{tokenId:.*}")
     @ResponseBody
     public String revokeRefreshToken(@PathVariable String tokenId) {
         if (tokenStore instanceof JdbcTokenStore) {

@@ -85,27 +85,33 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+//        http
+//        .csrf().disable()
+//        .exceptionHandling()
+//        .authenticationEntryPoint(authExceptionThrower())
+//        	.accessDeniedHandler(authExceptionThrower())
+//        .and()
+//        .sessionManagement()
+//        	.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//        .and()
+//        .authorizeRequests()
+//        /*
+//        .antMatchers("/login").permitAll()
+//        .antMatchers("/oauth/token/revokeById/**").permitAll()
+//        .antMatchers("/tokens/**").permitAll()
+//        .anyRequest().authenticated()
+//         * */
+//        	.antMatchers("/login").permitAll()
+//        	.antMatchers("/revokeById").permitAll()
+//        	.antMatchers("/tokens/**").permitAll()
+//        	.antMatchers("/**").authenticated()
+//        	.anyRequest().authenticated()
+//        .and().formLogin().permitAll();
         http
-        .csrf().disable()
-        .exceptionHandling()
-        .authenticationEntryPoint(authExceptionThrower())
-        	.accessDeniedHandler(authExceptionThrower())
-        .and()
-        .sessionManagement()
-        	.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
         .authorizeRequests()
-        /*
         .antMatchers("/login").permitAll()
-        .antMatchers("/oauth/token/revokeById/**").permitAll()
-        .antMatchers("/tokens/**").permitAll()
         .anyRequest().authenticated()
-         * */
-        	.antMatchers("/login").permitAll()
-        	.antMatchers("/revokeById").permitAll()
-        	.antMatchers("/tokens/**").permitAll()
-        	.antMatchers("/**").authenticated()
-        	.anyRequest().authenticated()
-        .and().formLogin().permitAll();
+        .and()
+        .formLogin().permitAll();
     }
 }

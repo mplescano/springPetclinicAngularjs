@@ -15,8 +15,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.samples.petclinic.config.security.jwt.token.TokenExpiredException;
-import org.springframework.samples.petclinic.config.security.jwt.token.TokenInvalidedException;
 import org.springframework.samples.petclinic.dto.DetailErrorMessage;
 import org.springframework.samples.petclinic.dto.ErrorType;
 import org.springframework.samples.petclinic.dto.ResponseErrorMessage;
