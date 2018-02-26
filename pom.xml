@@ -5,18 +5,19 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.7.RELEASE</version>
+		<version>1.5.8.RELEASE</version>
 	</parent>
 
 	<groupId>org.springframework.samples</groupId>
-	<artifactId>spring-petclinic-angular1</artifactId>
+	<artifactId>spring-petclinic-oauth-angular1</artifactId>
 	<version>1.4.3</version>
 	<name>Spring Petclinic :: Parent POM</name>
 	<packaging>pom</packaging>
 
 	<modules>
 		<module>spring-petclinic-client</module>
-		<module>spring-petclinic-server</module>
+		<module>spring-petclinic-server-api</module>
+		<module>spring-petclinic-server-oauth</module>
 	</modules>
 
 	<dependencyManagement>

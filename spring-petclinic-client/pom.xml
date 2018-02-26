@@ -4,7 +4,7 @@
 
 	<parent>
 		<groupId>org.springframework.samples</groupId>
-		<artifactId>spring-petclinic-angular1</artifactId>
+		<artifactId>spring-petclinic-oauth-angular1</artifactId>
 		<version>1.4.3</version>
 	</parent>
 	<artifactId>spring-petclinic-client</artifactId>
