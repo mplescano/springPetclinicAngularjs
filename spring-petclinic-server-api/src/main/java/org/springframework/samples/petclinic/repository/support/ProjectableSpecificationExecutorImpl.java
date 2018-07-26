@@ -25,6 +25,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -68,7 +69,8 @@ public class ProjectableSpecificationExecutorImpl<T, ID extends Serializable>
 	@Override
 	public <S> Page<S> findProjectedAll(NamedParamSpecification<T> spec, Pageable pageable, Class<S> projectionClass) {
 		ReturnedType type = ReturnedType.of(projectionClass, getDomainClass(), factory);
-		return findAll(spec, pageable).map(new ProjectingConverter<S>(type, factory));
+		Converter<Object, S> converter = new ProjectingConverter<>(type, factory);
+		return findAll(spec, pageable).map(converter::convert);
 	}
 
 	@Override
@@ -99,7 +101,7 @@ public class ProjectableSpecificationExecutorImpl<T, ID extends Serializable>
 	protected <S extends T> Page<S> readPage(TypedQuery<S> query, Class<S> domainClass, Pageable pageable,
 			NamedParamSpecification<S> spec) {
 
-		query.setFirstResult(pageable.getOffset());
+		query.setFirstResult((int) pageable.getOffset());
 		query.setMaxResults(pageable.getPageSize());
 
 		Long total = executeCountQuery(getCountQuery(spec, domainClass));
@@ -178,7 +180,7 @@ public class ProjectableSpecificationExecutorImpl<T, ID extends Serializable>
 		Assert.notNull(entities, "The given Iterable of entities not be null!");
 
 		for (ID entity : entities) {
-			delete(entity);
+			deleteById(entity);
 			deleted++;
 		}
 		return deleted;
