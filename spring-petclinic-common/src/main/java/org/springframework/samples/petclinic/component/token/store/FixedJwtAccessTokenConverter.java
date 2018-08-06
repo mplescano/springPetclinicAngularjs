@@ -24,16 +24,10 @@ public class FixedJwtAccessTokenConverter extends JwtAccessTokenConverter {
 	
 	private JsonParser objectMapper = JsonParserFactory.create();
 	
+	@Override
 	public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
 		DefaultOAuth2AccessToken result = new DefaultOAuth2AccessToken(accessToken);
-		Map<String, Object> info = new LinkedHashMap<String, Object>(accessToken.getAdditionalInformation());
-		String tokenId = result.getValue();
-		if (!info.containsKey(TOKEN_ID)) {
-			info.put(TOKEN_ID, tokenId);
-		}
-		else {
-			tokenId = (String) info.get(TOKEN_ID);
-		}
+		Map<String, Object> info = new LinkedHashMap<>(accessToken.getAdditionalInformation());
 		result.setAdditionalInformation(info);
 		OAuth2RefreshToken refreshToken = result.getRefreshToken();
 		if (refreshToken != null) {
@@ -49,8 +43,9 @@ public class FixedJwtAccessTokenConverter extends JwtAccessTokenConverter {
 				}
 			}
 			catch (IllegalArgumentException e) {
+				//ignored
 			}
-			Map<String, Object> refreshTokenInfo = new LinkedHashMap<String, Object>(
+			Map<String, Object> refreshTokenInfo = new LinkedHashMap<>(
 					accessToken.getAdditionalInformation());
 			info.put(REFRESH_TOKEN_ID, encodedRefreshToken.getValue());
 			result.setAdditionalInformation(info);
@@ -73,6 +68,7 @@ public class FixedJwtAccessTokenConverter extends JwtAccessTokenConverter {
 		return result;
 	}
 
+	@Override
 	public boolean isRefreshToken(OAuth2AccessToken token) {
 		return token.getAdditionalInformation().containsKey(TOKEN_TYPE);
 	}

@@ -9,9 +9,5 @@ public class PetClinicOauthApplication {
     public static void main(String[] args) {
         SpringApplication.run(PetClinicOauthApplication.class, args);
     }
-    
-/*	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-		return builder.sources(PetClinicApplication.class);
-	}*/
 }
 
