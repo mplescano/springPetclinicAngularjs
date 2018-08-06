@@ -110,6 +110,7 @@ public class UserResource extends AbstractResourceController {
     
     @PostMapping("/users/filter")
     @PreAuthorize("hasPermission()")
+    //@PreAuthorize("hasAuthority('COMPANY_READ') and hasAuthority('DEPARTMENT_READ')")
     public Page<UserForGridWeb> findFilteredUserList(@Valid @RequestBody UserQueryForm userQueryForm, 
     		@SortDefault(sort = {"firstName"}, direction = Direction.ASC) Pageable pageable) {
         return userService.findUserForWebList(userQueryForm, pageable);
