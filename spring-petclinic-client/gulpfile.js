@@ -4,13 +4,13 @@ var uglify = require('gulp-uglify');
 var less = require('gulp-less');
 
 var paths = {
-    "css"    : "src/css/*",
-    "fonts"  : "src/fonts/*",
-    "images" : "src/images/*",
-    "html"   : "src/scripts/**/*.html",
-    "js"     : "src/scripts/**/*.js",
-    "less"   : "src/less/*.less",
-    "dist"   : "target/dist/"
+    "css"    : "src/main/webapp/css/*",
+    "fonts"  : "src/main/webapp/fonts/*",
+    "images" : "src/main/webapp/images/*",
+    "html"   : "src/main/webapp/scripts/**/*.html",
+    "js"     : "src/main/webapp/scripts/**/*.js",
+    "less"   : "src/main/webapp/less/*.less",
+    "dist"   : "target/webapp/"
 };
 
 gulp.task('minify-css', function() {
