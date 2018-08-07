@@ -16,7 +16,7 @@ import org.springframework.samples.petclinic.dto.ResponseMessage;
 import org.springframework.samples.petclinic.dto.form.UserForm;
 import org.springframework.samples.petclinic.dto.form.UserQueryForm;
 import org.springframework.samples.petclinic.dto.projection.UserForGridWeb;
-import org.springframework.samples.petclinic.model.User;
+import org.springframework.samples.petclinic.model.security.User;
 import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;

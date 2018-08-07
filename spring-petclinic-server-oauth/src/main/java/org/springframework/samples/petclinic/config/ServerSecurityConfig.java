@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.samples.petclinic.component.CorsFilter;
 import org.springframework.samples.petclinic.service.JdbcUserServiceImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -57,5 +58,10 @@ public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
+    }
+    
+    @Bean
+    public CorsFilter corsFilter() {
+    	return new CorsFilter();
     }
 }

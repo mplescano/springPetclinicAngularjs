@@ -1,12 +1,13 @@
 package org.springframework.samples.petclinic.dto.form;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import javax.validation.constraints.NotEmpty;
+
 import org.springframework.samples.petclinic.constraint.Compare;
 import org.springframework.samples.petclinic.constraint.UniqueUsername;
 import org.springframework.samples.petclinic.constraint.scenariogroups.InsertScenario;
 import org.springframework.samples.petclinic.constraint.scenariogroups.UpdateScenario;
 import org.springframework.samples.petclinic.dto.BaseForm;
-import org.springframework.samples.petclinic.model.User;
+import org.springframework.samples.petclinic.model.security.User;
 
 /**
  * 

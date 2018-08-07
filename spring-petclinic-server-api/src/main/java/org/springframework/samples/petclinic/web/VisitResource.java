@@ -17,7 +17,7 @@ package org.springframework.samples.petclinic.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.samples.petclinic.model.Visit;
+import org.springframework.samples.petclinic.model.regular.Visit;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.samples.petclinic.dto.form.UserForm;
 import org.springframework.samples.petclinic.dto.form.UserQueryForm;
 import org.springframework.samples.petclinic.dto.projection.UserForGridWeb;
-import org.springframework.samples.petclinic.model.User;
+import org.springframework.samples.petclinic.model.security.User;
 
 public interface UserService {
 	

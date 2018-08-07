@@ -3,13 +3,14 @@ package org.springframework.samples.petclinic.config.security;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.samples.petclinic.config.security.support.CustomMethodSecurityExpressionHandler;
-import org.springframework.samples.petclinic.config.security.support.PropertySecuredResourceServiceImpl;
-import org.springframework.samples.petclinic.config.security.support.SecuredResourceService;
+import org.springframework.core.io.Resource;
+import org.springframework.samples.petclinic.component.PropertyResource;
+import org.springframework.samples.petclinic.component.security.CustomMethodSecurityExpressionHandler;
+import org.springframework.samples.petclinic.component.security.DefaultResourceServiceImpl;
+import org.springframework.samples.petclinic.component.security.SecuredResourceService;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
@@ -23,11 +24,14 @@ import org.springframework.security.config.annotation.method.configuration.Globa
 @Configuration
 public class MethodSecurityConfig {
 	
-	@Bean
-	public SecuredResourceService securedResourceService(ResourceLoader resourceLoader, Environment env) {
-		PropertySecuredResourceServiceImpl resourceService = new PropertySecuredResourceServiceImpl();
-		resourceService.setResource(resourceLoader.getResource(env.getProperty("petclinic.secured.resources")));
-		return resourceService;
+	@Bean("aclSecuredResourceService")
+	public SecuredResourceService aclSecuredResourceService(@Value("${petclinic.security.acl.resources}") Resource resourceAcl) {
+		return new DefaultResourceServiceImpl(new PropertyResource(resourceAcl));
+	}
+	
+	@Bean("scopeSecuredResourceService")
+	public SecuredResourceService scopeSecuredResourceService(@Value("${petclinic.security.scope.resources}") Resource resourceScope) {
+		return new DefaultResourceServiceImpl(new PropertyResource(resourceScope));
 	}
 	
 	@EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -35,17 +39,20 @@ public class MethodSecurityConfig {
 	protected static class InnerMethodSecurityConfig extends GlobalMethodSecurityConfiguration 
 		implements BeanFactoryAware {
 		
-		private SecuredResourceService securedResourceService;
+		private SecuredResourceService aclSecuredResourceService;
+		
+		private SecuredResourceService scopeSecuredResourceService;
 		
 		@Bean
+		@Override
 		public MethodSecurityExpressionHandler createExpressionHandler() {
-			MethodSecurityExpressionHandler expressionHandler = new CustomMethodSecurityExpressionHandler(securedResourceService);
-			return expressionHandler;
+			return new CustomMethodSecurityExpressionHandler(aclSecuredResourceService, scopeSecuredResourceService);
 		}
 
 		@Override/*works! it's called twice!*/
 		public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-			securedResourceService = beanFactory.getBean(SecuredResourceService.class);
+			aclSecuredResourceService = beanFactory.getBean("aclSecuredResourceService", SecuredResourceService.class);
+			scopeSecuredResourceService = beanFactory.getBean("scopeSecuredResourceService", SecuredResourceService.class);
 		}
 	}
 	

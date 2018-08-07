@@ -18,9 +18,9 @@ import org.springframework.samples.petclinic.config.security.jwt.token.BuilderTo
 import org.springframework.samples.petclinic.config.security.jwt.token.TokenStrategy;
 import org.springframework.samples.petclinic.config.security.jwt.token.WrapperKey;
 import org.springframework.samples.petclinic.dto.UserDto;
-import org.springframework.samples.petclinic.model.Owner;
-import org.springframework.samples.petclinic.model.Pet;
-import org.springframework.samples.petclinic.model.PetType;
+import org.springframework.samples.petclinic.model.regular.Owner;
+import org.springframework.samples.petclinic.model.regular.Pet;
+import org.springframework.samples.petclinic.model.regular.PetType;
 import org.springframework.samples.petclinic.service.AuthTokenService;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.samples.petclinic.support.JwtAuthRequestPostProcessor;

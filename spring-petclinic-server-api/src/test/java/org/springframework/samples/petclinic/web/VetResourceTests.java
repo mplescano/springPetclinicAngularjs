@@ -14,7 +14,7 @@ import org.springframework.samples.petclinic.config.security.MethodSecurityConfi
 import org.springframework.samples.petclinic.config.security.WebSecurityConfig;
 import org.springframework.samples.petclinic.config.security.jwt.token.WrapperKey;
 import org.springframework.samples.petclinic.dto.UserDto;
-import org.springframework.samples.petclinic.model.Vet;
+import org.springframework.samples.petclinic.model.regular.Vet;
 import org.springframework.samples.petclinic.service.AuthTokenService;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.samples.petclinic.support.JwtAuthRequestPostProcessor;
