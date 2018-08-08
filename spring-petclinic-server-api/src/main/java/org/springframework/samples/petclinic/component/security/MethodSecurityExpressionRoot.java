@@ -11,6 +11,7 @@ import org.springframework.security.access.expression.method.MethodSecurityExpre
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.oauth2.provider.expression.OAuth2ExpressionUtils;
 
 
 public class MethodSecurityExpressionRoot extends SecurityExpressionRoot implements MethodSecurityExpressionOperations {
@@ -61,16 +62,11 @@ public class MethodSecurityExpressionRoot extends SecurityExpressionRoot impleme
 	}
 	
 	public boolean hasScope() {
-		Set<String> userAuthorities = getAuthoritySet();
 		List<String> resourceScope = scopeSecuredResourceService.findAuthoritiesByResource(method.getDeclaringClass().getName() + "." + method.getName());
 		
-		for (String userAuthority : userAuthorities) {
-			if (resourceScope.contains(userAuthority)) {
-				return true;
-			}
-		}
+		boolean result = OAuth2ExpressionUtils.hasAnyScope(authentication, resourceScope.toArray(new String[resourceScope.size()]));
 		
-		return false;
+		return result;
 	}
 
 	private Set<String> getAuthoritySet() {

@@ -8,7 +8,10 @@ import javax.sql.DataSource;
 import org.hsqldb.server.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -22,9 +25,9 @@ public class DataSourceConfig {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Bean(initMethod = "start", destroyMethod = "stop")
-    public Server hsqlServer(@Value("${hsqldb.database.path}") String path, 
-                                  @Value("${hsqldb.server.port}") int port, 
-                                  @Value("${hsqldb.database.name}") String name) {
+    public Server hsqlServer(@Value("${hsqldb.database.path}") String path,
+                             @Value("${hsqldb.server.port}") int port,
+                             @Value("${hsqldb.database.name}") String name) {
 
         Server server = new Server();
         server.setDatabaseName(0, name);
@@ -36,7 +39,7 @@ public class DataSourceConfig {
 
         return server;
     }
-    
+
     private PrintWriter slf4jPrintWriter() {
         return new PrintWriter(new ByteArrayOutputStream()) {
             @Override
@@ -45,22 +48,28 @@ public class DataSourceConfig {
             }
         };
     }
- 
+
+    @Bean
+    @ConfigurationProperties("spring.datasource")
+    @Primary
+    public DataSourceProperties dataSourceProperties() {
+        return new DataSourceProperties();
+    }
+    
     @Bean("dataSource")
     @DependsOn("hsqlServer")
     @Primary
-    public DataSource dataSource(DataSourceProperties properties) {
-        return properties.initializeDataSourceBuilder().build();
+    public DataSource dataSource() {
+        return dataSourceProperties().initializeDataSourceBuilder().build();
     }
-    
+
     @Bean
     @ConfigurationProperties("spring.security.datasource")
     public DataSourceProperties dataSourceSecurityProperties() {
-    	return new DataSourceProperties();
+        return new DataSourceProperties();
     }
-    
+
     @Bean("dataSourceSecurity")
-    @ConfigurationProperties("spring.security.datasource")
     public DataSource dataSourceSecurity() {
         return dataSourceSecurityProperties().initializeDataSourceBuilder().build();
     }
