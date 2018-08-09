@@ -1,19 +1,15 @@
 package org.springframework.samples.petclinic.config.security;
 
-import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
-import org.springframework.samples.petclinic.component.CorsFilter;
 import org.springframework.samples.petclinic.component.VerifierTokenServices;
 import org.springframework.samples.petclinic.component.handler.RestAuthExceptionThrower;
 import org.springframework.samples.petclinic.component.token.FixedDefaultTokenServices;
 import org.springframework.samples.petclinic.component.token.store.FixedJwtAccessTokenConverter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
@@ -31,6 +27,12 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
 	 */
 	private static final String RESOURCE_ID = "spring-oauth2-poc01";
 
+	private final RestAuthExceptionThrower exceptionThrower;
+	
+	public OAuth2ResourceServerConfig(RestAuthExceptionThrower exceptionThrower) {
+		this.exceptionThrower = exceptionThrower;
+	}
+
 	@Override
 	public void configure(final HttpSecurity http) throws Exception {
 		// @formatter:off
@@ -46,8 +48,8 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
       		.anyRequest().permitAll()
           .and()
           .exceptionHandling()
-            .authenticationEntryPoint(authExceptionThrower())
-          	.accessDeniedHandler(authExceptionThrower());
+            .authenticationEntryPoint(exceptionThrower)
+          	.accessDeniedHandler(exceptionThrower);
        	// @formatter:on        
 	}
 
@@ -72,25 +74,5 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
         converter.afterPropertiesSet();
 
         return converter;
-    }
-
-    @Bean
-    public CorsFilter corsFilter() {
-    	return new CorsFilter();
-    }
-    
-    @Bean
-    public RestAuthExceptionThrower authExceptionThrower() {
-    	return new RestAuthExceptionThrower();
-    }
-    
-    @Bean
-    public ErrorProperties errorProperties() {
-    	return new ErrorProperties();
-    }
-    
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
     }
 }

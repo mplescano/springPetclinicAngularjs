@@ -3,15 +3,12 @@ package org.springframework.samples.petclinic.component.handler;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.PersistenceException;
 import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.NestedRuntimeException;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +27,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -45,16 +41,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
  * @see https://www.petrikainulainen.net/programming/spring-framework/spring-from-the-trenches-adding-validation-to-a-rest-api/
  * 
  */
-@ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     
     private static final Logger logger = LoggerFactory.getLogger(RestExceptionHandler.class);
 
     private static final String VALIDATION_ERRORS_MESSAGE = "validation.error"; 
     
-    private MessageSourceAccessor messageSource;
+    private final MessageSourceAccessor messageSource;
     
-    @Autowired
     public RestExceptionHandler(MessageSourceAccessor messageSource) {
         this.messageSource = messageSource;
     }
@@ -74,12 +68,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, message, null, HttpStatus.FORBIDDEN, request);
     }
     
-    @ExceptionHandler({ PersistenceException.class, DataAccessException.class })
-    public ResponseEntity<Object> handlePersistenceException(Exception ex, WebRequest request) {
-    	ResponseErrorMessage message = new ResponseErrorMessage(generateCodeFromException(ex), ErrorType.REPOSITORY_ERROR, ex.getMessage());
-    	return handleExceptionInternal(ex, message, null, HttpStatus.INTERNAL_SERVER_ERROR, request);
-    }
-
     @ExceptionHandler({ NullPointerException.class, NestedRuntimeException.class })
     public ResponseEntity<Object> handleInternalException(Exception ex, WebRequest request) {
     	ResponseErrorMessage message = new ResponseErrorMessage(generateCodeFromException(ex), ErrorType.INTERNAL_ERROR, ex.getMessage());
@@ -103,10 +91,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 response.setStatus(440);//440 Login Time-out The client's session has expired and must log in again.[76]
             }
         }
-        ResponseErrorMessage message = new ResponseErrorMessage(generateCodeFromException(ex), ErrorType.AUTHORIZATION_ERROR, ex.getMessage());
-    	return message;
+ 
+    	return new ResponseErrorMessage(generateCodeFromException(ex), ErrorType.AUTHORIZATION_ERROR, ex.getMessage());
     }
     
+    @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers,
                                                                   HttpStatus status,
@@ -162,7 +151,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return super.handleExceptionInternal(ex, body, headers, status, request);
     }
     
-	private String generateCodeFromException(Exception ex) {
+	protected String generateCodeFromException(Exception ex) {
 		return ex.getClass().getSimpleName().replaceAll("[^A-Z]", "");
 	}
 

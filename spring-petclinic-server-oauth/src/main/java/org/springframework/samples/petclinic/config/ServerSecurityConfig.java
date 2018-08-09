@@ -1,13 +1,10 @@
 package org.springframework.samples.petclinic.config;
 
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.samples.petclinic.component.CorsFilter;
 import org.springframework.samples.petclinic.service.JdbcUserServiceImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -20,12 +17,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Order(SecurityProperties.BASIC_AUTH_ORDER - 2)
 public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
  
-    @Autowired
-    private DataSource dataSource;
+    private final JdbcUserServiceImpl userService;
     
+    private final PasswordEncoder passwordEncoder;
+    
+	public ServerSecurityConfig(JdbcUserServiceImpl userService,
+			PasswordEncoder passwordEncoder) {
+		this.userService = userService;
+		this.passwordEncoder = passwordEncoder;
+	}
+
 	@Autowired
 	public void globalUserDetails(final AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService()).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder);
     }
  
     @Override
@@ -45,23 +49,5 @@ public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
             .and().httpBasic()//allow authentication without the login form 
             .and()
             .formLogin().permitAll();
-    }
-    
-    @Bean
-    public JdbcUserServiceImpl userService() {
-        JdbcUserServiceImpl userService = new JdbcUserServiceImpl();
-        userService.setDataSource(dataSource);
-        userService.setUsernameBasedPrimaryKey(false);
-        return userService;
-    }
-    
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return NoOpPasswordEncoder.getInstance();
-    }
-    
-    @Bean
-    public CorsFilter corsFilter() {
-    	return new CorsFilter();
     }
 }

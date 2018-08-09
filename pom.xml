@@ -10,29 +10,18 @@
 
 	<modules>
 		<module>spring-petclinic-client</module>
+        <module>spring-petclinic-common</module>
 		<module>spring-petclinic-server-api</module>
 		<module>spring-petclinic-server-oauth</module>
 	</modules>
 
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>org.springframework.samples</groupId>
-				<artifactId>spring-petclinic-client</artifactId>
-				<version>${project.version}</version>
-			</dependency>
             <dependency>
                 <!-- Import dependency management from Spring Boot -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>2.0.1.RELEASE</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>Finchley.RELEASE</version>
+                <version>2.0.2.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

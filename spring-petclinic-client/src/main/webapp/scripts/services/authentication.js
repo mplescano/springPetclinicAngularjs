@@ -21,7 +21,6 @@
             	url: GLB_URL_OAUTH + 'oauth/token?grant_type=password', 
             	data: { username: username, password: password },
             	headers: {
-            	    'X-Requested-With': 'XMLHttpRequest',
             	    'Cache-Control': undefined,
             	    'Content-Type': 'application/x-www-form-urlencoded',
             	    'Authorization': 'Basic ' + window.btoa(GLB_CLIENT_ID1 + ':' + GLB_CLIENT_ID2)

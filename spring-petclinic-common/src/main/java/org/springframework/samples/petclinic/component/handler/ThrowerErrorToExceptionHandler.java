@@ -5,7 +5,6 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
@@ -40,7 +39,6 @@ public class ThrowerErrorToExceptionHandler implements ErrorController {
      * @param errorAttributes the error attributes
      * @param errorProperties configuration properties
      */
-    @Autowired
     public ThrowerErrorToExceptionHandler(ErrorAttributes errorAttributes, ErrorProperties errorProperties) {
         Assert.notNull(errorAttributes, "ErrorAttributes must not be null");
         this.errorAttributes = errorAttributes;
@@ -82,7 +80,7 @@ public class ThrowerErrorToExceptionHandler implements ErrorController {
         }
         Map<String, Object> body = getErrorAttributes(request, isIncludeStackTrace(request, MediaType.ALL));
         HttpStatus status = getStatus(request);
-        return new ResponseEntity<Map<String, Object>>(body, status);
+        return new ResponseEntity<>(body, status);
     }
 
     protected HttpStatus getStatus(HttpServletRequest request) {
@@ -132,6 +130,7 @@ public class ThrowerErrorToExceptionHandler implements ErrorController {
         /**
          * @see org.springframework.security.web.util.ThrowableAnalyzer#initExtractorMap()
          */
+    	@Override
         protected void initExtractorMap() {
             super.initExtractorMap();
 
