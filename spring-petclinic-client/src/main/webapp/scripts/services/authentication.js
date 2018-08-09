@@ -18,15 +18,20 @@
 
             $http({
             	method: 'POST',
-            	url: 'login', 
-            	data: { username: username, password: password }//,
-            	//headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-                /*transformRequest: function(obj) {
+            	url: GLB_URL_OAUTH + 'oauth/token?grant_type=password', 
+            	data: { username: username, password: password },
+            	headers: {
+            	    'X-Requested-With': 'XMLHttpRequest',
+            	    'Cache-Control': undefined,
+            	    'Content-Type': 'application/x-www-form-urlencoded',
+            	    'Authorization': 'Basic ' + window.btoa(GLB_CLIENT_ID1 + ':' + GLB_CLIENT_ID2)
+            	},
+                transformRequest: function(obj) {
                     var str = [];
                     for(var p in obj)
-                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
                     return str.join("&");
-                }*/
+                }
             })
             .then(function (response) {
             	/**
@@ -38,21 +43,27 @@
             	 * statusText – {string} – HTTP status text of the response.
             	 * */
                 var responseCallback = {success: true, message: 'Invalid token or missing, verify it.'};
-                var rawToken = response.headers('Authorization');
+                
+                var dataJson = response.data;
+                
+                /*var rawToken = response.headers('Authorization');
                 var sizeBearer = "Bearer ".length;
                 if (rawToken != '' && rawToken.length > sizeBearer) {
                     var token = rawToken.substring(sizeBearer, rawToken.length);
                     responseCallback = {success: true, message: response.statusText, data: response.data.data, token: token};
-                }
+                }*/
                 callback(responseCallback);
             }, function (response) {
-            	var responseCallback = {success: false, message: response.data.message};
+                var responseCallback = {success: false, message: 'Failed conexion to ' + GLB_URL_OAUTH + ', verify it.'};
+                if (response.status > -1) {
+                    responseCallback = {success: false, message: response.data.message};
+                }
                 callback(responseCallback);
             });
         }
 
         function Logout() {
-            return $http({method: 'GET', url: 'logout'});
+            return $http({method: 'GET', url: GLB_URL_OAUTH + 'logout'});
         }
         
     };

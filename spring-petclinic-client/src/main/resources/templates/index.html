@@ -78,7 +78,13 @@
     <script th:src="@{/scripts/modules/vet-list/vet-list.component.js}"></script>
     
     <script th:inline="javascript" type="text/javascript">
+    /*<![CDATA[*/
     	var GLB_CONTEXT = /*[[@{/}]]*/ '/';
+    	var GLB_URL_API = /*[[${@environment.getProperty('app.server.api.hostname')}]]*/ 'http://localhost:8090/';
+    	var GLB_URL_OAUTH = /*[[${@environment.getProperty('app.server.oauth.hostname')}]]*/ 'http://localhost:8080/';
+    	var GLB_CLIENT_ID1 = /*[[${@environment.getProperty('app.server.oauth.client.id')}]]*/ 'id1';
+    	var GLB_CLIENT_ID2 = /*[[${@environment.getProperty('app.server.oauth.client.pass')}]]*/ 'id2';
+    /*]]>*/
     </script>
     
 </head>
