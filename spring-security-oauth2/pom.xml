@@ -1,0 +1,180 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.springframework.security.oauth</groupId>
+		<artifactId>spring-security-oauth-parent</artifactId>
+		<version>2.3.3.RELEASE</version>
+	</parent>
+
+	<artifactId>spring-security-oauth2</artifactId>
+	<name>OAuth2 for Spring Security</name>
+    <version>2.3.3.PATCHED.RELEASE</version>
+    
+	<description>Module for providing OAuth2 support to Spring Security</description>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <java.version>1.8</java.version>
+        <servlet-api.version>3.0.1</servlet-api.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.security.oauth</groupId>
+            <artifactId>spring-security-oauth2</artifactId>
+            <version>2.3.3.RELEASE</version>
+        </dependency>
+        
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<!-- In case we test with Spring 4 -->
+			<version>${servlet-api.version}</version>
+			<optional>true</optional>
+            <scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<!--for the annotations. -->
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-beans</artifactId>
+            <scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<!--for the annotations. -->
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+            <scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<!--for the annotations. -->
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+            <scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<!--for the annotations. -->
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<optional>true</optional>
+            <scope>provided</scope>
+		</dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-config</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-web</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.13</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
+            <version>1.9.13</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>aopalliance</groupId>
+            <artifactId>aopalliance</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <!-- plug in for creation of patched JAR file -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <filters>
+                                <filter>
+                                    <artifact>org.springframework.security.oauth:spring-security-oauth2:2.3.3.RELEASE</artifact>
+                                    <includes>
+                                        <include>**/*.class</include>
+                                        <include>**/*.xsd</include>
+                                        <include>**/*.handlers</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>org/springframework/security/oauth2/config/annotation/web/configurers/AuthorizationServerSecurityConfigurer.class</exclude>
+                                        <exclude>org/springframework/security/oauth2/config/annotation/web/configurers/AuthorizationServerSecurityConfigurer$1.class</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Compiler Plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

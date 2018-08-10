@@ -52,6 +52,7 @@ public class AuthServerOAuth2Config extends AuthorizationServerConfigurerAdapter
 		oauthServer
 			.accessDeniedHandler(exceptionThrower)
 			.authenticationEntryPoint(exceptionThrower)
+			.basicAuthenticationEntryPoint(exceptionThrower)
 			.tokenKeyAccess("permitAll()")
 			.checkTokenAccess("isAuthenticated()");
 	}

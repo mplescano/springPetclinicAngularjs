@@ -1,10 +1,12 @@
 package org.springframework.samples.petclinic.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.samples.petclinic.component.handler.RestAuthExceptionThrower;
 import org.springframework.samples.petclinic.service.JdbcUserServiceImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -21,10 +23,17 @@ public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
     
     private final PasswordEncoder passwordEncoder;
     
+    private final RestAuthExceptionThrower exceptionThrower;
+    
+    private final String urlError;
+    
 	public ServerSecurityConfig(JdbcUserServiceImpl userService,
-			PasswordEncoder passwordEncoder) {
+			PasswordEncoder passwordEncoder, RestAuthExceptionThrower exceptionThrower,
+			@Value("${server.error.path:${error.path:/error}}") String urlError) {
 		this.userService = userService;
 		this.passwordEncoder = passwordEncoder;
+		this.exceptionThrower = exceptionThrower;
+		this.urlError = urlError;
 	}
 
 	@Autowired
@@ -45,9 +54,16 @@ public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
         .anonymous().disable()
         .authorizeRequests()
             .antMatchers("/login").permitAll()
+            .antMatchers(urlError).permitAll()
             .anyRequest().authenticated()
-            .and().httpBasic()//allow authentication without the login form 
             .and()
-            .formLogin().permitAll();
+                .httpBasic()//allow authentication without the login form
+                    .authenticationEntryPoint(exceptionThrower) 
+            .and()
+                .formLogin().permitAll()
+            .and()
+                .exceptionHandling()
+                    .authenticationEntryPoint(exceptionThrower)
+                    .accessDeniedHandler(exceptionThrower);
     }
 }
