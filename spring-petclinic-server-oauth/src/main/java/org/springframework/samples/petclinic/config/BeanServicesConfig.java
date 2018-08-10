@@ -14,6 +14,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.samples.petclinic.component.CorsFilter;
 import org.springframework.samples.petclinic.component.handler.RestAuthExceptionThrower;
+import org.springframework.samples.petclinic.component.token.AdditionalAuthAccessTokenEnhancer;
 import org.springframework.samples.petclinic.component.token.FixedDefaultTokenServices;
 import org.springframework.samples.petclinic.component.token.store.FixedJwtAccessTokenConverter;
 import org.springframework.samples.petclinic.service.JdbcUserServiceImpl;
@@ -55,7 +56,7 @@ public class BeanServicesConfig {
 	@Primary
 	public FixedDefaultTokenServices tokenServices() {
 		final TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
-		tokenEnhancerChain.setTokenEnhancers(Arrays.asList(jwtAccessTokenConverter()));
+		tokenEnhancerChain.setTokenEnhancers(Arrays.asList(new AdditionalAuthAccessTokenEnhancer() , jwtAccessTokenConverter()));
 		final FixedDefaultTokenServices defaultTokenServices = new FixedDefaultTokenServices();
 		defaultTokenServices.setTokenStore(tokenStore());
 		defaultTokenServices.setSupportRefreshToken(true);
