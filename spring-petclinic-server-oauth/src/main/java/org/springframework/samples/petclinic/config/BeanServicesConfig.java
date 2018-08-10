@@ -44,8 +44,8 @@ public class BeanServicesConfig {
 		return new JdbcTokenStore(dataSource);
 	}
 
-	@Bean
-	public TokenEnhancer accessTokenConverter() {
+	/*@Bean*/
+	private TokenEnhancer jwtAccessTokenConverter() {
 		final FixedJwtAccessTokenConverter converter = new FixedJwtAccessTokenConverter();
 		converter.setSigningKey("123");
 		return converter;
@@ -55,7 +55,7 @@ public class BeanServicesConfig {
 	@Primary
 	public FixedDefaultTokenServices tokenServices() {
 		final TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
-		tokenEnhancerChain.setTokenEnhancers(Arrays.asList(accessTokenConverter()));
+		tokenEnhancerChain.setTokenEnhancers(Arrays.asList(jwtAccessTokenConverter()));
 		final FixedDefaultTokenServices defaultTokenServices = new FixedDefaultTokenServices();
 		defaultTokenServices.setTokenStore(tokenStore());
 		defaultTokenServices.setSupportRefreshToken(true);

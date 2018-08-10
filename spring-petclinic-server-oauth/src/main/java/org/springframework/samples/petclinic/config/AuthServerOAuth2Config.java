@@ -6,6 +6,7 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.samples.petclinic.component.DefaultWebResponseExceptionTranslator;
 import org.springframework.samples.petclinic.component.handler.RestAuthExceptionThrower;
 import org.springframework.samples.petclinic.component.token.FixedDefaultTokenServices;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -66,13 +67,14 @@ public class AuthServerOAuth2Config extends AuthorizationServerConfigurerAdapter
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints)
 			throws Exception {
-		final TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
-		tokenEnhancerChain.setTokenEnhancers(Arrays.asList(accessTokenConverter));
-
+		/*final TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+		tokenEnhancerChain.setTokenEnhancers(Arrays.asList(accessTokenConverter));*/
 		endpoints
-				.tokenServices(tokenServices).tokenStore(tokenStore)
+				.tokenServices(tokenServices)
+				.tokenStore(tokenStore)
 				.authenticationManager(authenticationManager)
-				.tokenEnhancer(tokenEnhancerChain)
-				.pathMapping("/oauth/token", "/oauth/token/**");
+				//.tokenEnhancer(tokenEnhancerChain)//useless if tokenServices is filled up. 
+				.pathMapping("/oauth/token", "/oauth/token/**")
+				.exceptionTranslator(new DefaultWebResponseExceptionTranslator());
 	}
 }

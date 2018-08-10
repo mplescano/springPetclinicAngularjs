@@ -51,7 +51,7 @@ public class ServerSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-        .anonymous().disable()
+        /*.anonymous().disable()*///permitAll requires anonymous activated.
         .authorizeRequests()
             .antMatchers("/login").permitAll()
             .antMatchers(urlError).permitAll()

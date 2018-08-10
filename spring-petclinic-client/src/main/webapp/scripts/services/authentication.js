@@ -43,14 +43,18 @@
             	 * */
                 var responseCallback = {success: true, message: 'Invalid token or missing, verify it.'};
                 
+                /**
+                 * access_token
+                 * token_type
+                 * refresh_token
+                 * expires_in
+                 * scope
+                 * rti
+                 */
                 var dataJson = response.data;
-                
-                /*var rawToken = response.headers('Authorization');
-                var sizeBearer = "Bearer ".length;
-                if (rawToken != '' && rawToken.length > sizeBearer) {
-                    var token = rawToken.substring(sizeBearer, rawToken.length);
-                    responseCallback = {success: true, message: response.statusText, data: response.data.data, token: token};
-                }*/
+                if (dataJson != null) {
+                	responseCallback = {success: true, message: response.statusText, data: dataJson, token: token};
+                }
                 callback(responseCallback);
             }, function (response) {
                 var responseCallback = {success: false, message: 'Failed conexion to ' + GLB_URL_OAUTH + ', verify it.'};
