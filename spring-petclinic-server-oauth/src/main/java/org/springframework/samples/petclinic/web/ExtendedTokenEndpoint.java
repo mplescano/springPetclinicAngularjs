@@ -9,22 +9,17 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.dto.ResponseMessage;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2RefreshToken;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
-import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
 import org.springframework.security.oauth2.provider.endpoint.FrameworkEndpoint;
-import org.springframework.security.oauth2.provider.error.DefaultWebResponseExceptionTranslator;
-import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,8 +33,6 @@ public class ExtendedTokenEndpoint {
     private final ConsumerTokenServices tokenServices;
     
     private final TokenStore tokenStore;
-    
-    //private WebResponseExceptionTranslator<OAuth2Exception> providerExceptionHandler = new DefaultWebResponseExceptionTranslator();
     
     public ExtendedTokenEndpoint(@Qualifier("tokenServices") ConsumerTokenServices tokenServices, 
                                  @Qualifier("tokenStore") TokenStore tokenStore) {
@@ -124,20 +117,4 @@ public class ExtendedTokenEndpoint {
         }
         return clientAuth.getClientId();
     }
-    
-    /*@ExceptionHandler(OAuth2Exception.class)
-    public ResponseEntity<OAuth2Exception> handleException(OAuth2Exception e) throws Exception {
-        if (logger.isWarnEnabled()) {
-            logger.warn("Handling error: " + e.getClass().getSimpleName() + ", " + e.getMessage());
-        }
-        return getExceptionTranslator().translate(e);
-    }
-    
-    public void setProviderExceptionHandler(WebResponseExceptionTranslator<OAuth2Exception> providerExceptionHandler) {
-        this.providerExceptionHandler = providerExceptionHandler;
-    }
-
-    protected WebResponseExceptionTranslator<OAuth2Exception> getExceptionTranslator() {
-        return providerExceptionHandler;
-    }*/
 }
