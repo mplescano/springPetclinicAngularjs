@@ -11,6 +11,7 @@
 
         service.Login = Login;
         service.Logout = Logout;
+        service.RefreshToken = RefreshToken;
 
         return service;
 
@@ -64,7 +65,8 @@
                 	            expiresIn: dataJson.expires_in,
                 	            scope: dataJson.scope,
                 	            tokenType: dataJson.token_type,
-                	            loginDate: (new Date()).getTime()
+                	            loginDate: (new Date()).getTime(),
+                	            lastTokenDate: (new Date()).getTime()
                 	        }
                 	};
                 	
@@ -97,6 +99,25 @@
                 }
             });
             
+        }
+        
+        function RefreshToken(refreshToken) {
+            return $http({
+                method: 'POST', 
+                url: GLB_URL_OAUTH + 'oauth/token?grant_type=refresh_token',
+                headers: {
+                    'Cache-Control': undefined,
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': 'Basic ' + window.btoa(GLB_CLIENT_ID1 + ':' + GLB_CLIENT_ID2)
+                },
+                data: { client_id: GLB_CLIENT_ID1, refresh_token: refreshToken },
+                transformRequest: function(obj) {
+                    var str = [];
+                    for(var p in obj)
+                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                    return str.join("&");
+                }
+            });
         }
         
     };

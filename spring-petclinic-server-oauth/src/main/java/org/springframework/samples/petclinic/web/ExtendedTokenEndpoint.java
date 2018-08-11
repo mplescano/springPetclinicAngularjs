@@ -39,7 +39,7 @@ public class ExtendedTokenEndpoint {
     
     private final TokenStore tokenStore;
     
-    private WebResponseExceptionTranslator<OAuth2Exception> providerExceptionHandler = new DefaultWebResponseExceptionTranslator();
+    //private WebResponseExceptionTranslator<OAuth2Exception> providerExceptionHandler = new DefaultWebResponseExceptionTranslator();
     
     public ExtendedTokenEndpoint(@Qualifier("tokenServices") ConsumerTokenServices tokenServices, 
                                  @Qualifier("tokenStore") TokenStore tokenStore) {
@@ -125,7 +125,7 @@ public class ExtendedTokenEndpoint {
         return clientAuth.getClientId();
     }
     
-    @ExceptionHandler(OAuth2Exception.class)
+    /*@ExceptionHandler(OAuth2Exception.class)
     public ResponseEntity<OAuth2Exception> handleException(OAuth2Exception e) throws Exception {
         if (logger.isWarnEnabled()) {
             logger.warn("Handling error: " + e.getClass().getSimpleName() + ", " + e.getMessage());
@@ -139,5 +139,5 @@ public class ExtendedTokenEndpoint {
 
     protected WebResponseExceptionTranslator<OAuth2Exception> getExceptionTranslator() {
         return providerExceptionHandler;
-    }
+    }*/
 }

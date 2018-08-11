@@ -25,7 +25,7 @@ public class JpaSecurityConfig {
 	@Bean("securityEntityManager")
 	public LocalContainerEntityManagerFactoryBean securityEntityManager(
 			EntityManagerFactoryBuilder builder,
-			@Qualifier("dataSource") DataSource dataSource) {
+			@Qualifier("dataSourceSecurity") DataSource dataSource) {
 		return builder.dataSource(dataSource)
 				.packages("org.springframework.samples.petclinic.model.security")
 				.persistenceUnit("security").build();

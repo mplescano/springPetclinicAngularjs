@@ -5,8 +5,8 @@
         .module('petClinicApp')
         .factory('TokenInterceptorService', TokenInterceptorService);
 
-    TokenInterceptorService.$inject = ['$q', 'CredentialStorageService', 'PermPermissionStore'];
-    function TokenInterceptorService($q, CredentialStorageService, PermPermissionStore) {
+    TokenInterceptorService.$inject = ['$injector', '$q', 'CredentialStorageService', 'PermPermissionStore'];
+    function TokenInterceptorService($injector, $q, CredentialStorageService, PermPermissionStore) {
         var interceptorService = {};
 
         interceptorService.request = Request;
@@ -19,36 +19,38 @@
             if (config.url.startsWith(GLB_URL_API + 'rest/') &&
                     CredentialStorageService.IsLogged() && 
                     CredentialStorageService.GetCurrentUser().token.accessToken != '') {
+                config.headers['Cache-Control'] = undefined;
                 var nowDate = (new Date()).getTime();
-                var loginDate = CredentialStorageService.GetCurrentUser().token.loginDate;
-                var expiresIn = CredentialStorageService.GetCurrentUser().token.expiresIn;
-                if (nowDate - loginDate > expiresIn) {
+                var lastTokenDate = CredentialStorageService.GetCurrentUser().token.lastTokenDate;
+                var expiresIn = CredentialStorageService.GetCurrentUser().token.expiresIn * 1000;
+                if (nowDate - lastTokenDate > expiresIn) {
                     var deferredConfig = $q.defer();
                     var refreshToken = CredentialStorageService.GetCurrentUser().token.refreshToken;
+                    var AuthenticationService = $injector.get('AuthenticationService');
                     //refresh access token
-                    $http({
-                        method: 'POST', 
-                        url: GLB_URL_OAUTH + 'oauth/token?grant_type=refresh_token',
-                        headers: {
-                            'Cache-Control': undefined,
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'Authorization': 'Basic ' + window.btoa(GLB_CLIENT_ID1 + ':' + GLB_CLIENT_ID2)
-                        },
-                        data: { client_id: GLB_CLIENT_ID1, refresh_token: refreshToken },
-                        transformRequest: function(obj) {
-                            var str = [];
-                            for(var p in obj)
-                                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-                            return str.join("&");
-                        }
-                    })
+                    AuthenticationService.RefreshToken(refreshToken)
                     .then(function(response) {
                         var dataJson = response.data;
                         if (dataJson != null) {
-                            
+                            var oldToken = CredentialStorageService.GetCurrentUser().token;
+                            var newToken = {
+                                    accessToken: dataJson.access_token, 
+                                    refreshToken: dataJson.refresh_token, 
+                                    expiresIn: dataJson.expires_in,
+                                    scope: dataJson.scope,
+                                    tokenType: oldToken.tokenType,
+                                    loginDate: oldToken.loginDate,
+                                    lastTokenDate: (new Date()).getTime()
+                            };
+                            CredentialStorageService.SetNewToken(newToken);
+                            config.headers['Authorization'] = 'Bearer ' + CredentialStorageService.GetCurrentUser().token.accessToken;
                         }
                         deferredConfig.resolve(config);
                     }, function(response) {
+                        if (response.status == 401 || response.status == 440) {//401 Unauthorized, //440 Login Time-out
+                            CredentialStorageService.ClearCredentials();
+                            PermPermissionStore.clearStore();
+                        }
                         deferredConfig.resolve(config);
                     });
                     return deferredConfig.promise;

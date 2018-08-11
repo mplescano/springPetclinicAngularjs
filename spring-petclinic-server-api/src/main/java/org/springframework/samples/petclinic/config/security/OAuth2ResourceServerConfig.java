@@ -1,21 +1,14 @@
 package org.springframework.samples.petclinic.config.security;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpMethod;
-import org.springframework.samples.petclinic.component.VerifierTokenServices;
 import org.springframework.samples.petclinic.component.handler.RestAuthExceptionThrower;
-import org.springframework.samples.petclinic.component.token.FixedDefaultTokenServices;
-import org.springframework.samples.petclinic.component.token.store.FixedJwtAccessTokenConverter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
-import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 @Configuration
 @EnableResourceServer
@@ -58,7 +51,11 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
 
 	@Override
 	public void configure(final ResourceServerSecurityConfigurer config) throws Exception {
-		config.resourceId(RESOURCE_ID).tokenServices(tokenServices)
+		config
+		    .authenticationEntryPoint(exceptionThrower)
+		    .accessDeniedHandler(exceptionThrower)
+		    .resourceId(RESOURCE_ID)
+		    .tokenServices(tokenServices)
 		// .stateless(false)//default true
 		;
 	}

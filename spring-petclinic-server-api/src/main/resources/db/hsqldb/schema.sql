@@ -64,34 +64,3 @@ CREATE TABLE visits (
 );
 ALTER TABLE visits ADD CONSTRAINT fk_visits_pets FOREIGN KEY (pet_id) REFERENCES pets (id);
 CREATE INDEX visits_pet_id ON visits (pet_id);
-
-CREATE TABLE users (
-  id         INTEGER IDENTITY PRIMARY KEY,
-  first_name VARCHAR(30) NOT NULL,
-  last_name  VARCHAR(30) NOT NULL,
-  roles    VARCHAR(255) NOT NULL,
-  username       VARCHAR(30) NOT NULL,
-  password  VARCHAR(255) NOT NULL,
-  enabled boolean not null,
-  created_at	TIMESTAMP not null,
-  UNIQUE (username),
-  UNIQUE (first_name, last_name)
-);
-
-create table authorities (
-	id         INTEGER IDENTITY PRIMARY KEY,
-	role varchar(50) not null,
-	authority varchar(50) not null,
-	UNIQUE (role, authority)
-);
-
-CREATE TABLE auth_tokens (
-	id         INTEGER IDENTITY PRIMARY KEY,
-    user_id INTEGER NOT NULL,
-    token VARCHAR(128) NOT NULL,
-    CREATED_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    EXPIRY_DATE TIMESTAMP,
-    UNIQUE (user_id, token)
-);
-
-ALTER TABLE auth_tokens ADD CONSTRAINT fk_tokens_users FOREIGN KEY (user_id) REFERENCES users (id);

@@ -35,6 +35,7 @@ public class JpaRegularConfig {
 	}
 
 	@Bean("regularTransactionManager")
+	@Primary
 	public PlatformTransactionManager regularTransactionManager(
 			@Qualifier("regularEntityManager") EntityManagerFactory regularEntityManagerFactory) {
 		return new JpaTransactionManager(regularEntityManagerFactory);

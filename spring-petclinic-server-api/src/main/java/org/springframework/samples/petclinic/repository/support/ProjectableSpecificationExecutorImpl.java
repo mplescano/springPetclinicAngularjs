@@ -246,7 +246,7 @@ public class ProjectableSpecificationExecutorImpl<T, ID extends Serializable>
     @Override
     public T findOne(NamedParamSpecification<T> spec) {
         try {
-            TypedQuery<T> query = getQuery(spec, (Sort) null);
+            TypedQuery<T> query = getQuery(spec, Sort.unsorted());
             if (spec != null) {
                     for (Entry<String, Object> entryParam : spec.getParameters().entrySet()) {
                             query.setParameter(entryParam.getKey(), entryParam.getValue());
