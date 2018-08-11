@@ -20,6 +20,7 @@ import org.springframework.samples.petclinic.component.token.store.FixedJwtAcces
 import org.springframework.samples.petclinic.service.JdbcUserServiceImpl;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
@@ -54,7 +55,7 @@ public class BeanServicesConfig {
 
 	@Bean
 	@Primary
-	public FixedDefaultTokenServices tokenServices() {
+	public FixedDefaultTokenServices tokenServices(ClientDetailsService clientDetailsService) {
 		final TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
 		tokenEnhancerChain.setTokenEnhancers(Arrays.asList(new AdditionalAuthAccessTokenEnhancer() , jwtAccessTokenConverter()));
 		final FixedDefaultTokenServices defaultTokenServices = new FixedDefaultTokenServices();
@@ -62,6 +63,7 @@ public class BeanServicesConfig {
 		defaultTokenServices.setSupportRefreshToken(true);
 		defaultTokenServices.setReuseRefreshToken(true);
 		defaultTokenServices.setTokenEnhancer(tokenEnhancerChain);
+		defaultTokenServices.setClientDetailsService(clientDetailsService);
 		return defaultTokenServices;
 	}
 	

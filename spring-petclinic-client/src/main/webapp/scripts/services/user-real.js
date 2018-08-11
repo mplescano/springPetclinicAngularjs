@@ -28,7 +28,7 @@ function UserService($http, $httpParamSerializer, $q) {
     	if (arrSort != null && arrSort.length > 0) {
     		paramUrlSort = '&' + $httpParamSerializer({'sort': arrSort});
     	}
-        return $http.get('rest/users?page=' + pageNumber + '&size=' + pageSize + paramUrlSort)
+        return $http.get(GLB_URL_API + 'rest/users?page=' + pageNumber + '&size=' + pageSize + paramUrlSort)
         	.then(handleSuccess, handleError('Error getting all users'));
     }
     
@@ -38,33 +38,33 @@ function UserService($http, $httpParamSerializer, $q) {
     		paramUrlSort = '&' + $httpParamSerializer({'sort': arrSort});
     	}
     	return $http.post(
-    			'rest/users/filter?page=' + pageNumber + '&size=' + pageSize + paramUrlSort,
+    	        GLB_URL_API + 'rest/users/filter?page=' + pageNumber + '&size=' + pageSize + paramUrlSort,
     			objDataModel
     			).then(handleSuccess, handleError('Error getting the users'));
    }
 
     function GetById(id) {
-        return $http.get('rest/users/' + id).then(handleSuccess, handleError('Error getting user by id'));
+        return $http.get(GLB_URL_API + 'rest/users/' + id).then(handleSuccess, handleError('Error getting user by id'));
     }
 
     function GetByUsername(username) {
-        return $http.get('api/users/' + username).then(handleSuccess, handleError('Error getting user by username'));
+        return $http.get(GLB_URL_API + 'api/users/' + username).then(handleSuccess, handleError('Error getting user by username'));
     }
 
     function Create(user) {
-        return $http.post('rest/users', user).then(handleSuccess, handleError('Error creating user'));
+        return $http.post(GLB_URL_API + 'rest/users', user).then(handleSuccess, handleError('Error creating user'));
     }
     
     function Register(user) {
-        return $http.post('rest/users/register', user).then(handleSuccess, handleError('Error creating user'));
+        return $http.post(GLB_URL_API + 'rest/users/register', user).then(handleSuccess, handleError('Error creating user'));
     }
 
     function Update(user) {
-        return $http.put('rest/users/' + user.id, user).then(handleSuccess, handleError('Error updating user'));
+        return $http.put(GLB_URL_API + 'rest/users/' + user.id, user).then(handleSuccess, handleError('Error updating user'));
     }
 
     function Delete(userId) {
-        return $http.delete('rest/users/' + userId).then(handleSuccess, handleError('Error deleting user'));
+        return $http.delete(GLB_URL_API + 'rest/users/' + userId).then(handleSuccess, handleError('Error deleting user'));
     }
     
     function DeleteUserList(arrUserIds) {
@@ -72,7 +72,7 @@ function UserService($http, $httpParamSerializer, $q) {
     	if (arrUserIds != null && arrUserIds.length > 0) {
     		paramUrl = $httpParamSerializer({'userIds': arrUserIds});
     	}
-        return $http.delete('rest/users?' + paramUrl).then(handleSuccess, handleError('Error deleting user'));
+        return $http.delete(GLB_URL_API + 'rest/users?' + paramUrl).then(handleSuccess, handleError('Error deleting user'));
     }
 
     // private functions

@@ -13,7 +13,7 @@ angular.module('login')
             // reset login status
             var fromLink = $stateParams.from;
             if (fromLink == 'logout' && CredentialStorageService.IsLogged()) {
-                AuthenticationService.Logout().then(function() {
+                AuthenticationService.Logout(CredentialStorageService.GetCurrentUser().token.accessToken).then(function() {
                     CredentialStorageService.ClearCredentials();
                     PermPermissionStore.clearStore();
                 });

@@ -10,6 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
+import org.springframework.samples.petclinic.dto.ResponseMessage;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -48,24 +49,31 @@ public class ExtendedTokenEndpoint {
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/oauth/token")
     @ResponseBody
-    public String revokeToken(@RequestParam("token") String token, @RequestParam("type") String tokenType) {
+    public ResponseMessage revokeToken(@RequestParam("token") String token, @RequestParam("type") String tokenType) {
         if ("access_token".equals(tokenType)) {
             OAuth2AccessToken accessToken = tokenStore.readAccessToken(token);
             if (accessToken != null) {
                 tokenStore.removeAccessToken(accessToken);
+                return new ResponseMessage(true, "Successful delete token", accessToken);
             }
+            return new ResponseMessage(false, "Failed delete token, verify it", accessToken);
         }
         else if ("refresh_token".equals(tokenType)) {
             OAuth2RefreshToken oauth2RefreshToken = tokenStore.readRefreshToken(token);
             if (oauth2RefreshToken != null) {
                 tokenStore.removeRefreshToken(oauth2RefreshToken);
+                return new ResponseMessage(true, "Successful delete token", oauth2RefreshToken);
             }
+            return new ResponseMessage(false, "Failed delete refresh token, verify it", oauth2RefreshToken);
         }
         else if ("all".equals(tokenType)) {
+            OAuth2AccessToken accessToken = tokenStore.readAccessToken(token);
             tokenServices.revokeToken(token);
+            return new ResponseMessage(true, "Successful delete token", accessToken);
         }
-
-    	return token;
+        else {
+            return new ResponseMessage(false, "Unknow token type");
+        }
     }
     
     @RequestMapping(method = RequestMethod.GET, value = "/oauth/token/list")

@@ -35,8 +35,8 @@ public class OauthRestExceptionHandler extends DataRestExceptionHandler {
 			headers.set("WWW-Authenticate", String.format("%s %s", OAuth2AccessToken.BEARER_TYPE, ex.getSummary()));
 		}
 
-		ResponseErrorMessage message = new ResponseErrorMessage(generateCodeFromException(ex), type, ex.getMessage());
+		ResponseErrorMessage message = new ResponseErrorMessage(ex.getOAuth2ErrorCode(), type, ex.getMessage());
 
-		return handleExceptionInternal(ex, message, null, HttpStatus.valueOf(ex.getHttpErrorCode()), request);
+		return handleExceptionInternal(ex, message, headers, HttpStatus.valueOf(ex.getHttpErrorCode()), request);
 	}
 }

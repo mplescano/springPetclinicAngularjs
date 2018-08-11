@@ -29,7 +29,7 @@ public class AuthServerOAuth2Config extends AuthorizationServerConfigurerAdapter
 	
 	private final TokenStore tokenStore;
 	
-	private final TokenEnhancer accessTokenConverter;
+	/*private final TokenEnhancer accessTokenConverter;*/
 	
 	private final FixedDefaultTokenServices tokenServices;
 	
@@ -37,12 +37,12 @@ public class AuthServerOAuth2Config extends AuthorizationServerConfigurerAdapter
 
 	public AuthServerOAuth2Config(DataSource dataSource,
 			@Qualifier("authenticationManagerBean") AuthenticationManager authenticationManager, TokenStore tokenStore,
-			TokenEnhancer accessTokenConverter, FixedDefaultTokenServices tokenServices,
+			/*TokenEnhancer accessTokenConverter,*/ FixedDefaultTokenServices tokenServices,
 			RestAuthExceptionThrower exceptionThrower) {
 		this.dataSource = dataSource;
 		this.authenticationManager = authenticationManager;
 		this.tokenStore = tokenStore;
-		this.accessTokenConverter = accessTokenConverter;
+		/*this.accessTokenConverter = accessTokenConverter;*/
 		this.tokenServices = tokenServices;
 		this.exceptionThrower = exceptionThrower;
 	}

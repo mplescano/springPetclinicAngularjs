@@ -10,32 +10,52 @@
         var interceptorService = {};
 
         interceptorService.request = Request;
-        interceptorService.response = Response;
+        /*interceptorService.response = Response;*/
         interceptorService.responseError = ResponseError;
 
         return interceptorService;
 
         function Request(config) {
-            /*config.headers["Content-Type"] != null && 
-                    config.headers["Content-Type"].indexOf("application/json") >= 0*/
-            if ((config.url.startsWith('rest/') || config.url.startsWith('logout'))&&
+            if (config.url.startsWith(GLB_URL_API + 'rest/') &&
                     CredentialStorageService.IsLogged() && 
-                    CredentialStorageService.GetCurrentUser().token != '') {
-                config.headers['Authorization'] = 'Bearer ' + CredentialStorageService.GetCurrentUser().token;
+                    CredentialStorageService.GetCurrentUser().token.accessToken != '') {
+                var nowDate = (new Date()).getTime();
+                var loginDate = CredentialStorageService.GetCurrentUser().token.loginDate;
+                var expiresIn = CredentialStorageService.GetCurrentUser().token.expiresIn;
+                if (nowDate - loginDate > expiresIn) {
+                    var deferredConfig = $q.defer();
+                    var refreshToken = CredentialStorageService.GetCurrentUser().token.refreshToken;
+                    //refresh access token
+                    $http({
+                        method: 'POST', 
+                        url: GLB_URL_OAUTH + 'oauth/token?grant_type=refresh_token',
+                        headers: {
+                            'Cache-Control': undefined,
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'Authorization': 'Basic ' + window.btoa(GLB_CLIENT_ID1 + ':' + GLB_CLIENT_ID2)
+                        },
+                        data: { client_id: GLB_CLIENT_ID1, refresh_token: refreshToken },
+                        transformRequest: function(obj) {
+                            var str = [];
+                            for(var p in obj)
+                                str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                            return str.join("&");
+                        }
+                    })
+                    .then(function(response) {
+                        var dataJson = response.data;
+                        if (dataJson != null) {
+                            
+                        }
+                        deferredConfig.resolve(config);
+                    }, function(response) {
+                        deferredConfig.resolve(config);
+                    });
+                    return deferredConfig.promise;
+                }
+                config.headers['Authorization'] = 'Bearer ' + CredentialStorageService.GetCurrentUser().token.accessToken;
             }
             return config;
-        }
-        
-        function Response(response) {
-            if (CredentialStorageService.IsLogged()) {
-                var rawToken = response.headers('Authorization');
-                var sizeBearer = "Bearer ".length;
-                if (rawToken != null && rawToken.length > sizeBearer) {
-                    var token = rawToken.substring(sizeBearer, rawToken.length);
-                    CredentialStorageService.SetNewToken(token);
-                }
-            }
-            return response;
         }
         
         function ResponseError(response) {

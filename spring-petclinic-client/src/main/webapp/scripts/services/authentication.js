@@ -50,10 +50,24 @@
                  * expires_in
                  * scope
                  * rti
+                 * roles
+                 * permissions
+                 * 
                  */
                 var dataJson = response.data;
                 if (dataJson != null) {
-                	responseCallback = {success: true, message: response.statusText, data: dataJson, token: token};
+                	responseCallback = {success: true, message: response.statusText, 
+                	        data: {roles: dataJson.roles, permissions: dataJson.permissions}, 
+                	        token: {
+                	            accessToken: dataJson.access_token, 
+                	            refreshToken: dataJson.refresh_token, 
+                	            expiresIn: dataJson.expires_in,
+                	            scope: dataJson.scope,
+                	            tokenType: dataJson.token_type,
+                	            loginDate: (new Date()).getTime()
+                	        }
+                	};
+                	
                 }
                 callback(responseCallback);
             }, function (response) {
@@ -65,8 +79,24 @@
             });
         }
 
-        function Logout() {
-            return $http({method: 'GET', url: GLB_URL_OAUTH + 'logout'});
+        function Logout(accessToken) {
+            return $http({
+                method: 'DELETE', 
+                url: GLB_URL_OAUTH + 'oauth/token',
+                headers: {
+                    'Cache-Control': undefined,
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': 'Basic ' + window.btoa(GLB_CLIENT_ID1 + ':' + GLB_CLIENT_ID2)
+                },
+                params: { 'token': accessToken, 'type': 'all' },
+                transformRequest: function(obj) {
+                    var str = [];
+                    for(var p in obj)
+                        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                    return str.join("&");
+                }
+            });
+            
         }
         
     };

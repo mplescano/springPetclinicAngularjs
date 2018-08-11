@@ -1,4 +1,8 @@
-	
+
+--additional_information is in json format
+--access_token_validity, refresh_token_validity is in seconds
+--autoapprove is AutoApproveScopes commaDelimitedListToSet
+
 INSERT INTO oauth_client_details
 	(client_id, client_secret, scope, 
 	authorized_grant_types,	web_server_redirect_uri, authorities, 
@@ -6,7 +10,7 @@ INSERT INTO oauth_client_details
 VALUES
 	('pet-clinic-oauth2-user-plain', 'pet-clinic-secret-1', 'plain-user-scope',
 	'password,refresh_token', null, null, 
-	36000, 36000, null, true);
+	120, 300, null, true);
 	
 INSERT INTO oauth_client_details
 	(client_id, client_secret, scope, 

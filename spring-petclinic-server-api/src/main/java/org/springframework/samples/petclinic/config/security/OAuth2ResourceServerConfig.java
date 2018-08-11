@@ -29,8 +29,11 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
 
 	private final RestAuthExceptionThrower exceptionThrower;
 	
-	public OAuth2ResourceServerConfig(RestAuthExceptionThrower exceptionThrower) {
+	private final ResourceServerTokenServices tokenServices;
+	
+	public OAuth2ResourceServerConfig(RestAuthExceptionThrower exceptionThrower, ResourceServerTokenServices tokenServices) {
 		this.exceptionThrower = exceptionThrower;
+		this.tokenServices = tokenServices;
 	}
 
 	@Override
@@ -38,7 +41,7 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
 		// @formatter:off
       http
       	  .csrf().disable()
-          .anonymous().disable()
+          /*.anonymous().disable()*/
           .sessionManagement()
           .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
           .and()
@@ -55,24 +58,9 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
 
 	@Override
 	public void configure(final ResourceServerSecurityConfigurer config) throws Exception {
-		config.resourceId(RESOURCE_ID).tokenServices(tokenServices())
+		config.resourceId(RESOURCE_ID).tokenServices(tokenServices)
 		// .stateless(false)//default true
 		;
 	}
 
-	@Primary
-	@Bean
-	public ResourceServerTokenServices tokenServices() throws Exception {
-		final FixedDefaultTokenServices defaultTokenServices = new FixedDefaultTokenServices();
-		defaultTokenServices.setTokenStore(new JwtTokenStore(accessTokenConverter()));
-		return new VerifierTokenServices(defaultTokenServices);
-	}
-	
-    private JwtAccessTokenConverter accessTokenConverter() throws Exception {
-        JwtAccessTokenConverter converter = new FixedJwtAccessTokenConverter();
-        converter.setSigningKey("123");
-        converter.afterPropertiesSet();
-
-        return converter;
-    }
 }

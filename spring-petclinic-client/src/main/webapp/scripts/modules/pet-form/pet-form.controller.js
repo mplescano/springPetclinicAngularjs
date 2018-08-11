@@ -5,20 +5,20 @@ angular.module('petForm')
         var self = this;
         var ownerId = $stateParams.ownerId || 0;
 
-        $http.get('rest/petTypes').then(function (resp) {
+        $http.get(GLB_URL_API + 'rest/petTypes').then(function (resp) {
             self.types = resp.data;
         }).then(function () {
 
             var petId = $stateParams.petId || 0;
 
             if (petId) { // edit
-                $http.get("rest/owner/" + ownerId + "/pet/" + petId).then(function (resp) {
+                $http.get(GLB_URL_API + "rest/owner/" + ownerId + "/pet/" + petId).then(function (resp) {
                     self.pet = resp.data;
                     self.pet.birthDate = new Date(self.pet.birthDate);
                     self.petTypeId = "" + self.pet.type.id;
                 });
             } else {
-                $http.get('rest/owner/' + ownerId).then(function (resp) {
+                $http.get(GLB_URL_API + 'rest/owner/' + ownerId).then(function (resp) {
                     self.pet = {
                         owner: resp.data.firstName + " " + resp.data.lastName
                     };
@@ -40,9 +40,9 @@ angular.module('petForm')
 
             var req;
             if (id) {
-                req = $http.put("rest/owners/" + ownerId + "/pets/" + id, data);
+                req = $http.put(GLB_URL_API + "rest/owners/" + ownerId + "/pets/" + id, data);
             } else {
-                req = $http.post("rest/owners/" + ownerId + "/pets", data);
+                req = $http.post(GLB_URL_API + "rest/owners/" + ownerId + "/pets", data);
             }
 
             req.then(function () {

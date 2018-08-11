@@ -1,7 +1,7 @@
 package org.springframework.samples.petclinic.component.token;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,11 +17,7 @@ public class AdditionalAuthAccessTokenEnhancer implements TokenEnhancer {
 	public OAuth2AccessToken enhance(OAuth2AccessToken accessToken,
 			OAuth2Authentication authentication) {
 		DefaultOAuth2AccessToken defaultAccessToken = (DefaultOAuth2AccessToken) accessToken;
-		Map<String, Object> additionalAuthInfo = defaultAccessToken.getAdditionalInformation();
-		if (additionalAuthInfo == null) {
-			additionalAuthInfo = new HashMap<>();
-			defaultAccessToken.setAdditionalInformation(additionalAuthInfo);
-		}
+		Map<String, Object> additionalAuthInfo = new LinkedHashMap<>(defaultAccessToken.getAdditionalInformation());
 
 		List<String> roles = new ArrayList<>();
 		List<String> permissions = new ArrayList<>();
@@ -37,7 +33,8 @@ public class AdditionalAuthAccessTokenEnhancer implements TokenEnhancer {
 				permissions.add(grantedAuth.getAuthority());
 			}
 		}); 
-		
+
+	    defaultAccessToken.setAdditionalInformation(additionalAuthInfo);
 		return accessToken;
 	}
 
