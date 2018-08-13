@@ -13,6 +13,7 @@
         <module>spring-petclinic-common</module>
 		<module>spring-petclinic-server-api</module>
 		<module>spring-petclinic-server-oauth</module>
+        <module>spring-petclinic-server-discoverer</module>
 	</modules>
 
 	<dependencyManagement>
