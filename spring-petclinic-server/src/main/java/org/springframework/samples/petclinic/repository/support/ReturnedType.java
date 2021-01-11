@@ -260,15 +260,13 @@ public abstract class ReturnedType {
 			return inputProperties;
 		}
 
-		@SuppressWarnings({ "unchecked", "rawtypes" })
 		private List<String> detectConstructorParameterNames(Class<?> type) {
 
 			if (!isDto()) {
 				return Collections.emptyList();
 			}
 
-			PreferredConstructorDiscoverer<?, ?> discoverer = new PreferredConstructorDiscoverer(type);
-			PreferredConstructor<?, ?> constructor = discoverer.getConstructor();
+			PreferredConstructor<?, ?> constructor = PreferredConstructorDiscoverer.discover(type);
 
 			if (constructor == null) {
 				return Collections.emptyList();

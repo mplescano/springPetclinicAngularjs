@@ -1,7 +1,6 @@
 package org.springframework.samples.petclinic.repository.support;
 
 import static org.springframework.data.jpa.repository.query.QueryUtils.DELETE_ALL_QUERY_STRING;
-import static org.springframework.data.jpa.repository.query.QueryUtils.applyAndBind;
 import static org.springframework.data.jpa.repository.query.QueryUtils.getQueryString;
 
 import java.io.Serializable;
@@ -17,7 +16,6 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
-import javax.persistence.criteria.ParameterExpression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -29,7 +27,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
@@ -68,7 +65,8 @@ public class ProjectableSpecificationExecutorImpl<T, ID extends Serializable>
 	@Override
 	public <S> Page<S> findProjectedAll(NamedParamSpecification<T> spec, Pageable pageable, Class<S> projectionClass) {
 		ReturnedType type = ReturnedType.of(projectionClass, getDomainClass(), factory);
-		return findAll(spec, pageable).map(new ProjectingConverter<S>(type, factory));
+        ProjectingConverter<S> converter = new ProjectingConverter<S>(type, factory);
+		return findAll(spec, pageable).map(t -> converter.convert(t));
 	}
 
 	@Override
@@ -99,7 +97,7 @@ public class ProjectableSpecificationExecutorImpl<T, ID extends Serializable>
 	protected <S extends T> Page<S> readPage(TypedQuery<S> query, Class<S> domainClass, Pageable pageable,
 			NamedParamSpecification<S> spec) {
 
-		query.setFirstResult(pageable.getOffset());
+		query.setFirstResult((int) pageable.getOffset());
 		query.setMaxResults(pageable.getPageSize());
 
 		Long total = executeCountQuery(getCountQuery(spec, domainClass));
@@ -178,7 +176,7 @@ public class ProjectableSpecificationExecutorImpl<T, ID extends Serializable>
 		Assert.notNull(entities, "The given Iterable of entities not be null!");
 
 		for (ID entity : entities) {
-			delete(entity);
+			deleteById(entity);
 			deleted++;
 		}
 		return deleted;

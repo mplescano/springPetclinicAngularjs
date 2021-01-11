@@ -6,11 +6,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.BasicErrorController;
-import org.springframework.boot.autoconfigure.web.ErrorAttributes;
-import org.springframework.boot.autoconfigure.web.ErrorController;
+
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.ErrorProperties.IncludeStacktrace;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
+import org.springframework.boot.web.error.ErrorAttributeOptions.Include;
+import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +23,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.context.request.ServletWebRequest;
+import org.springframework.web.context.request.WebRequest;
 
 @Controller
 @RequestMapping("${server.error.path:${error.path:/error}}")
@@ -57,8 +59,8 @@ public class ThrowerErrorToExceptionHandler implements ErrorController {
 	@RequestMapping
 	@ResponseBody
 	public ResponseEntity<Map<String, Object>> error(HttpServletRequest request) throws Exception {
-		RequestAttributes requestAttributes = new ServletRequestAttributes(request);
-		Throwable error = this.errorAttributes.getError(requestAttributes);
+		WebRequest webRequest = new ServletWebRequest(request);
+		Throwable error = this.errorAttributes.getError(webRequest);
 		if (error != null) {
 			RuntimeException ase = null;
 			// Try to extract a SpringSecurityException from the stacktrace
@@ -98,10 +100,24 @@ public class ThrowerErrorToExceptionHandler implements ErrorController {
 		}
 	}
 	
-	protected Map<String, Object> getErrorAttributes(HttpServletRequest request, boolean includeStackTrace) {
-		RequestAttributes requestAttributes = new ServletRequestAttributes(request);
-		return this.errorAttributes.getErrorAttributes(requestAttributes, includeStackTrace);
-	}
+    /**
+     * Returns a {@link Map} of the error attributes.
+     * @param request the source request
+     * @param includeStackTrace if stack trace elements should be included
+     * @return the error attributes
+     * @deprecated since 2.3.0 in favor of
+     * {@link #getErrorAttributes(HttpServletRequest, ErrorAttributeOptions)}
+     */
+    @Deprecated
+    protected Map<String, Object> getErrorAttributes(HttpServletRequest request, boolean includeStackTrace) {
+        return getErrorAttributes(request,
+                (includeStackTrace) ? ErrorAttributeOptions.of(Include.STACK_TRACE) : ErrorAttributeOptions.defaults());
+    }
+
+    protected Map<String, Object> getErrorAttributes(HttpServletRequest request, ErrorAttributeOptions options) {
+        WebRequest webRequest = new ServletWebRequest(request);
+        return this.errorAttributes.getErrorAttributes(webRequest, options);
+    }
 	
 	/**
 	 * Determine if the stacktrace attribute should be included.

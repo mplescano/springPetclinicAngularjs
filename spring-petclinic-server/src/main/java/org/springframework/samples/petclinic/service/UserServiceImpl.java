@@ -179,7 +179,7 @@ public class UserServiceImpl implements UserDetailsManager, UserService {
 		else {
 			//exclude some fields...
 			//how do you change your pass??
-			userTemp = userRepository.findOne(user.getId());
+			userTemp = userRepository.findById(user.getId()).get();
 			userTemp.setUsername(user.getUsername());
 			userTemp.setFirstName(user.getFirstName());
 			userTemp.setLastName(user.getLastName());

@@ -16,7 +16,9 @@ import org.springframework.data.jpa.domain.Specification;
  */
 public abstract class NamedParamSpecification<T> implements Specification<T> {
 	
-	private Map<String, Object> parameters = new HashMap<>();
+    private static final long serialVersionUID = 8608968964458547954L;
+
+    private Map<String, Object> parameters = new HashMap<>();
 	
 	protected <S> ParameterExpression<S> addParameter(CriteriaBuilder cb, Class<S> type, String paramName, S value) {
 		parameters.put(paramName, value);
