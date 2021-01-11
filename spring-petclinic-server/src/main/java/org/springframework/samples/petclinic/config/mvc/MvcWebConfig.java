@@ -17,7 +17,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,7 +37,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 // POJOs labeled with the @Controller and @Service annotations are
 // auto-detected.
 @ComponentScan(basePackages = { "org.springframework.samples.petclinic.web" })
-public class MvcWebConfig extends WebMvcConfigurerAdapter {
+public class MvcWebConfig implements WebMvcConfigurer {
 
 	@Autowired
 	private Environment env;
